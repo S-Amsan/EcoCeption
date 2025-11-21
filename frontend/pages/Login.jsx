@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
     Image,
     Text,
-    StyleSheet,
     View,
     TouchableOpacity,
     ScrollView,
@@ -12,8 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-
-const { width, height } = Dimensions.get('window');
+import style from "./styles/loginStyles";
 
 export default function Login(){
     const navigation = useNavigation();
@@ -38,10 +36,6 @@ export default function Login(){
             colors={['#00DB83', '#0CD8A9']}
             style={style.gradient}
         >
-            <ScrollView
-                contentContainerStyle={style.scrollContainer}
-                showsVerticalScrollIndicator={false}
-            >
                 <View style={style.container}>
                     <Image
                         source={require('../assets/logo.png')}
@@ -143,161 +137,6 @@ export default function Login(){
                         </Text>
                     </View>
                 </View>
-            </ScrollView>
         </LinearGradient>
     );
 };
-
-const style = StyleSheet.create({
-    gradient: {
-        flex: 1,
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        paddingVertical: 40,
-        minHeight: height,
-    },
-    logo: {
-        width: 240,
-        height: 240,
-        marginBottom: 20,
-    },
-    FormContainer: {
-        padding: 40,
-        borderRadius: 45,
-        backgroundColor: 'white',
-        width: width * 0.25,
-        minHeight: 600,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-        elevation: 5,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#00DB83',
-        marginBottom: 8,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        marginBottom: 40,
-        fontStyle: 'italic',
-    },
-    inputGroup: {
-        width: '100%',
-        marginBottom: 25,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 8,
-        marginLeft: 5,
-    },
-    textInput: {
-        backgroundColor: '#F8F9FA',
-        borderWidth: 1,
-        borderColor: '#E9ECEF',
-        borderRadius: 15,
-        padding: 18,
-        fontSize: 16,
-        color: '#333',
-        width: '100%',
-    },
-    // Styles pour le champ mot de passe
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#F8F9FA',
-        borderWidth: 1,
-        borderColor: '#E9ECEF',
-        borderRadius: 15,
-        overflow: 'hidden',
-    },
-    passwordInput: {
-        flex: 1,
-        padding: 18,
-        fontSize: 16,
-        color: '#333',
-    },
-    eyeIcon: {
-        padding: 18,
-    },
-    // Lien mot de passe oublié
-    forgotPasswordContainer: {
-        alignItems: 'flex-end',
-        marginBottom: 30,
-    },
-    forgotPasswordText: {
-        color: '#00DB83',
-        fontSize: 14,
-        fontWeight: '600',
-        textDecorationLine: 'underline',
-    },
-    // Bouton principal
-    primaryButton: {
-        borderRadius: 25,
-        width: '100%',
-        marginBottom: 20,
-        overflow: 'hidden',
-    },
-    gradientButton: {
-        padding: 18,
-        alignItems: 'center',
-        borderRadius: 25,
-    },
-    primaryButtonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    // Séparateur
-    separator: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    separatorLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#E9ECEF',
-    },
-    separatorText: {
-        color: '#666',
-        fontSize: 14,
-        fontWeight: '600',
-        marginHorizontal: 15,
-    },
-    // Bouton secondaire
-    secondaryButton: {
-        borderWidth: 2,
-        borderColor: '#00DB83',
-        borderRadius: 25,
-        padding: 16,
-        alignItems: 'center',
-        marginBottom: 25,
-    },
-    secondaryButtonText: {
-        color: '#00DB83',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-
-    policy: {
-        color: '#1D3937',
-        fontSize: 12,
-        textAlign: 'center',
-        fontStyle: 'italic',
-        lineHeight: 16,
-    },
-});
