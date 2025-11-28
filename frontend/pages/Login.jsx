@@ -17,15 +17,41 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = () => { //à coder
-        console.log('Connexion:', { email, password });
+    const handleLogin = async () => {
+        try {
+            console.log("Connexion :", { email, password });
+
+            const response = await fetch("http://192.168.1.8:8080/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.log("Erreur backend :", errorText);
+                alert("Email ou mot de passe incorrect");
+                return;
+            }
+
+            const data = await response.json();
+            console.log("Utilisateur connecté :", data);
+
+            alert("Connexion réussie !");
+            navigation.navigate('filComm')
+
+        } catch (error) {
+            console.log("Erreur réseau :", error);
+            alert("Impossible de contacter le serveur");
+        }
     };
+
 
     const handleSignUp = () => {
         navigation.navigate('SignUp');
     };
 
-    const handleForgotPassword = () => { //à coder
+    const handleForgotPassword = () => {
         console.log('Mot de passe oublié');
     };
 

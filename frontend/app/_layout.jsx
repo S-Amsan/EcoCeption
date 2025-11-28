@@ -7,6 +7,7 @@ export default function RootLayout() {
             <Stack.Screen name="Login" />
             <Stack.Screen name="SignUp"/>
             <Stack.Screen name="home" />
+            <Stack.Screen name="filComm"/>
         </Stack>
     );
 }

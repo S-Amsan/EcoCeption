@@ -36,14 +36,37 @@ export default function SignUp(){
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const handleSignUp = () => {
-        console.log('Inscription:', {
+    const handleSignUp = async () => {
+        const payload = {
             pseudo,
             email,
             password,
             phone: selectedCountry.dialCode + phone
-        });
+        };
+
+        console.log("Payload:", payload);
+
+        try {
+            const response = await fetch("http://192.168.1.8:8080/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const err = await response.text();
+                console.log("Erreur:", err);
+                return;
+            }
+
+            navigation.navigate('Login');
+        } catch (err) {
+            console.error("Erreur réseau:", err);
+        }
     };
+
 
     const handleLogin = () => {
         navigation.navigate('Login');
@@ -94,7 +117,6 @@ export default function SignUp(){
             onPress={() => {
                 setSelectedCountry(item);
                 setModalVisible(false);
-                // Réinitialiser le numéro quand on change de pays
                 setPhone('');
             }}
         >
