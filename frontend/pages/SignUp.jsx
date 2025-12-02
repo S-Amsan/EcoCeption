@@ -6,7 +6,9 @@ import {
     TouchableOpacity,
     TextInput,
     Modal,
-    FlatList
+    FlatList,
+    ScrollView,
+    Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from "expo-router";
@@ -47,7 +49,7 @@ export default function SignUp(){
         console.log("Payload:", payload);
 
         try {
-            const response = await fetch("http://192.168.1.8:8080/api/auth/signup", {
+            const response = await fetch("http://localhost:8080/api/auth/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -131,6 +133,9 @@ export default function SignUp(){
             colors={['#00DB83', '#0CD8A9']}
             style={style.gradient}
         >
+            {Platform.OS === 'web' ? (
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+                            showsVerticalScrollIndicator={false}>
                 <View style={style.container}>
                     <Image
                         source={require('../assets/logo.png')}
@@ -246,6 +251,123 @@ export default function SignUp(){
                         </View>
                     </View>
                 </View>
+                </ScrollView>
+            ) : ( <View style={style.container}>
+
+                <Image
+                    source={require('../assets/logo.png')}
+                    style={style.logo}
+                    resizeMode="contain"
+                />
+
+                <View style={style.FormContainer}>
+                    {/* Titre */}
+                    <Text style={style.title}>Crée ton compte !</Text>
+
+                    {/* Champ Pseudo */}
+                    <View style={style.inputGroup}>
+                        <Text style={style.label}>Pseudo</Text>
+                        <TextInput
+                            style={style.textInput}
+                            placeholder="Ton pseudo unique"
+                            placeholderTextColor="#999"
+                            value={pseudo}
+                            onChangeText={setPseudo}
+                        />
+                    </View>
+
+                    {/* Champ Email */}
+                    <View style={style.inputGroup}>
+                        <Text style={style.label}>E-mail</Text>
+                        <TextInput
+                            style={style.textInput}
+                            placeholder="ton@email.com"
+                            placeholderTextColor="#999"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    {/* Champ Téléphone avec sélecteur de pays */}
+                    <View style={style.inputGroup}>
+                        <Text style={style.label}>Numéro de téléphone</Text>
+                        <View style={style.phoneInputContainer}>
+                            <TouchableOpacity
+                                style={style.countrySelector}
+                                onPress={() => setModalVisible(true)}
+                            >
+                                <Text style={style.countryFlag}>{selectedCountry.flag}</Text>
+                                <Text style={style.countryCodeText}>{selectedCountry.dialCode}</Text>
+                            </TouchableOpacity>
+                            <TextInput
+                                style={style.phoneInput}
+                                placeholder={selectedCountry.code === 'FR' ? "6 12 34 56 78" : "Votre numéro"}
+                                placeholderTextColor="#999"
+                                value={getDisplayPhone()}
+                                onChangeText={handlePhoneChange}
+                                keyboardType="numeric"
+                                maxLength={getMaxLength()} // ✅ Correction ici
+                            />
+                        </View>
+                        <Text style={style.phoneHint}>
+                            {selectedCountry.code === 'FR' ? '9 chiffres maximum' : '15 chiffres maximum'}
+                        </Text>
+                    </View>
+
+                    {/* Champ Mot de passe avec icône œil */}
+                    <View style={style.inputGroup}>
+                        <Text style={style.label}>Mot de passe</Text>
+                        <View style={style.passwordContainer}>
+                            <TextInput
+                                style={style.passwordInput}
+                                placeholder="Minimum 8 caractères"
+                                placeholderTextColor="#999"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={!showPassword}
+                            />
+                            <TouchableOpacity
+                                style={style.eyeIcon}
+                                onPress={() => setShowPassword(!showPassword)}
+                            >
+                                <Ionicons
+                                    name={showPassword ? "eye-off" : "eye"}
+                                    size={24}
+                                    color="#999"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* Bouton d'inscription */}
+                    <TouchableOpacity
+                        style={style.primaryButton}
+                        onPress={handleSignUp}
+                        activeOpacity={0.8}
+                    >
+                        <LinearGradient
+                            colors={['#00DB83', '#0CD8A9']}
+                            style={style.gradientButton}
+                        >
+                            <Text style={style.primaryButtonText}>
+                                Créer mon compte
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
+                    {/* Lien de connexion */}
+                    <View style={style.loginContainer}>
+                        <Text style={style.loginText}>
+                            Déjà un compte ?{' '}
+                        </Text>
+                        <TouchableOpacity onPress={handleLogin}>
+                            <Text style={style.loginLink}>Connecte toi !</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View> )}
 
             {/* Modal de sélection du pays */}
             <Modal

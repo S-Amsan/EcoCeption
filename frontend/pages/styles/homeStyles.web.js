@@ -18,8 +18,8 @@ export default StyleSheet.create({
         minHeight: height - 40,
     },
     logo: {
-        width: 200,
-        height: 200,
+        width: 240,
+        height: 240,
     },
     textContainer: {
         alignItems: 'center',
@@ -49,7 +49,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        width: width,
+        width: width * 0.3,
         paddingVertical: 35,
         paddingHorizontal: 25,
         borderRadius: 35,
@@ -68,12 +68,25 @@ export default StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 6,
+        width:'100%',
+        borderWidth: 2,
+        borderColor: '#00DB83',
     },
-    gradientButton: {
+    gradientButton:{
+        width:'100%',
+        height:'100%',
+        paddingVertical: 18,
+        paddingHorizontal: 0,
+    },
+    secondaryButton: {
+        borderWidth: 2,
+        borderColor: '#00DB83',
+        borderRadius: 25,
         paddingVertical: 18,
         paddingHorizontal: 30,
-        borderRadius: 25,
-        minWidth: 280,
+        marginBottom: 20,
+        backgroundColor: 'white',
+        width:'100%',
     },
     buttonContent: {
         flexDirection: 'row',
@@ -86,16 +99,7 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 10,
     },
-    secondaryButton: {
-        borderWidth: 2,
-        borderColor: '#00DB83',
-        borderRadius: 25,
-        paddingVertical: 16,
-        paddingHorizontal: 30,
-        minWidth: 280,
-        marginBottom: 20,
-        backgroundColor: 'white',
-    },
+
     secondaryButtonContent: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -106,6 +110,7 @@ export default StyleSheet.create({
         color: '#00DB83',
         fontWeight: 'bold',
         marginLeft: 8,
+        textAlign:'center',
     },
     separator: {
         flexDirection: 'row',

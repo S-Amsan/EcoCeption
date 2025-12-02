@@ -15,21 +15,21 @@ export default StyleSheet.create({
         minHeight: height,
     },
     logo: {
-        width: 240,
-        height: 240,
+        width: 220,
+        height: 220,
     },
     FormContainer:{
-        padding: 40,
+        padding: 30,
         borderRadius: 45,
         backgroundColor: 'white',
-        width: width * 0.25,
+        width: width * 0.3,
         minHeight: 600,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
         elevation: 5,
-        marginBottom: 10,
+        marginBottom:20,
     },
     title: {
         fontSize: 24,
@@ -40,7 +40,7 @@ export default StyleSheet.create({
     },
     inputGroup: {
         width: '100%',
-        marginBottom: 25,
+        marginBottom: 10,
     },
     label: {
         fontSize: 16,
@@ -129,7 +129,7 @@ export default StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
-        width: '20%',
+        width: '50%',
         maxHeight: '70%',
     },
     modalTitle: {
