@@ -2,7 +2,7 @@
 
 /**
  * This script is used to reset the project to a blank state.
- * It deletes or moves the /app, /components, /hooks, /scripts, and /constants directories to /app-example based on user input and creates a new /app directory with an index.jsx and _layout.tsx file.
+ * It deletes or moves the /appPrincipal, /components, /hooks, /scripts, and /constants directories to /appPrincipal-example based on user input and creates a new /appPrincipal directory with an index.jsx and _layout.tsx file.
  * You can remove the `reset-project` script from package.json and safely delete this file after running it.
  */
 
@@ -11,9 +11,9 @@ const path = require("path");
 const readline = require("readline");
 
 const root = process.cwd();
-const oldDirs = ["app", "components", "hooks", "constants", "scripts"];
-const exampleDir = "app-example";
-const newAppDir = "app";
+const oldDirs = ["appPrincipal", "components", "hooks", "constants", "scripts"];
+const exampleDir = "appPrincipal-example";
+const newAppDir = "appPrincipal";
 const exampleDirPath = path.join(root, exampleDir);
 
 const indexContent = `import { Text, View } from "react-native";
@@ -48,12 +48,12 @@ const rl = readline.createInterface({
 const moveDirectories = async (userInput) => {
   try {
     if (userInput === "y") {
-      // Create the app-example directory
+      // Create the appPrincipal-example directory
       await fs.promises.mkdir(exampleDirPath, { recursive: true });
       console.log(`📁 /${exampleDir} directory created.`);
     }
 
-    // Move old directories to new app-example directory or delete them
+    // Move old directories to new appPrincipal-example directory or delete them
     for (const dir of oldDirs) {
       const oldDirPath = path.join(root, dir);
       if (fs.existsSync(oldDirPath)) {
@@ -70,20 +70,20 @@ const moveDirectories = async (userInput) => {
       }
     }
 
-    // Create new /app directory
+    // Create new /appPrincipal directory
     const newAppDirPath = path.join(root, newAppDir);
     await fs.promises.mkdir(newAppDirPath, { recursive: true });
-    console.log("\n📁 New /app directory created.");
+    console.log("\n📁 New /appPrincipal directory created.");
 
     // Create index.jsx
     const indexPath = path.join(newAppDirPath, "index.jsx");
     await fs.promises.writeFile(indexPath, indexContent);
-    console.log("📄 app/index.jsx created.");
+    console.log("📄 appPrincipal/index.jsx created.");
 
     // Create _layout.tsx
     const layoutPath = path.join(newAppDirPath, "_layout.tsx");
     await fs.promises.writeFile(layoutPath, layoutContent);
-    console.log("📄 app/_layout.tsx created.");
+    console.log("📄 appPrincipal/_layout.tsx created.");
 
     console.log("\n✅ Project reset complete. Next steps:");
     console.log(
@@ -99,7 +99,7 @@ const moveDirectories = async (userInput) => {
 };
 
 rl.question(
-  "Do you want to move existing files to /app-example instead of deleting them? (Y/n): ",
+  "Do you want to move existing files to /appPrincipal-example instead of deleting them? (Y/n): ",
   (answer) => {
     const userInput = answer.trim().toLowerCase() || "y";
     if (userInput === "y" || userInput === "n") {

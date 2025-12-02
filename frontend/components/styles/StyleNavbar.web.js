@@ -11,8 +11,7 @@ export default StyleSheet.create({
         backgroundColor: '#00DB83',
         flexDirection: 'column',
         zIndex: 100,
-        padding: 8,
-        width:width*0.2
+        width:width*0.15
     },
 
     titleContainer: {
@@ -20,28 +19,29 @@ export default StyleSheet.create({
         justifyContent: 'center',
         marginBottom: height * 0.05,
         marginTop: height * 0.02,
-        alignItems: 'center',
+        alignItems:'center'
     },
 
     logo: {
-        width: 70,
-        height: 70,
+        width: 80,
+        height: 80,
+
     },
 
     title: {
         color: '#FFFFFF',
         fontSize: 25,
         fontWeight: 'bold',
-        marginTop: 20,
         textShadowColor: 'rgba(0, 0, 0, 0.1)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+
     },
 
     tabsContainer: {
-        paddingLeft: 10,
-        alignItems: 'flex-start',
+        alignItems: 'center',
         height: '100%',
+        padding:10
     },
 
     tabs: {
@@ -53,16 +53,19 @@ export default StyleSheet.create({
         width: '95%',
         borderRadius: 10,
         transition: 'all 0.3s ease',
+
     },
 
     Icon:{
         width:40,
         height:40,
+
     },
 
     IconText: {
         fontSize: 22,
         fontWeight: '400',
         marginLeft: 15,
+
     }
 });

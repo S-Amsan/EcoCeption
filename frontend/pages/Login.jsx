@@ -40,7 +40,7 @@ export default function Login(){
             console.log("Utilisateur connecté :", data);
 
             alert("Connexion réussie !");
-            navigation.navigate('filComm')
+            navigation.replace('appPrincipal');
 
         } catch (error) {
             console.log("Erreur réseau :", error);
