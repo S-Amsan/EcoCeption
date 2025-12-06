@@ -1,18 +1,20 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import IconAccueil from "../assets/icones/Accueil.svg";
-import IconAccueilOn from "../assets/icones/AccueilOn.svg";
-import IconMission from "../assets/icones/Mission.svg";
-import IconMissionOn from "../assets/icones/MissionOn.svg";
-import IconNotif from "../assets/icones/Notif.svg";
-import IconNotifOn from "../assets/icones/NotifOn.svg";
-import IconBoutique from "../assets/icones/Boutique.svg";
-import IconBoutiqueOn from "../assets/icones/BoutiqueOn.svg";
-import IconParam from "../assets/icones/Param.svg";
-import IconParamOn from "../assets/icones/ParamOn.svg";
-import IconQrCode from "../assets/icones/QrCode.svg";
-import IconQrCodeOn from "../assets/icones/QrCodeOn.svg";
-import IconTrophy from "../assets/icones/Trophee.svg";
-import IconTrophyOn from "../assets/icones/TropheeOn.svg";
+import IconAccueil from "../assets/icones/Navbar/Acceuil.png";
+import IconMission from "../assets/icones/Navbar/Mission.png";
+import IconNotif from "../assets/icones/Navbar/Notification.png";
+import IconBoutique from "../assets/icones/Navbar/Boutique.png";
+import IconParam from "../assets/icones/Navbar/Parametres.png";
+import IconQrCode from "../assets/icones/Navbar/QrCode.png";
+import IconTrophy from "../assets/icones/Navbar/Social.png";
+
+import IconAccueilOn from "../assets/icones/Navbar/AccueilOn.png";
+import IconMissionOn from "../assets/icones/Navbar/MissionOn.png";
+import IconNotifOn from "../assets/icones/Navbar/NotificationOn.png";
+import IconBoutiqueOn from "../assets/icones/Navbar/BoutiqueOn.png";
+import IconParamOn from "../assets/icones/Navbar/ParametresOn.png";
+import IconQrCodeOn from "../assets/icones/Navbar/QrCodeOn.png";
+import IconTrophyOn from "../assets/icones/Navbar/SocialOn.png";
+
 import style from "./styles/StyleNavbar";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -66,7 +68,7 @@ const Navbar = () => {
     ];
 
     return (
-        <LinearGradient colors={['#00DB83', '#0CD8A9']}>
+        <LinearGradient colors={['#1DDE9A', '#1FDDA0']}>
             <View style={style.webview}>
                 <View style={style.titleContainer}>
                     <Image
@@ -85,17 +87,14 @@ const Navbar = () => {
                         return (
                             <TouchableOpacity
                                 key={tab.id}
-                                style={[
-                                    style.tabs,
-                                    isActive && {
-                                        borderRadius: 10,
-                                        marginVertical: 4,
-                                    }
-                                ]}
+                                style={style.tabs}
                                 onPress={() => setActiveTab(tab.id)}
                                 activeOpacity={0.7}
                             >
-                                <IconComponent style={style.Icon} />
+                                <Image
+                                    source={IconComponent}
+                                    style={[style.Icon, !isActive && { opacity: 0.45 }]}
+                                />
                                 <Text style={[
                                     style.IconText,
                                     isActive

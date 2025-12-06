@@ -11,7 +11,7 @@ export default StyleSheet.create({
         backgroundColor: '#00DB83',
         flexDirection: 'column',
         zIndex: 100,
-        width:width*0.15
+        width: width*0.15
     },
 
     titleContainer: {
@@ -59,7 +59,6 @@ export default StyleSheet.create({
     Icon:{
         width:40,
         height:40,
-
     },
 
     IconText: {
