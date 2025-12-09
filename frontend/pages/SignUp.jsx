@@ -39,7 +39,7 @@ export default function SignUp(){
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleSignUp = async () => {
-        const payload = {
+        /*const payload = {
             pseudo,
             email,
             password,
@@ -67,6 +67,8 @@ export default function SignUp(){
         } catch (err) {
             console.error("Erreur réseau:", err);
         }
+         */
+        navigation.navigate('Login');
     };
 
 

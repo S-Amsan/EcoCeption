@@ -20,7 +20,7 @@ export default function Login(){
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async () => {
-        try {
+        /*try {
             console.log("Connexion :", { email, password });
 
             const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -40,12 +40,13 @@ export default function Login(){
             console.log("Utilisateur connecté :", data);
 
             alert("Connexion réussie !");
-            navigation.replace('appPrincipal');
 
         } catch (error) {
             console.log("Erreur réseau :", error);
             alert("Impossible de contacter le serveur");
         }
+         */
+        navigation.replace('parrainage');
     };
 
 
