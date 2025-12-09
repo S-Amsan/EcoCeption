@@ -68,7 +68,7 @@ export default function SignUp(){
             console.error("Erreur réseau:", err);
         }
          */
-        navigation.navigate('Login');
+        navigation.navigate('parrainage');
     };
 
 

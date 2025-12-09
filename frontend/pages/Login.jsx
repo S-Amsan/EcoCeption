@@ -9,11 +9,13 @@ import {
     Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from "expo-router";
+import {useNavigation, useRouter} from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import style from "./styles/loginStyles";
 
 export default function Login(){
+    const router = useRouter();
+
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -46,7 +48,7 @@ export default function Login(){
             alert("Impossible de contacter le serveur");
         }
          */
-        navigation.replace('parrainage');
+        router.replace('/appPrincipal/accueil');
     };
 
 

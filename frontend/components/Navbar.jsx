@@ -1,4 +1,8 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter, usePathname } from "expo-router";
+
 import IconAccueil from "../assets/icones/Navbar/Acceuil.png";
 import IconMission from "../assets/icones/Navbar/Mission.png";
 import IconNotif from "../assets/icones/Navbar/Notification.png";
@@ -16,98 +20,66 @@ import IconQrCodeOn from "../assets/icones/Navbar/QrCodeOn.png";
 import IconTrophyOn from "../assets/icones/Navbar/SocialOn.png";
 
 import style from "./styles/StyleNavbar";
-import React, { useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 
 const Navbar = () => {
-    const [activeTab, setActiveTab] = useState('Accueil');
+    const router = useRouter();
+    const pathname = usePathname();
 
     const tabs = [
-        {
-            id: 'Accueil',
-            Icon: IconAccueil,
-            IconActive: IconAccueilOn,
-            label: 'Accueil'
-        },
-        {
-            id: 'Missions',
-            Icon: IconMission,
-            IconActive: IconMissionOn,
-            label: 'Missions'
-        },
-        {
-            id: 'Social',
-            Icon: IconTrophy,
-            IconActive: IconTrophyOn,
-            label: 'Social'
-        },
-        {
-            id: 'Boutique',
-            Icon: IconBoutique,
-            IconActive: IconBoutiqueOn,
-            label: 'Boutique'
-        },
-        {
-            id: 'QR Code',
-            Icon: IconQrCode,
-            IconActive: IconQrCodeOn,
-            label: 'QR Code'
-        },
-        {
-            id: 'Notifications',
-            Icon: IconNotif,
-            IconActive: IconNotifOn,
-            label: 'Notifications'
-        },
-        {
-            id: 'Paramètre',
-            Icon: IconParam,
-            IconActive: IconParamOn,
-            label: 'Paramètre'
-        },
+        { id: "accueil", label: "Accueil", Icon: IconAccueil, IconActive: IconAccueilOn },
+        { id: "missions", label: "Missions", Icon: IconMission, IconActive: IconMissionOn },
+        { id: "social", label: "Social", Icon: IconTrophy, IconActive: IconTrophyOn },
+        { id: "boutique", label: "Boutique", Icon: IconBoutique, IconActive: IconBoutiqueOn },
+        { id: "qrcode", label: "QR Code", Icon: IconQrCode, IconActive: IconQrCodeOn },
+        { id: "notifications", label: "Notifications", Icon: IconNotif, IconActive: IconNotifOn },
+        { id: "parametres", label: "Paramètres", Icon: IconParam, IconActive: IconParamOn },
     ];
 
     return (
-        <LinearGradient colors={['#1DDE9A', '#1FDDA0']}>
-            <View style={style.webview}>
+        <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+
                 <View style={style.titleContainer}>
                     <Image
-                        source={require('../assets/logo.png')}
+                        source={require("../assets/logo.png")}
                         style={style.logo}
                         resizeMode="contain"
                     />
                     <Text style={style.title}>Ecoception</Text>
                 </View>
 
-                <View style={style.tabsContainer}>
+                <View style={{ alignItems: "center" }}>
                     {tabs.map((tab) => {
-                        const isActive = activeTab === tab.id;
+                        const isActive = pathname === `/appPrincipal/${tab.id}`;
                         const IconComponent = isActive ? tab.IconActive : tab.Icon;
 
                         return (
                             <TouchableOpacity
                                 key={tab.id}
                                 style={style.tabs}
-                                onPress={() => setActiveTab(tab.id)}
                                 activeOpacity={0.7}
+                                onPress={() => router.push(`/appPrincipal/${tab.id}`)}
                             >
                                 <Image
                                     source={IconComponent}
                                     style={[style.Icon, !isActive && { opacity: 0.45 }]}
                                 />
-                                <Text style={[
-                                    style.IconText,
-                                    isActive
-                                        ? { color: '#FFFFFF', fontWeight: '600' }
-                                        : { color: '#107956', fontWeight: '400' }
-                                ]}>
+                                <Text
+                                    style={[
+                                        style.IconText,
+                                        isActive
+                                            ? { color: "#FFFFFF", fontWeight: "600" }
+                                            : { color: "#107956", fontWeight: "400" },
+                                    ]}
+                                >
                                     {tab.label}
                                 </Text>
                             </TouchableOpacity>
                         );
                     })}
                 </View>
-            </View>
+
+            </ScrollView>
         </LinearGradient>
     );
 };

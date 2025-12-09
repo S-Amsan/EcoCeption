@@ -1,42 +1,39 @@
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from "react-native";
-import Navbar from "../../components/Navbar";
 import { Ionicons } from "@expo/vector-icons";
 import {LinearGradient} from "expo-linear-gradient";
+import Header from "../../components/Header"
 
-export default function Index() {
+export default function Accueil() {
     return (
         <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-
-            {/* Navbar fixe */}
-            <Navbar />
-
+            <Header title="Accueil" />
             <View style={styles.content}>
 
                 <LinearGradient colors={['#0CD8A9', '#00DB83']}>
-                <View style={styles.header}>
-                    <View style={styles.searchBox}>
-                        <Ionicons name="search" size={20} color="#777" />
-                        <TextInput
-                            placeholder="Rechercher un utilisateur"
-                            style={styles.input}
-                            placeholderTextColor="#777"
-                        />
+                    <View style={styles.header}>
+                        <View style={styles.searchBox}>
+                            <Ionicons name="search" size={20} color="#777" />
+                            <TextInput
+                                placeholder="Rechercher un utilisateur"
+                                style={styles.input}
+                                placeholderTextColor="#777"
+                            />
+                        </View>
+
+
+                        <View style={styles.filtersContainer}>
+                            <TouchableOpacity style={styles.filterBtn}>
+                                <Text style={styles.filterText}>Récent</Text>
+                                <Ionicons name="chevron-down" size={18} color="#000" />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.filterBtn}>
+                                <Text style={styles.filterText}>France</Text>
+                                <Ionicons name="chevron-down" size={18} color="#000" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-
-
-                    <View style={styles.filtersContainer}>
-                        <TouchableOpacity style={styles.filterBtn}>
-                            <Text style={styles.filterText}>Récent</Text>
-                            <Ionicons name="chevron-down" size={18} color="#000" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.filterBtn}>
-                            <Text style={styles.filterText}>France</Text>
-                            <Ionicons name="chevron-down" size={18} color="#000" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                    </LinearGradient>
+                </LinearGradient>
 
                 {/* Carte utilisateur */}
                 <View style={styles.card}>
@@ -56,7 +53,7 @@ export default function Index() {
 
                     <Image
                         source={{
-                        uri: "https://i.pravatar.cc/100?img=5"
+                            uri: "https://i.pravatar.cc/100?img=5"
                         }}
                         style={styles.postImage}
                     />
@@ -71,7 +68,6 @@ export default function Index() {
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </View>
         </View>
     );
@@ -79,7 +75,6 @@ export default function Index() {
 
 const styles = StyleSheet.create({
     content: {
-        marginLeft: "15%",
         flex: 1
     },
     header: {
