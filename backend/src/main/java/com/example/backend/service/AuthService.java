@@ -27,7 +27,7 @@ public class AuthService {
         user.setPhone(request.getPhone());
         user.setActif(true);
 
-        return userRepository.save(user);
+        return new UserResponse(userRepository.save(user));
     }
 
     public UserResponse login(LoginRequest request) {
