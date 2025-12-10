@@ -1,9 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.http.LoginRequest;
-import com.example.backend.http.SignUpRequest;
-import com.example.backend.http.UserResponse;
-import com.example.backend.model.User;
+import com.example.backend.model.http.req.*;
+import com.example.backend.model.http.res.*;
 import com.example.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public User register(@Valid @RequestBody SignUpRequest request) {
+    public UserResponse register(@Valid @RequestBody SignUpRequest request) {
         return authService.register(request);
     }
 
