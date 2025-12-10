@@ -1,9 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.SignUpRequest;
-import com.example.backend.dto.UserResponse;
 import com.example.backend.model.User;
+import com.example.backend.model.http.req.*;
+import com.example.backend.model.http.res.*;
 import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public User register(SignUpRequest request) {
+    public UserResponse register(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email déjà utilisé");
         }
@@ -32,9 +31,11 @@ public class AuthService {
     }
 
     public UserResponse login(LoginRequest request) {
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email ou mot de passe incorrect"));
+        User user = userRepository
+            .findByEmail(request.getEmail())
+            .orElseThrow(() ->
+                new RuntimeException("Email ou mot de passe incorrect")
+            );
 
         if (!user.getPassword().equals(request.getPassword())) {
             throw new RuntimeException("Email ou mot de passe incorrect");

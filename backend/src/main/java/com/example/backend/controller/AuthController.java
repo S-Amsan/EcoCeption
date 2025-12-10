@@ -1,13 +1,11 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.SignUpRequest;
-import com.example.backend.dto.UserResponse;
+import com.example.backend.http.LoginRequest;
+import com.example.backend.http.SignUpRequest;
+import com.example.backend.http.UserResponse;
 import com.example.backend.model.User;
 import com.example.backend.service.AuthService;
-
 import jakarta.validation.Valid;
-
 import org.springframework.web.bind.annotation.*;
 
 @RestController
