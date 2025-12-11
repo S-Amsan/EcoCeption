@@ -36,7 +36,7 @@ const Navbar = () => {
     ];
 
     return (
-        <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={{ flex: 1 }}>
+        <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={{ height: "100%", width: "100%" }}>
             <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
 
                 <View style={style.titleContainer}>

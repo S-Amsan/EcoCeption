@@ -1,8 +1,24 @@
 import { Drawer } from "expo-router/drawer";
 import Navbar from "../../components/Navbar";
+import {Platform} from "react-native";
+import {Stack} from "expo-router";
 
 export default function Layout() {
+
     return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="accueil" />
+            <Stack.Screen name="missions" />
+            <Stack.Screen name="social"/>
+            <Stack.Screen name="boutique" />
+            <Stack.Screen name="qrcode" />
+            <Stack.Screen name="notifications"/>
+            <Stack.Screen name="parametres"/>
+        </Stack>
+    )
+
+    /*
+    (
         <Drawer
             drawerContent={(props) => <Navbar {...props}/>}
             screenOptions={{
@@ -30,4 +46,5 @@ export default function Layout() {
             <Drawer.Screen name="parametres" />
         </Drawer>
     );
+     */
 }

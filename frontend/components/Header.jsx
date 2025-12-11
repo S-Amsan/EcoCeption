@@ -20,13 +20,14 @@ export default function Header({ title }) {
                 width: "100%",
             }}>
 
-                {/* Menu bouton */}
+                {/* Menu bouton
                 <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <Image
                         source={require("../assets/menu.png")}
                         style={{ width: 26, height: 26, tintColor: "#fff" }}
                     />
                 </TouchableOpacity>
+                */}
 
                 {/* Title */}
                 <Text style={{
