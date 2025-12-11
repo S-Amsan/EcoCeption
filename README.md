@@ -1,16 +1,27 @@
-# SAE-S5.01
-
-Equipe Green Nation
+# EcoCeption
+**SAE-S5.01** <br>
+Équipe Green Nation <br>
 Amsan Bohdan Rayan Shihong Souleymane (Groupe 301)
 
-EcoCeption
+## Configuration et Lancement du projet
 
-Utiliser "npm install" pour les nodes modules
+> **Pour les commandes ci-dessous, veuillez utiliser un terminal.**
+<br>
 
-Utliser "npm start" pour lancer le projet
+Dans le dossier `frontend`, installez les dépendances :
 
-Utliser "npm run web" pour lancer le projet sur web
-Utliser "npm run ios" pour lancer le projet sur ios
-Utliser "npm run android" pour lancer le projet sur android
 
-Utiliser "./mvnw spring-boot:run" pour lancer le backend
+```
+npm install
+```
+Pour démarrer le projet :
+```
+npm start
+```
+
+Dans le dossier `backend`, lancez le serveur Spring Boot avec la commande :
+
+```
+mvnw spring-boot:run
+```
+
