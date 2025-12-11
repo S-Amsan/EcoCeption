@@ -1,12 +1,12 @@
 import {ScrollView, Text} from "react-native";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 
-export default function Boutique(){
+export default function Index(){
     return(
         <ScrollView>
             <Header title={"Boutique"}/>
             <Text>
-                C La boutique ici
+                Caca prout
             </Text>
         </ScrollView>
     );
