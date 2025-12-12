@@ -3,6 +3,10 @@ import {Dimensions, Platform, StyleSheet} from "react-native";
 const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
+    container: {
+      width: "100%",
+      height: "100%",
+    },
     webview: {
         position: "fixed",
         left: 0,
@@ -19,6 +23,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         marginBottom: height * 0.05,
         marginTop: height * 0.02,
+        marginRight: 60,
         alignItems:'center'
     },
 

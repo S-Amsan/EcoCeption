@@ -21,13 +21,15 @@ export default function Accueil() {
     return (
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
             {
-                Platform.OS === 'web' &&
-                <View style={{ width: "20%" }}>
+                Platform.OS === 'web' ?
+                    <View style={{ width: "20%" }}>
+                        <Navbar/>
+                    </View>
+                    :
                     <Navbar/>
-                </View>
             }
             <View style={{ flex: 1}}>
-                <Header title="Accueil" />
+                <Header />
                 <View style={{flex: 1,
                     paddingHorizontal: 15,
                     paddingTop: 10,}}>

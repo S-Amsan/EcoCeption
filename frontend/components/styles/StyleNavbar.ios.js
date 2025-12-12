@@ -1,20 +1,23 @@
-import {Dimensions, Platform, StyleSheet} from "react-native";
+import { StyleSheet} from "react-native";
 
-const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
-    webview :{
-        position: "fixed",
-        left: 0,
-        top: 0,
-        height: '100%',
-        width: 200,
-        backgroundColor: '#00DB83',
-        paddingVertical: 20,
-        paddingHorizontal: 16,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        zIndex: 100,
+
+    container: {
+        flex: 1,
+        flexDirection: 'row',
+        width: "80%",
+        height: 58,
+        zIndex : 100,
+        backgroundColor: "#04DA8E",
+        alignItems: "center",
+        justifyContent: "space-around",
+        paddingHorizontal : 10,
+        opacity: 0.9,
+        borderRadius: 30,
+        position: "absolute",
+        bottom: 35,
+        left: "50%",
+        transform: [{ translateX: "-50%" }],
     }
 });

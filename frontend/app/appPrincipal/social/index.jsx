@@ -10,13 +10,15 @@ export default function Index(){
     return(
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
             {
-                Platform.OS === 'web' &&
-                <View style={{ width: "20%" }}>
+                Platform.OS === 'web' ?
+                    <View style={{ width: "20%" }}>
+                        <Navbar/>
+                    </View>
+                    :
                     <Navbar/>
-                </View>
             }
             <View style={{ flex: 1}}>
-                <Header title="Social" />
+                <Header/>
 
                 <ScrollView>
                     {Platform.OS !== "web" && <View><Text>Profil</Text></View>}

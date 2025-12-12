@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, Image, ScrollView, Platform, Pressable} from 'react-native';
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, usePathname } from "expo-router";
@@ -35,53 +35,78 @@ const Navbar = () => {
         { id: "parametres", label: "Paramètres", Icon: IconParam, IconActive: IconParamOn },
     ];
 
-    return (
-        <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={{ height: "100%", width: "100%" }}>
-            <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+    if (Platform.OS === "web") {
+        return (
+            <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={style.container}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
 
-                <View style={style.titleContainer}>
-                    <Image
-                        source={require("../assets/logo.png")}
-                        style={style.logo}
-                        resizeMode="contain"
-                    />
-                    <Text style={style.title}>Ecoception</Text>
-                </View>
+                    <View style={style.titleContainer}>
+                        <Image
+                            source={require("../assets/logo.png")}
+                            style={style.logo}
+                            resizeMode="contain"
+                        />
+                        <Text style={style.title}>Ecoception</Text>
+                    </View>
 
-                <View style={{ alignItems: "center" }}>
-                    {tabs.map((tab) => {
-                        const isActive = pathname === `/appPrincipal/${tab.id}`;
-                        const IconComponent = isActive ? tab.IconActive : tab.Icon;
+                    <View style={{ alignItems: "center", marginLeft: 35 }}>
+                        {tabs.map((tab) => {
+                            const isActive = pathname === `/appPrincipal/${tab.id}`;
+                            const IconComponent = isActive ? tab.IconActive : tab.Icon;
 
-                        return (
-                            <TouchableOpacity
-                                key={tab.id}
-                                style={style.tabs}
-                                activeOpacity={0.7}
-                                onPress={() => router.push(`/appPrincipal/${tab.id}`)}
-                            >
-                                <Image
-                                    source={IconComponent}
-                                    style={[style.Icon, !isActive && { opacity: 0.45 }]}
-                                />
-                                <Text
-                                    style={[
-                                        style.IconText,
-                                        isActive
-                                            ? { color: "#FFFFFF", fontWeight: "600" }
-                                            : { color: "#107956", fontWeight: "400" },
-                                    ]}
+                            return (
+                                <TouchableOpacity
+                                    key={tab.id}
+                                    style={style.tabs}
+                                    activeOpacity={0.7}
+                                    onPress={() => router.push(`./appPrincipal/${tab.id}`)}
                                 >
-                                    {tab.label}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
+                                    <Image
+                                        source={IconComponent}
+                                        style={[style.Icon, !isActive && { opacity: 0.45 }]}
+                                    />
+                                    <Text
+                                        style={[
+                                            style.IconText,
+                                            isActive
+                                                ? { color: "#FFFFFF", fontWeight: "600" }
+                                                : { color: "#107956", fontWeight: "400" },
+                                        ]}
+                                    >
+                                        {tab.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
 
-            </ScrollView>
-        </LinearGradient>
-    );
+                </ScrollView>
+            </LinearGradient>
+        );
+    }else{
+        return (
+            <View style={style.container}>
+                {tabs.slice(0,4).map((tab) => {
+                    const isActive = pathname === `/appPrincipal/${tab.id}`;
+                    const IconComponent = isActive ? tab.IconActive : tab.Icon;
+                    return (
+                        <Pressable
+                            key={tab.id}
+                            style={[!isActive && {opacity : 0.45},{alignItems: "center", justifyContent: "center"}]}
+                            onPress={() => !isActive && router.push(`/appPrincipal/${tab.id}`)}
+                        >
+                            <Image
+                                source={IconComponent}
+                                style={{ width: 25, height: 25 }}
+                            />
+                            <Text style={[{fontSize : 11}, isActive && {color : "#FFFFFF"}]}>{tab.label}</Text>
+                        </Pressable>
+                    )
+                })}
+            </View>
+        );
+    }
+
 };
 
 export default Navbar;
