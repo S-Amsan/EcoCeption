@@ -3,15 +3,16 @@ import Header from "../../../components/Header";
 import { useRouter } from "expo-router";
 import Navbar from "../../../components/Navbar";
 import React from "react";
+import styles from "./styles/styles";
 
-export default function Index(){
+export default function Social(){
     const router = useRouter();
 
     return(
-        <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
+        <View style={styles.container}>
             {
                 Platform.OS === 'web' ?
-                    <View style={{ width: "20%" }}>
+                    <View style={{ width: "17%" }}>
                         <Navbar/>
                     </View>
                     :

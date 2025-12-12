@@ -11,7 +11,7 @@ export default function Evenements() {
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
             {
                 Platform.OS === 'web' &&
-                <View style={{ width: "20%" }}>
+                <View style={{ width: "17%" }}>
                     <Navbar/>
                 </View>
             }

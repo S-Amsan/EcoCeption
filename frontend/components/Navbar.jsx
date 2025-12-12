@@ -46,10 +46,10 @@ const Navbar = () => {
                             style={style.logo}
                             resizeMode="contain"
                         />
-                        <Text style={style.title}>Ecoception</Text>
+                        <Text style={style.title}>EcoCeption</Text>
                     </View>
 
-                    <View style={{ alignItems: "center", marginLeft: 35 }}>
+                    <View style={style.tabsContainer}>
                         {tabs.map((tab) => {
                             const isActive = pathname === `/appPrincipal/${tab.id}`;
                             const IconComponent = isActive ? tab.IconActive : tab.Icon;

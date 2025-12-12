@@ -1,4 +1,4 @@
-import {Dimensions, Platform, StyleSheet} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,28 +15,27 @@ export default StyleSheet.create({
         backgroundColor: '#00DB83',
         flexDirection: 'column',
         zIndex: 100,
-        width: width*0.15
     },
 
     titleContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        marginLeft : 20,
         marginBottom: height * 0.05,
         marginTop: height * 0.02,
-        marginRight: 60,
         alignItems:'center'
     },
 
     logo: {
-        width: 80,
-        height: 80,
+        width: 60,
+        height: 60,
 
     },
 
     title: {
         color: '#FFFFFF',
-        fontSize: 25,
-        fontWeight: 'bold',
+        fontSize: 32,
+        fontWeight: 600,
         textShadowColor: 'rgba(0, 0, 0, 0.1)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
@@ -45,8 +44,9 @@ export default StyleSheet.create({
 
     tabsContainer: {
         alignItems: 'center',
+        alignSelf: 'center',
         height: '100%',
-        padding:10
+        padding : 10,
     },
 
     tabs: {
@@ -62,14 +62,14 @@ export default StyleSheet.create({
     },
 
     Icon:{
-        width:40,
-        height:40,
+        width:35,
+        height:35,
     },
 
     IconText: {
-        fontSize: 22,
-        fontWeight: '400',
-        marginLeft: 15,
+        fontSize: 24,
+        fontWeight: "regular",
+        marginLeft: 25,
 
     }
 });
