@@ -7,6 +7,11 @@ import styles from "./styles/styles";
 
 export default function Social(){
     const router = useRouter();
+    const userDetails = [
+        {type : "points", valeur : 4501124},
+        {type : "trophees", valeur : 654684},
+        {type : "flammes", valeur : 121}
+    ] //TODO récupérer de la BDD les vrai valeur
 
     return(
         <View style={styles.container}>
@@ -19,7 +24,7 @@ export default function Social(){
                     <Navbar/>
             }
             <View style={{ flex: 1}}>
-                <Header/>
+                <Header userDetails={userDetails}/>
 
                 <ScrollView>
                     {Platform.OS !== "web" && <View><Text>Profil</Text></View>}

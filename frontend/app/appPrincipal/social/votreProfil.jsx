@@ -4,7 +4,7 @@ import style from "./styles/styles";
 import Navbar from "../../../components/Navbar";
 import Header from "../../../components/Header";
 
-export default function VotreSerie(){
+export default function Profil(){
     const [onglets, setOnglets] = React.useState([
         {id: "profil",label : "Votre profil", page : "votreProfil"},
         {id: "flamme",label : "Votre Série", page : "votreSerie"},
@@ -15,9 +15,9 @@ export default function VotreSerie(){
         <View style={style.container}>
             {
                 Platform.OS === 'web' &&
-                <View style={{ width: "15%" }}>
-                    <Navbar/>
-                </View>
+                    <View style={{ width: "15%" }}>
+                        <Navbar/>
+                    </View>
             }
             <View style={{ flex: 1}}>
                 <Header onglets={onglets} setOnglets={setOnglets} />

@@ -6,18 +6,23 @@ import React from "react";
 
 export default function Concours(){
     const router = useRouter();
+    const userDetails = [
+        {type : "points", valeur : 4501124},
+        {type : "trophees", valeur : 654684},
+        {type : "flammes", valeur : 121}
+    ] //TODO récupérer de la BDD les vrai valeur
 
     return(
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
             {
                 Platform.OS === 'web' &&
-                <View style={{ width: "17%" }}>
+                <View style={{ width: "15%" }}>
                     <Navbar/>
                 </View>
             }
 
             <View style={{ flex: 1}}>
-                <Header/>
+                <Header userDetails={userDetails}/>
                 <ScrollView>
                     <View>
                         <Text>

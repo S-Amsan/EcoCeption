@@ -1,100 +1,188 @@
-import {View, Text, TouchableOpacity, Image, TextInput} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import {View, Text, TouchableOpacity, TextInput, Image, Platform} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 
-export default function Header({ title }) {
-    const navigation = useNavigation();
+import styles from "./styles/stylesHeader";
+import React, {useState} from "react";
+import {usePathname, useRouter} from "expo-router";
 
-    return (
-        <View style={{
-            backgroundColor: "#1DDE9A",
-            paddingVertical: 10,
-            paddingHorizontal: 15,
-            elevation: 4,
-        }}>
+import point from "../assets/icones/point.png";
+import trophee from "../assets/icones/trophee.png";
+import flamme from "../assets/icones/flamme.png";
 
-            {/* --- FULL ROW : MENU + TITRE + SEARCH + FILTERS --- */}
-            <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                width: "100%",
-            }}>
+export default function Header({
+    recherche,setRecherche, //Barre de recherche (web)
+    filtres, setFiltres, // filtre de la barre de recherche (web)
+    onglets, // onglet (web)
+    titre, // titre dans le header (mobile)
+    boutonRetour = false, // bouton retour (mobile)
+    boutonParametres = false, // bouton parametre (mobile)
+    userDetails, // info de l'utilisateur (web et mobile)
+    }) {
+    const pathname = usePathname();
+    const router = useRouter();
 
-                {/* Menu bouton
-                <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                    <Image
-                        source={require("../assets/menu.png")}
-                        style={{ width: 26, height: 26, tintColor: "#fff" }}
+    // Filtre actuellement ouvert
+    const [filtreActif, setFiltreActif] = useState(null);
+
+    const handleSelect = (idFiltre, option) => {
+        setFiltres(prev =>
+            prev.map(f =>
+                f.id === idFiltre ? {...f, select: option} : f
+            )
+        );
+        setFiltreActif(null);
+    };
+
+    const formatNombreCourt  = (n) => {
+        return n >= 1e9 ? (n / 1e9).toFixed(1).replace('.0', '') + 'B'
+            : n >= 1e6 ? (n / 1e6).toFixed(1).replace('.0', '') + 'M'
+                : n >= 1e3 ? (n / 1e3).toFixed(1).replace('.0', '') + 'k'
+                    : n.toString();
+    };
+
+    const DETAILS_CONFIG = {
+        flammes: {
+            icon: flamme,
+            color: "#fd411d",
+            route: "/appPrincipal/social/votreSerie",
+        },
+        trophees: {
+            icon: trophee,
+            color: "#E7A2F0",
+            route: "/appPrincipal/social/classement",
+        },
+        default: {
+            icon: point,
+            color: "#278674",
+            route: "/appPrincipal/boutique",
+        },
+    };
+
+    const getDetailConfig = (type) => DETAILS_CONFIG[type] ?? DETAILS_CONFIG.default;
+
+    const redirect = (type) => {
+        router.push(getDetailConfig(type).route);
+    };
+
+    if (Platform.OS === "web"){
+        return (
+            <>
+                {/* OVERLAY : clique extérieur */}
+                {filtreActif && (
+                    <TouchableOpacity
+                        style={styles.overlay}
+                        activeOpacity={1}
+                        onPress={() => setFiltreActif(null)}
                     />
-                </TouchableOpacity>
-                */}
+                )}
+                <View style={styles.container}>
 
-                {/* Title */}
-                <Text style={{
-                    marginLeft: 12,
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: "#fff",
-                }}>
-                    {title}
-                </Text>
+                    <View style={{flexDirection: "row", alignItems: "center", width: "100%"}}>
+                        <View style={styles.sousContainer}>
 
-                {/* CONTAINER SEARCH + FILTERS */}
-                <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flex: 1,
-                    marginLeft: 15,
-                }}>
+                            {/* BARRE DE RECHERCHE */}
+                            {setRecherche && (
+                                <View style={styles.barreDeRecherche}>
+                                    <Ionicons name="search" size={18} color="#777" />
+                                    <TextInput
+                                        placeholder="Rechercher"
+                                        placeholderTextColor="#777"
+                                        style={styles.rechercheInput}
+                                        value={recherche}
+                                        onChangeText={setRecherche}
+                                    />
+                                </View>
+                            )}
 
-                    {/* SEARCH */}
-                    <View style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: "#fff",
-                        borderRadius: 12,
-                        paddingHorizontal: 12,
-                        height: 40,
-                        flex: 1,
-                        marginRight: 10,
-                        minWidth: 150,
-                    }}>
-                        <Ionicons name="search" size={18} color="#777" />
-                        <TextInput
-                            placeholder="Rechercher"
-                            placeholderTextColor="#777"
-                            style={{ marginLeft: 6, flex: 1, outlineStyle: "none", }}
-                        />
+                            {/* FILTRES */}
+                            {filtres && (
+                                <View style={styles.filtresContainer}>
+                                    {filtres.map(filtre => (
+                                        <View key={filtre.id} style={styles.filtreContainer}>
+
+                                            {/* BOUTON DU FILTRE */}
+                                            <TouchableOpacity
+                                                style={styles.filtre}
+                                                onPress={() =>
+                                                    setFiltreActif(
+                                                        filtreActif === filtre.id ? null : filtre.id
+                                                    )
+                                                }
+                                            >
+                                                <Text>{filtre.select}</Text>
+                                                <Ionicons name="chevron-down" size={16} color="#000" />
+                                            </TouchableOpacity>
+
+                                            {/* MENU DÉROULANT */}
+                                            {filtreActif === filtre.id && (
+                                                <View style={styles.menuDeroulant}>
+                                                    {filtre.options.map(option => (
+                                                        <TouchableOpacity
+                                                            key={option}
+                                                            style={styles.option}
+                                                            onPress={() => handleSelect(filtre.id, option)}
+                                                        >
+                                                            <Text style={option === filtre.select && styles.optionSelect}>{option}</Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            )}
+
+                                        </View>
+                                    ))}
+                                </View>
+                            )}
+
+                            {/* ONGLETS */}
+                            {onglets && (
+                                <View style={styles.ongletsContainer}>
+                                    {onglets.map(onglet => {
+                                        const isActive = pathname === `/appPrincipal/social/${onglet.page}`;
+
+                                        return (
+                                            <TouchableOpacity
+                                                key={onglet.id}
+                                                style={styles.ongletContainer}
+                                                onPress={() => !isActive && router.push(`/appPrincipal/social/${onglet.page}`)
+                                                }>
+                                                <Text  style={styles.ongletLabel}>{onglet.label}</Text>
+                                                {isActive && <View style={styles.ongletUnderline}/>}
+                                            </TouchableOpacity>
+                                        )})}
+                                </View>
+                            )}
+
+                            {userDetails && (
+                                <View style={styles.detailsContainer}>
+                                    {userDetails.map(detail => {
+                                        const config = getDetailConfig(detail.type);
+
+                                        return (
+                                            <TouchableOpacity
+                                                key={detail.type}
+                                                style={styles.detailContainer}
+                                                onPress={() => redirect(detail.type)}
+                                            >
+                                                <Image
+                                                    source={config.icon}
+                                                    style={{width: 25, height: 25}}
+                                                />
+                                                <Text
+                                                    style={[styles.detailText, { color: config.color }]}>{formatNombreCourt(detail.valeur)}</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    })}
+                                </View>
+                            )}
+                        </View>
                     </View>
-
-                    {/* FILTER 1 */}
-                    <TouchableOpacity style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: "#fff",
-                        paddingHorizontal: 12,
-                        height: 40,
-                        borderRadius: 12,
-                        marginRight: 10,
-                    }}>
-                        <Text>Récent</Text>
-                        <Ionicons name="chevron-down" size={16} color="#000" />
-                    </TouchableOpacity>
-
-                    {/* FILTER 2 */}
-                    <TouchableOpacity style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: "#fff",
-                        paddingHorizontal: 12,
-                        height: 40,
-                        borderRadius: 12,
-                    }}>
-                        <Text>France</Text>
-                        <Ionicons name="chevron-down" size={16} color="#000" />
-                    </TouchableOpacity>
                 </View>
-            </View>
-        </View>
-    );
+            </>
+        );
+    }
+    return <View></View>
+
 }
+
+
+

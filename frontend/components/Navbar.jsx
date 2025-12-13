@@ -136,23 +136,23 @@ export default function Navbar() {
 
     // ---------------- MOBILE ----------------
     return (
-        <View style={style.containerMobile}>
-            {tabs.slice(0, 4).map((tab) => {
+        <View style={style.container}>
+            {tabs.slice(0,4).map((tab) => {
                 const isActive = pathname === `/appPrincipal/${tab.id}`;
                 const IconComponent = isActive ? tab.IconActive : tab.Icon;
-
                 return (
                     <Pressable
                         key={tab.id}
-                        style={[{ alignItems: "center" }, !isActive && { opacity: 0.45 }]}
+                        style={[!isActive && {opacity : 0.45},{alignItems: "center", justifyContent: "center"}]}
                         onPress={() => !isActive && router.push(`/appPrincipal/${tab.id}`)}
                     >
-                        <Image source={IconComponent} style={{ width: 25, height: 25 }} />
-                        <Text style={[{ fontSize: 11 }, isActive && { color: "#FFFFFF" }]}>
-                            {tab.label}
-                        </Text>
+                        <Image
+                            source={IconComponent}
+                            style={{ width: 25, height: 25 }}
+                        />
+                        <Text style={[{fontSize : 11}, isActive && {color : "#FFFFFF"}]}>{tab.label}</Text>
                     </Pressable>
-                );
+                )
             })}
         </View>
     );

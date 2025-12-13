@@ -46,7 +46,7 @@ export default StyleSheet.create({
 
     cameraIcon: {
         width: 50,
-        height: 50,
+        height: 45,
         tintColor: "#7A7A7A",
     },
 
