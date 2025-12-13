@@ -1,17 +1,15 @@
-
 import React from "react";
 import {StyleSheet, View, Text, TouchableOpacity} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {useNavigation, usePathname, useRouter} from "expo-router";
+import {usePathname, useRouter} from "expo-router";
 
 
 export default function TabNavbar({
     onglets,
-    pageBack
+    pageBack // Mettre la page (appPrincipal) vers la quelle le bouton redirige (exemple : "social" -> redirige vers /appPrincipal/social
     }){
     const pathname = usePathname();
     const router = useRouter();
-    const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
@@ -74,6 +72,5 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "medium",
         borderRadius: 13,
-
     }
 })
