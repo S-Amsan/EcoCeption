@@ -3,11 +3,16 @@ import {Ionicons} from "@expo/vector-icons";
 
 import styles from "./styles/stylesHeader";
 import React, {useState} from "react";
-import {usePathname, useRouter} from "expo-router";
+import {useNavigation, usePathname, useRouter} from "expo-router";
 
 import point from "../assets/icones/point.png";
 import trophee from "../assets/icones/trophee.png";
 import flamme from "../assets/icones/flamme.png";
+
+import parametres from "../assets/icones/Header/parametres.png";
+import notificationPastille from "../assets/icones/Header/notificationPastille.png";
+import notificationSansPastille from "../assets/icones/Header/notificationSansPastille.png";
+import DEFAULT_PICTURE from "../assets/icones/Header/default_picture.png";
 
 export default function Header({
     recherche,setRecherche, //Barre de recherche (web)
@@ -16,10 +21,13 @@ export default function Header({
     titre, // titre dans le header (mobile)
     boutonRetour = false, // bouton retour (mobile)
     boutonParametres = false, // bouton parametre (mobile)
-    userDetails, // info de l'utilisateur (web et mobile)
+    boutonNotification = false, // bouton notification (mobile)
+    userProfil = false, // photo de profil de l'utilisateur (mobile)
+    userDetails = false, // info de l'utilisateur (web et mobile)
     }) {
     const pathname = usePathname();
     const router = useRouter();
+    const navigation = useNavigation();
 
     // Filtre actuellement ouvert
     const [filtreActif, setFiltreActif] = useState(null);
@@ -33,12 +41,19 @@ export default function Header({
         setFiltreActif(null);
     };
 
+    // Affichage des détails :
     const formatNombreCourt  = (n) => {
         return n >= 1e9 ? (n / 1e9).toFixed(1).replace('.0', '') + 'B'
             : n >= 1e6 ? (n / 1e6).toFixed(1).replace('.0', '') + 'M'
                 : n >= 1e3 ? (n / 1e3).toFixed(1).replace('.0', '') + 'k'
                     : n.toString();
     };
+
+    const userDetailsData = [
+        {type : "points", valeur : 4501124},
+        {type : "trophees", valeur : 654684},
+        {type : "flammes", valeur : 121}
+    ] //TODO récupérer de la BDD les vrai valeur
 
     const DETAILS_CONFIG = {
         flammes: {
@@ -63,6 +78,27 @@ export default function Header({
     const redirect = (type) => {
         router.push(getDetailConfig(type).route);
     };
+
+    // Photo de profil
+    const getPhotoDeProfil = () => {
+        // TODO Récupérer dans la bd la photo
+
+
+        return DEFAULT_PICTURE; // Par défault
+    }
+
+    // Notification
+    const getNotificationIcon = () => {
+        // TODO Récupérer dans la bd si il y'a des notif
+
+        /* exemple :
+           if (notifNonLue > 1) {
+              return notificationPastille;
+           }
+        */
+
+        return notificationSansPastille;
+    }
 
     if (Platform.OS === "web"){
         return (
@@ -152,9 +188,10 @@ export default function Header({
                                 </View>
                             )}
 
+                            {/* USER DETAILS */}
                             {userDetails && (
                                 <View style={styles.detailsContainer}>
-                                    {userDetails.map(detail => {
+                                    {userDetailsData.map(detail => {
                                         const config = getDetailConfig(detail.type);
 
                                         return (
@@ -165,10 +202,9 @@ export default function Header({
                                             >
                                                 <Image
                                                     source={config.icon}
-                                                    style={{width: 25, height: 25}}
+                                                    style={{width: 22, height: 22}}
                                                 />
-                                                <Text
-                                                    style={[styles.detailText, { color: config.color }]}>{formatNombreCourt(detail.valeur)}</Text>
+                                                <Text style={[styles.detailText, { color: config.color }]}>{formatNombreCourt(detail.valeur)}</Text>
                                             </TouchableOpacity>
                                         )
                                     })}
@@ -180,7 +216,78 @@ export default function Header({
             </>
         );
     }
-    return <View></View>
+    return <View style={styles.container}>
+        {/* ---- GAUCHE ----- */}
+        {/* BOUTON RETOUR */}
+        {boutonRetour && (
+            <TouchableOpacity style={styles.boutonRetourContainer} onPress={() => navigation.goBack()}>
+                <Ionicons name="chevron-back" size={25} color="#06DA95" />
+                <Text style={styles.boutonRetourText}>Retour</Text>
+            </TouchableOpacity>
+        )}
+
+        {/* BOUTON NOTIFICATION */}
+        {boutonNotification && (
+            <TouchableOpacity style={styles.boutonNotificationContainer} onPress={() => alert("rediriger vers Notification, changer quand la page sera crée, remplacer par : router.push(`/appPrincipal/notification`)")}>
+                <Image
+                    source={getNotificationIcon()}
+                    style={{width: 30, height: 34}}
+                />
+            </TouchableOpacity>
+        )}
+
+        {/* ---- MILIEU ----- */}
+        {/* USER DETAILS */}
+        {userDetails && (
+            <View style={styles.detailsContainer}>
+                {userDetailsData.map(detail => {
+                    const config = getDetailConfig(detail.type);
+
+                    return (
+                        <TouchableOpacity
+                            key={detail.type}
+                            style={styles.detailContainer}
+                            onPress={() => redirect(detail.type)}
+                        >
+                            <Image
+                                source={config.icon}
+                                style={{width: 18, height: 18}}
+                            />
+                            <Text style={[styles.detailText, { color: config.color }]}>{formatNombreCourt(detail.valeur)}</Text>
+                        </TouchableOpacity>
+                    )
+                })}
+            </View>
+        )}
+
+        {/* TITRE */}
+        {titre && (
+            <View style={styles.titreContainer}>
+                <Text style={styles.titre}>{titre}</Text>
+            </View>
+        )}
+
+        {/* ---- DROITE ----- */}
+        {/* BOUTON PARAMETRES*/}
+        {boutonParametres && (
+            <TouchableOpacity style={styles.boutonParametresContainer} onPress={() => alert("rediriger vers Parametres, changer quand la page sera crée, remplacer par : router.push(`/appPrincipal/parametres`)")}>
+                <Image
+                    source={parametres}
+                    style={{width: 26.5, height: 25}}
+                />
+            </TouchableOpacity>
+        )}
+
+        {/* PHOTO DE PROFIL*/}
+        {userProfil && (
+            <TouchableOpacity style={styles.photoProfilContainer} onPress={() => router.push(`/appPrincipal/social/votreProfil`)}>
+                <Image
+                    source={getPhotoDeProfil()}
+                    style={styles.photoProfil}
+                />
+            </TouchableOpacity>
+        )}
+    </View>
 
 }
 

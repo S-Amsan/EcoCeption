@@ -6,11 +6,6 @@ import React from "react";
 
 export default function Classement(){
     const router = useRouter();
-    const userDetails = [
-        {type : "points", valeur : 4501124},
-        {type : "trophees", valeur : 654684},
-        {type : "flammes", valeur : 121}
-    ] //TODO récupérer de la BDD les vrai valeur
 
     return(
 
@@ -23,7 +18,7 @@ export default function Classement(){
             }
 
             <View style={{ flex: 1}}>
-                <Header userDetails={userDetails}/>
+                <Header userDetails={true}/>
                 <ScrollView>
                     <View>
                         <Text>

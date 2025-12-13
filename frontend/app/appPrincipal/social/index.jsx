@@ -7,11 +7,6 @@ import styles from "./styles/styles";
 
 export default function Social(){
     const router = useRouter();
-    const userDetails = [
-        {type : "points", valeur : 4501124},
-        {type : "trophees", valeur : 654684},
-        {type : "flammes", valeur : 121}
-    ] //TODO récupérer de la BDD les vrai valeur
 
     return(
         <View style={styles.container}>
@@ -24,10 +19,14 @@ export default function Social(){
                     <Navbar/>
             }
             <View style={{ flex: 1}}>
-                <Header userDetails={userDetails}/>
+                <Header boutonNotification={true} userDetails={true} userProfil={true}/>
 
                 <ScrollView>
-                    {Platform.OS !== "web" && <View><Text>Profil</Text></View>}
+                    {Platform.OS !== "web" &&
+                        <Pressable style={{margin : 50, padding : 50, backgroundColor : '#253ed5'}} onPress={() => router.push("./social/votreProfil")}>
+                            <Text>Profil</Text>
+                        </Pressable>
+                    }
 
                     <Pressable style={{margin : 50, padding : 150, backgroundColor : '#c95555'}} onPress={() => router.push("./social/concours")}>
                         <Text>Concours</Text>

@@ -20,7 +20,12 @@ export default function Profil(){
                     </View>
             }
             <View style={{ flex: 1}}>
-                <Header onglets={onglets} setOnglets={setOnglets} />
+                {
+                    Platform.OS === 'web' ?
+                        <Header onglets={onglets} setOnglets={setOnglets} />
+                        :
+                        <Header titre={"Mon profil"} boutonRetour={true} boutonParametres={true}/>
+                }
             </View>
         </View>
     );
