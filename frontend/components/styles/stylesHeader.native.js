@@ -18,6 +18,16 @@ export default StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
+    containerTransparent: {
+        backgroundColor: "rgba(0,0,0,0)",
+        height: 139,
+
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+
+        position: "relative",
+    },
     titreContainer: {
         position: "absolute",
         bottom: 25,

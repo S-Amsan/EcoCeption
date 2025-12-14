@@ -15,6 +15,7 @@ import notificationSansPastille from "../assets/icones/Header/notificationSansPa
 import DEFAULT_PICTURE from "../assets/icones/default_picture.jpg";
 
 import {formatNombreCourt} from "../utils/format";
+import {isWeb} from "../utils/platform";
 
 export default function Header({
     recherche,setRecherche, //Barre de recherche (web)
@@ -26,6 +27,7 @@ export default function Header({
     boutonNotification = false, // bouton notification (mobile)
     userProfil = false, // photo de profil de l'utilisateur (mobile)
     userDetails = false, // info de l'utilisateur (web et mobile)
+    fondTransparent = false, //pas de fond blanc et pas d'ombre (mobile)
     }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -95,7 +97,7 @@ export default function Header({
         return notificationSansPastille;
     }
 
-    if (Platform.OS === "web"){
+    if (isWeb){
         return (
             <>
                 {/* OVERLAY : clique extérieur */}
@@ -211,13 +213,13 @@ export default function Header({
             </>
         );
     }
-    return <View style={styles.container}>
+    return (<View style={fondTransparent ? styles.containerTransparent : styles.container}>
         {/* ---- GAUCHE ----- */}
         {/* BOUTON RETOUR */}
         {boutonRetour && (
             <TouchableOpacity style={styles.boutonRetourContainer} onPress={() => navigation.goBack()}>
-                <Ionicons name="chevron-back" size={25} color="#06DA95" />
-                <Text style={styles.boutonRetourText}>Retour</Text>
+                <Ionicons name="chevron-back" size={25} color={fondTransparent ? '#FFFFFF' : '#06DA95'} />
+                <Text style={[styles.boutonRetourText, fondTransparent && {color : "#FFFFFF"}]}>Retour</Text>
             </TouchableOpacity>
         )}
 
@@ -258,7 +260,7 @@ export default function Header({
         {/* TITRE */}
         {titre && (
             <View style={styles.titreContainer}>
-                <Text style={styles.titre}>{titre}</Text>
+                <Text style={[styles.titre,fondTransparent && {color : "#FFFFFF"}]}>{titre}</Text>
             </View>
         )}
 
@@ -282,8 +284,7 @@ export default function Header({
                 />
             </TouchableOpacity>
         )}
-    </View>
-
+    </View>)
 }
 
 

@@ -1,13 +1,15 @@
-import {Platform, Pressable, ScrollView, Text, View} from "react-native";
-import Header from "../../../components/Header";
-import {useRouter} from "expo-router";
-import Navbar from "../../../components/Navbar";
+import {ScrollView, Text, View} from "react-native";
 import React from "react";
+
+import Navbar from "../../../components/Navbar";
+import Header from "../../../components/Header";
 import TabNavbar from "../../../components/TabNavbar";
+
+import {isWeb} from "../../../utils/platform";
+
 import style from "./styles/styles";
 
 export default function Evenements() {
-    const router = useRouter();
 
     const onglets = [
         {id: "classement",label : "Leaderboard", page : "social/classement"},
@@ -18,16 +20,16 @@ export default function Evenements() {
     return(
         <View style={style.container}>
             {
-                Platform.OS === 'web' &&
+                isWeb &&
                 <View style={{ width: "15%" }}>
                     <Navbar/>
                 </View>
             }
 
             <View style={{ flex: 1}}>
-                <Header userDetails={true}/>
+                {isWeb ? <Header userDetails={true}/> : <Header titre={"Événements"} boutonRetour={true}/>}
                 <ScrollView>
-                    {Platform.OS === 'web' && <TabNavbar onglets={onglets} pageBack={"social"}/>}
+                    {isWeb && <TabNavbar onglets={onglets} pageBack={"social"}/>}
                     <View>
                         <Text>
                             Événements

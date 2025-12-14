@@ -16,7 +16,7 @@ export default StyleSheet.create({
         opacity: 0.9,
         borderRadius: 30,
         position: "absolute",
-        bottom: 35,
+        bottom: 50,
         left: "50%",
         transform: [{ translateX: "-50%" }],
     }

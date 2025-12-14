@@ -1,46 +1,61 @@
-import {Image, Platform, Pressable, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import Header from "../../../components/Header";
+import {Image, Pressable, ScrollView, Text, View} from "react-native";
 import { useRouter } from "expo-router";
-import Navbar from "../../../components/Navbar";
 import React from "react";
-import styles from "./styles/styles";
+
+import Header from "../../../components/Header";
+import Navbar from "../../../components/Navbar";
+import {Ionicons} from "@expo/vector-icons";
 
 import calendrier from "../../../assets/icones/social/calendrier.png";
 import medaille from "../../../assets/icones/social/medaille.png";
 import trophee from "../../../assets/icones/social/trophee.png";
 import cadena from "../../../assets/icones/social/cadena.png";
 import DEFAULT_PICTURE from "../../../assets/icones/default_picture.jpg";
-
 import tropheeIcon from "../../../assets/icones/trophee.png";
 
 import {formatNombreCourt,formatNombreEspace} from "../../../utils/format";
+import {tempsRestant} from "../../../utils/temps";
+import {isWeb} from "../../../utils/platform";
 
 import {getRequiredTrophiesByRankName,RANG_MINIMUM_EVENEMENT} from "../../../constants/rank"
 
-const tempsRestant = (dateFin) => {
-    const maintenant = new Date();
-    const fin = new Date(dateFin);
+import styles from "./styles/styles";
 
-    const diffMs = fin - maintenant;
-
-    if (diffMs <= 0) return "Terminé";
-
-    const diffMin = Math.floor(diffMs / 1000 / 60);
-    const diffHeures = Math.floor(diffMin / 60);
-    const diffJours = Math.floor(diffHeures / 24);
-
-    if (diffJours >= 1) {
-        return `${diffJours} jour${diffJours > 1 ? "s" : ""}`;
+const VoirPlusWeb = () => {
+    if (isWeb) {
+        return (
+            <View style={styles.voirPlusContainer}>
+                <Text style={styles.voirPlusText}>Voir plus</Text>
+            </View>
+        )
     }
+    return null;
+}
 
-    if (diffHeures >= 1) {
-        const heures = diffHeures;
-        const minutes = diffMin % 60;
-        return `${heures} h ${minutes} min`;
+
+const VoirPlusMobile = () => {
+    if (!isWeb) {
+        return (
+            <Ionicons name={"arrow-forward-circle-outline"} size={20}/>
+        )
     }
+    return null;
+}
+const ProfilCarte = ({onPress, user_DATA}) => {
 
-    return `${diffMin} min`;
-};
+    return (
+        <Pressable style={styles.userCarteContainer} onPress={onPress}>
+            <View style={styles.userInfoContainer}>
+                <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userCartePhoto}/>
+                <View style={styles.userNameContainer}>
+                    <Text style={styles.userCarteNom}>{user_DATA?.Nom || "USER_NOM"}</Text>
+                    <Text style={styles.userCartePseudo}>@{user_DATA?.Pseudo || "USER_PSEUDO"}</Text>
+                </View>
+            </View>
+            <Ionicons name="chevron-forward" size={27} style={styles.carteIcon} />
+        </Pressable>
+    )
+}
 
 const Concours = ({onPress, concours_DATA, concours_user_DATA}) => {
 
@@ -59,6 +74,7 @@ const Concours = ({onPress, concours_DATA, concours_user_DATA}) => {
                             style={styles.icon}
                         />
                         <Text style={styles.titre}>Concours mensuels</Text>
+                        <VoirPlusMobile/>
                     </View>
                     <Text style={styles.tempsRestantText}>Fin dans {tempsRestant(concours_DATA.Date_fin)}</Text>
                     <Text style={styles.nomText}>{concours_DATA.Nom} <Text style={styles.etatText}>(en cours)</Text></Text>
@@ -78,9 +94,7 @@ const Concours = ({onPress, concours_DATA, concours_user_DATA}) => {
                         </View>
 
                 }
-                <View style={styles.voirPlusContainer}>
-                    <Text style={styles.voirPlusText}>Voir plus</Text>
-                </View>
+                <VoirPlusWeb/>
             </Pressable>
         )
     }
@@ -93,14 +107,13 @@ const Concours = ({onPress, concours_DATA, concours_user_DATA}) => {
                         style={styles.icon}
                     />
                     <Text style={styles.titre}>Concours mensuels</Text>
+                    <VoirPlusMobile/>
                 </View>
                 <View style={styles.alertContainer}>
                     <Text style={styles.messageAlert}>Aucun concours disponible</Text>
                 </View>
             </View>
-            <View style={styles.voirPlusContainer}>
-                <Text style={styles.voirPlusText}>Voir plus</Text>
-            </View>
+            <VoirPlusWeb/>
         </Pressable>
     )
 }
@@ -122,7 +135,7 @@ const Evenements = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA})
                         <View style={styles.overlayContainer}>
                             <Image
                                 source={cadena}
-                                style={{width : 21, height : 24}}
+                                style={{width : 14, height : 16}}
                             />
                             <Text style={styles.overlayText}>Rang Or minimum</Text>
                         </View>
@@ -137,6 +150,7 @@ const Evenements = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA})
                             style={styles.icon}
                         />
                         <Text style={styles.titre}>Événements</Text>
+                        <VoirPlusMobile/>
                     </View>
                     <Text style={styles.tempsRestantText}>Fin dans {tempsRestant(evenements_DATA.Date_fin)}</Text>
                     <Text style={styles.nomText}>{evenements_DATA.Nom} <Text style={styles.etatText}>(en cours)</Text></Text>
@@ -158,9 +172,7 @@ const Evenements = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA})
                                 </View>
 
                         }
-                        <View style={styles.voirPlusContainer}>
-                            <Text style={styles.voirPlusText}>Voir plus</Text>
-                        </View>
+                        <VoirPlusWeb/>
                     </>
                 }
             </Pressable>
@@ -175,14 +187,13 @@ const Evenements = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA})
                         style={styles.icon}
                     />
                     <Text style={styles.titre}>Événements</Text>
+                    <VoirPlusMobile/>
                 </View>
                 <View style={styles.alertContainer}>
                     <Text style={styles.messageAlert}>Aucun concours disponible</Text>
                 </View>
             </View>
-            <View style={styles.voirPlusContainer}>
-                <Text style={styles.voirPlusText}>Voir plus</Text>
-            </View>
+            <VoirPlusWeb/>
         </Pressable>
     )
 }
@@ -193,8 +204,7 @@ const Classement = ({onPress, user_DATA, podium_DATA}) => {
     if (!podium_DATA || podium_DATA.length < 3) return null;
 
     return (
-        <Pressable style={styles.carteContainer} onPress={onPress }>
-
+        <Pressable style={styles.carteContainer} onPress={onPress}>
             <View style={styles.partieHautContainer}>
                 <View style={styles.titreContainer}>
                     <Image
@@ -202,40 +212,38 @@ const Classement = ({onPress, user_DATA, podium_DATA}) => {
                         style={styles.icon}
                     />
                     <Text style={styles.titre}>Classement</Text>
+                    <VoirPlusMobile/>
                 </View>
             </View>
             <View style={styles.podiumContainer}>
                 {PODIUM_ORDRE.map((place) => {
                     return (<Place key={place} user_DATA={podium_DATA[place]} />)
                 })}
-
             </View>
 
             <View style={styles.classementUserWrapper}>
                 <View style={styles.ligneSeparateur}/>
                 <View style={styles.classementUserContainer}>
-                    <View style={styles.topContainer}><Text style={styles.topText}><Text style={styles.gras}>TOP</Text> {formatNombreCourt(user_DATA?.Classement || -1)}</Text></View>
+                    <View style={styles.topContainer}><Text style={styles.topText}>{isWeb && <Text style={styles.gras}>TOP</Text>} {formatNombreCourt(user_DATA?.Classement || -1)}</Text></View>
                     <View style={styles.userContainer}>
                         <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userPhoto}/>
                         <Text style={styles.userNomText}>{user_DATA?.Nom || "USER_NOM"} (Vous)</Text>
                     </View>
                     <View style={styles.tropheesContainer}>
                         <Text style={styles.tropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
-                        <Image source={tropheeIcon} style={{width: 40, height: 40}} />
+                        <Image source={tropheeIcon} style={styles.tropheesIcon} />
                     </View>
                 </View>
             </View>
-            <View style={styles.voirPlusContainer}>
-                <Text style={styles.voirPlusText}>Voir plus</Text>
-            </View>
+            <VoirPlusWeb/>
         </Pressable>
     )
 }
 
 const podiumStyle = [
-    {place : {backgroundColor :"#fdd34e",width: "80%", height: "40%"}, text : {fontSize : 30, color : "#ffffff"}, picture : {width : 100, height : 100}},
-    {place :{backgroundColor :"#f7f7f7",width: "70%", height: "35%"}, text : {fontSize : 20, color : "#878787"}, picture : {width : 90, height : 90}},
-    {place :{backgroundColor :"#e8e8e8",width: "60%", height: "30%"}, text : {fontSize : 16, color : "#878787"}, picture : {width : 80, height : 80}},
+    {place : {backgroundColor :"#fdd34e",width: "80%", height: "55%"}, text : {fontSize : 30, color : "#ffffff"}, picture : {width : 30, height : 30}},
+    {place :{backgroundColor :"#f7f7f7",width: "80%", height: "45%"}, text : {fontSize : 20, color : "#878787"}, picture : {width : 25, height : 25}},
+    {place :{backgroundColor :"#e8e8e8",width: "80%", height: "30%"}, text : {fontSize : 16, color : "#878787"}, picture : {width : 20, height : 20}},
 ];
 
 const Place = ({user_DATA}) => {
@@ -284,7 +292,8 @@ export default function Social(){
     const user_DATA = {
         Id : 1,
         Nom : "",
-        Photo_url : "https://i.pinimg.com/236x/bb/df/ec/bbdfecbe813809bf72def9772538e323.jpg",
+        Pseudo : "",
+        Photo_url : "",
         Trophees : 57400,
         Classement : 1544487,
 
@@ -320,7 +329,7 @@ export default function Social(){
     return(
         <View style={styles.container}>
             {
-                Platform.OS === 'web' ?
+                isWeb ?
                     <View style={{ width: "15%" }}>
                         <Navbar/>
                     </View>
@@ -331,10 +340,11 @@ export default function Social(){
                 <Header boutonNotification={true} userDetails={true} userProfil={true}/>
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    {Platform.OS !== "web" &&
-                        <Pressable style={{margin : 50, padding : 50, backgroundColor : '#253ed5'}} onPress={() => router.push("./social/votreProfil")}>
-                            <Text>Profil</Text>
-                        </Pressable>
+                    {!isWeb &&
+                        <ProfilCarte
+                            onPress={() => router.push("./social/votreProfil")}
+                            user_DATA={user_DATA}
+                        />
                     }
 
                     <View style={styles.cartesWrapper}>

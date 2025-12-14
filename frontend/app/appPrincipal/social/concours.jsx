@@ -1,13 +1,16 @@
-import {Platform, Pressable, ScrollView, Text, View} from "react-native";
-import Header from "../../../components/Header";
+import {ScrollView, Text, View} from "react-native";
 import {useRouter} from "expo-router";
-import Navbar from "../../../components/Navbar";
 import React from "react";
+
+import Navbar from "../../../components/Navbar";
+import Header from "../../../components/Header";
 import TabNavbar from "../../../components/TabNavbar";
+
+import {isWeb} from "../../../utils/platform";
+
 import style from "./styles/styles";
 
 export default function Concours(){
-    const router = useRouter();
 
     const onglets = [
         {id: "classement",label : "Leaderboard", page : "social/classement"},
@@ -18,16 +21,16 @@ export default function Concours(){
     return(
         <View style={style.container}>
             {
-                Platform.OS === 'web' &&
+                isWeb &&
                 <View style={{ width: "15%" }}>
                     <Navbar/>
                 </View>
             }
 
             <View style={{ flex: 1}}>
-                <Header userDetails={true}/>
+                {isWeb ? <Header userDetails={true}/> : <Header titre={"Concours"} boutonRetour={true}/>}
                 <ScrollView>
-                    {Platform.OS === 'web' && <TabNavbar onglets={onglets} pageBack={"social"}/>}
+                    {isWeb && <TabNavbar onglets={onglets} pageBack={"social"}/>}
                     <View>
                         <Text>
                             Concours

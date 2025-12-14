@@ -1,13 +1,15 @@
-import {Platform, Pressable, ScrollView, Text, View} from "react-native";
-import Header from "../../../components/Header";
-import {useRouter} from "expo-router";
-import Navbar from "../../../components/Navbar";
+import {ScrollView, Text, View} from "react-native";
 import React from "react";
+
+import Navbar from "../../../components/Navbar";
+import Header from "../../../components/Header";
 import TabNavbar from "../../../components/TabNavbar";
+
+import {isWeb} from "../../../utils/platform";
+
 import style from "./styles/styles";
 
 export default function Classement(){
-    const router = useRouter();
 
     const onglets = [
         {id: "classement",label : "Leaderboard", page : "social/classement"},
@@ -16,25 +18,25 @@ export default function Classement(){
     ];
 
     return(
-        <View style={style.container}>
+        <View style={[style.container, {backgroundColor: "#05D991"}]}>
             {
-                Platform.OS === 'web' &&
+                isWeb &&
                 <View style={{ width: "15%" }}>
                     <Navbar/>
                 </View>
             }
 
             <View style={{ flex: 1}}>
-                <Header userDetails={true}/>
+                {isWeb ? <Header userDetails={true}/> : <Header titre={"Classement"} boutonRetour={true} fondTransparent={true}/>}
                 <ScrollView>
-                    {Platform.OS === 'web' && <TabNavbar onglets={onglets} pageBack={"social"}/>}
+                    {isWeb && <TabNavbar onglets={onglets} pageBack={"social"}/>}
                     <View>
                         <Text>
                             Classement
                         </Text>
                     </View>
                 </ScrollView>
-            </View>
+            </ View>
         </View>
 
     );

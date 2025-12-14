@@ -216,6 +216,10 @@ export default StyleSheet.create({
         fontWeight : "bold",
         color : "#E7A2F0"
     },
+    tropheesIcon: {
+        width: 40,
+        height: 40
+    },
     gras : {
         fontWeight : "bold",
     }

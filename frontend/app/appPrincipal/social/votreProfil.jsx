@@ -1,8 +1,12 @@
-import {Platform, View} from "react-native";
+import {View} from "react-native";
 import React from "react";
-import style from "./styles/styles";
+
 import Navbar from "../../../components/Navbar";
 import Header from "../../../components/Header";
+
+import {isWeb} from "../../../utils/platform";
+
+import style from "./styles/styles";
 
 export default function Profil(){
     const onglets = [
@@ -14,15 +18,15 @@ export default function Profil(){
 
         <View style={style.container}>
             {
-                Platform.OS === 'web' &&
+                isWeb &&
                     <View style={{ width: "15%" }}>
                         <Navbar/>
                     </View>
             }
             <View style={{ flex: 1}}>
                 {
-                    Platform.OS === 'web' ?
-                        <Header onglets={onglets} setOnglets={setOnglets} />
+                    isWeb ?
+                        <Header onglets={onglets} />
                         :
                         <Header titre={"Mon profil"} boutonRetour={true} boutonParametres={true}/>
                 }

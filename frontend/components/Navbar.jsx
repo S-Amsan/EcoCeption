@@ -1,12 +1,4 @@
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    Platform,
-    Pressable
-} from "react-native";
+import {View, Text, TouchableOpacity, Image, ScrollView, Platform, Pressable} from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, usePathname } from "expo-router";
@@ -31,6 +23,7 @@ import IconTrophyOn from "../assets/icones/Navbar/SocialOn.png";
 
 import ProfilCard from "./ProfilCard";
 import style from "./styles/StyleNavbar";
+import {isWeb} from "../utils/platform"
 
 const BASE_URL = "http://localhost:8080/uploads/";
 
@@ -79,7 +72,7 @@ export default function Navbar() {
 
 
     // ---------------- WEB ----------------
-    if (Platform.OS === "web") {
+    if (isWeb) {
         return (
             <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={style.container}>
                 <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
