@@ -31,11 +31,12 @@ public class UserController {
     @PostMapping("/user")
     public User createUser(
         @RequestParam String pseudo,
+        @RequestParam String name,
         @RequestParam String email,
         @RequestParam String password,
         @RequestParam(required = false) String phone
     ) {
-        User user = new User(pseudo, email);
+        User user = new User(name, pseudo, email);
         user.setPhone(phone);
 
         PasswordService.HashSalt hashsalt = passwordService.generate(password);

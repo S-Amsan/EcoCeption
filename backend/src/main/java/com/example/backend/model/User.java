@@ -19,8 +19,14 @@ public class User {
     @Column(unique = true, nullable = false, length = 50)
     private String pseudo;
 
+    @Column(nullable = false, length = 50)
+    private String name;
+
     @Column(unique = true, nullable = false, length = 255)
     private String email;
+
+    @Column(nullable = true)
+    private Integer age;
 
     @Column(unique = true, nullable = true, length = 20)
     private String phone;
@@ -39,13 +45,10 @@ public class User {
     @Column
     private boolean actif = true;
 
-    private Integer age;
-
-    private String name;
-
     public User() {}
 
-    public User(String pseudo, String email) {
+    public User(String name, String pseudo, String email) {
+        this.name = name;
         this.pseudo = pseudo;
         this.email = email;
     }
