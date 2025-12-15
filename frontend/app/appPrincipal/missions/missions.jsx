@@ -1,27 +1,19 @@
-import {Platform, ScrollView, Text, View} from "react-native";
-import Header from "../../../components/Header";
-import Navbar from "../../../components/Navbar";
+import {View} from "react-native";
 import React from "react";
 
+import Navbar from "../../../components/Navbar";
+import Header from "../../../components/Header";
+
+import {isWeb} from "../../../utils/platform";
+
+import style from "./styles/styles";
+
 export default function Missions(){
+
     return(
-        <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
-            {
-                Platform.OS === 'web' ?
-                    <View style={{ width: "15%" }}>
-                        <Navbar/>
-                    </View>
-                    :
-                    <Navbar/>
-            }
-            <View style={{ flex: 1}}>
-                <Header/>
-                <ScrollView>
-                    <Text>
-                        C Les missions ici
-                    </Text>
-                </ScrollView>
-            </View>
+
+        <View style={style.container}>
+
         </View>
     );
 };
