@@ -1,43 +1,31 @@
-import {ScrollView, Text, View} from "react-native";
 import React from "react";
 
-import Navbar from "../../../../components/Navbar";
-import Header from "../../../../components/Header";
-import TabNavbarWeb from "../../../../components/TabNavbarWeb";
-
-import {isWeb} from "../../../../utils/platform";
-
-import style from "./styles/styles";
+import EventPage from "../_components/EventPage";
 
 export default function Evenements() {
 
-    const onglets = [
-        {id: "classement",label : "Leaderboard", page : "social/classement"},
-        {id: "concours",label : "Concours", page : "social/concours"},
-        {id: "evenements",label : "Événements", page : "social/evenements"},
-    ];
+    const evenements_DATA = {
+        Nom : "Événements Hiver Durable ❄️",
+        Date_fin : "2026-01-15T17:59:59",
+        Points_objectif : 50000,
+        Participants : 342,
+        Qualifies : 72,
+        Cout_inscription : 5000,
+    }; //TODO récupérer les vrai données -> renvoyer null si pas d'
 
-    return(
-        <View style={style.container}>
-            {
-                isWeb &&
-                <View style={{ width: "15%" }}>
-                    <Navbar/>
-                </View>
-            }
+    const evenements_user_DATA = {
+        Points_recolte : 2324
+    }; //TODO récupérer les vrai données -> renvoyer null si pas inscrit
 
-            <View style={{ flex: 1}}>
-                {isWeb ? <Header userDetails={true}/> : <Header titre={"Événements"} boutonRetour={true}/>}
-                <ScrollView>
-                    {isWeb && <TabNavbarWeb onglets={onglets} pageBack={"social"}/>}
-                    <View>
-                        <Text>
-                            Événements
-                        </Text>
-                    </View>
-                </ScrollView>
-            </View>
-        </View>
+    const user_DATA = {
+        Id : 1,
+        Nom : "",
+        Pseudo : "",
+        Photo_url : "",
+        Trophees : 57400,
+        Classement : 1544487,
 
-    );
+    }; //TODO récupérer les vrai données
+
+    return <EventPage type={"evenements"} event_DATA={evenements_DATA} event_user_DATA={evenements_user_DATA} user_DATA={user_DATA} />
 };

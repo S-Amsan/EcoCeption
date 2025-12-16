@@ -57,148 +57,161 @@ const ProfilCarte = ({onPress, user_DATA}) => {
     )
 }
 
-const Concours = ({onPress, concours_DATA, concours_user_DATA}) => {
+export const EVENT_CONFIG = {
+    concours: {
+        titre: "Concours mensuels",
+        couleur: "#FFD700",
+        icon: "calendrier",
+        lockable: false,
+    },
+    evenement: {
+        titre: "Événements",
+        couleur: "#e5a1ee",
+        icon: "medaille",
+        lockable: true,
+    },
+};
 
-    if (concours_DATA){
-        const pointsObjectif = formatNombreEspace(concours_DATA.Points_objectif)
-        const pointsRecolte = formatNombreEspace(concours_user_DATA?.Points_recolte ?? 0)
+const EventCarte = ({type, onPress, event_DATA, event_user_DATA, user_DATA}) => {
+    const config = EVENT_CONFIG[type];
+    if (!config) return null;
 
-        const pourcentageDAvancement = Math.min( (concours_user_DATA?.Points_recolte ?? 0) / concours_DATA?.Points_objectif, 1);
-
+    // Aucun event
+    if (!event_DATA) {
         return (
             <Pressable style={styles.carteContainer} onPress={onPress}>
                 <View style={styles.partieHautContainer}>
                     <View style={styles.titreContainer}>
-                        <Image
-                            source={calendrier}
-                            style={styles.icon}
-                        />
-                        <Text style={styles.titre}>Concours mensuels</Text>
-                        <VoirPlusMobile/>
+                        <Image source={config.icon === "calendrier" ? calendrier : medaille} style={styles.icon} />
+                        <Text style={styles.titre}>{config.titre}</Text>
+                        <VoirPlusMobile />
                     </View>
-                    <Text style={styles.tempsRestantText}>Fin dans {tempsRestant(concours_DATA.Date_fin)}</Text>
-                    <Text style={styles.nomText}>{concours_DATA.Nom} <Text style={styles.etatText}>(en cours)</Text></Text>
+
+                    <View style={styles.alertContainer}>
+                        <Text style={styles.messageAlert}>Aucun {type} disponible</Text>
+                    </View>
                 </View>
-                {
-                    concours_user_DATA ?
+                <VoirPlusWeb />
+            </Pressable>
+        );
+    }
+
+    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
+    const pointsRecolte = formatNombreEspace(event_user_DATA?.Points_recolte ?? 0);
+    const pourcentageDAvancement = Math.min(
+        (event_user_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif,
+        1
+    );
+
+    // Spécifique événements
+    let accessible = true;
+    if (config.lockable) {
+        const tropheesMin = getRequiredTrophiesByRankName(RANG_MINIMUM_EVENEMENT);
+        accessible = (user_DATA?.Trophees ?? 0) >= tropheesMin;
+    }
+
+    return (
+        <Pressable
+            style={styles.carteContainer}
+            onPress={accessible ? onPress : null}
+        >
+            {!accessible && (
+                <View style={styles.overlayWrapper}>
+                    <View style={styles.overlayContainer}>
+                        <Image source={cadena} style={{ width: 14, height: 16 }} />
+                        <Text style={styles.overlayText}>Rang Or minimum</Text>
+                    </View>
+                    <Text style={styles.overlaySousText}>
+                        Réservé aux joueurs Or et plus. Montez en rang pour participer et
+                        remporter ces récompenses exclusives !
+                    </Text>
+                </View>
+            )}
+
+            <View style={styles.partieHautContainer}>
+                <View style={styles.titreContainer}>
+                    <Image source={config.icon === "calendrier" ? calendrier : medaille} style={styles.icon} />
+                    <Text style={styles.titre}>{config.titre}</Text>
+                    <VoirPlusMobile />
+                </View>
+
+                <Text style={styles.tempsRestantText}>
+                    Fin dans {tempsRestant(event_DATA.Date_fin)}
+                </Text>
+
+                <Text style={styles.nomText}>
+                    {event_DATA.Nom} <Text style={styles.etatText}>(en cours)</Text>
+                </Text>
+            </View>
+
+            {accessible && (
+                <>
+                    {event_user_DATA ? (
                         <View style={styles.avancementContainer}>
-                            <Text style={styles.avancementText}><Text style={{color : "#FFD700"}}>{pointsRecolte} points</Text> récoltés sur {pointsObjectif}</Text>
+                            <Text style={styles.avancementText}>
+                                <Text style={{ color: config.couleur }}>
+                                    {pointsRecolte} points
+                                </Text>{" "}
+                                récoltés sur {pointsObjectif}
+                            </Text>
+
                             <View style={styles.barreDAvancementContainer}>
-                                <View style={{backgroundColor: "#FFD700", borderRadius : 24, width : `${pourcentageDAvancement*100}%`}}/>
-                                <View style={{width : `${(1-pourcentageDAvancement)*100}%`}}/>
+                                <View
+                                    style={{
+                                        backgroundColor: config.couleur,
+                                        borderRadius: 24,
+                                        width: `${pourcentageDAvancement * 100}%`,
+                                    }}
+                                />
+                                <View
+                                    style={{
+                                        width: `${(1 - pourcentageDAvancement) * 100}%`,
+                                    }}
+                                />
                             </View>
                         </View>
-                        :
-                        <View style={[styles.inscriptionBoutonContainer,{backgroundColor: "#FFD700"}]}>
-                            <Text style={styles.inscriptionText}>S&#39;inscrire</Text>
+                    ) : (
+                        <View
+                            style={[
+                                styles.inscriptionBoutonContainer,
+                                { backgroundColor: config.couleur },
+                            ]}
+                        >
+                            <Text style={styles.inscriptionText}>S&apos;inscrire</Text>
                         </View>
+                    )}
 
-                }
-                <VoirPlusWeb/>
-            </Pressable>
-        )
-    }
-    return (
-        <Pressable style={styles.carteContainer} onPress={onPress}>
-            <View style={styles.partieHautContainer}>
-                <View style={styles.titreContainer}>
-                    <Image
-                        source={calendrier}
-                        style={styles.icon}
-                    />
-                    <Text style={styles.titre}>Concours mensuels</Text>
-                    <VoirPlusMobile/>
-                </View>
-                <View style={styles.alertContainer}>
-                    <Text style={styles.messageAlert}>Aucun concours disponible</Text>
-                </View>
-            </View>
-            <VoirPlusWeb/>
+                    <VoirPlusWeb />
+                </>
+            )}
         </Pressable>
+    );
+};
+
+const ConcoursCarte = ({onPress, concours_DATA, concours_user_DATA}) => {
+    return (
+        <EventCarte
+            type="concours"
+            onPress={onPress}
+            event_DATA={concours_DATA}
+            event_user_DATA={concours_user_DATA}
+        />
     )
 }
 
-const Evenements = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA}) => {
-
-    if (evenements_DATA){
-        const pointsObjectif = formatNombreEspace(evenements_DATA.Points_objectif)
-        const pointsRecolte = formatNombreEspace(evenements_user_DATA?.Points_recolte ?? 0)
-        const pourcentageDAvancement = Math.min( (evenements_user_DATA?.Points_recolte ?? 0) / evenements_DATA?.Points_objectif, 1);
-
-        const tropheesMinimumRequis = getRequiredTrophiesByRankName(RANG_MINIMUM_EVENEMENT);
-        const evenementAccesible = (user_DATA?.Trophees ?? 0) >= tropheesMinimumRequis
-
-        return (
-            <Pressable style={styles.carteContainer} onPress={evenementAccesible ? onPress : null}>
-                {!evenementAccesible && (
-                    <View style={styles.overlayWrapper}>
-                        <View style={styles.overlayContainer}>
-                            <Image
-                                source={cadena}
-                                style={{width : 14, height : 16}}
-                            />
-                            <Text style={styles.overlayText}>Rang Or minimum</Text>
-                        </View>
-                        <Text style={styles.overlaySousText}>Réservé aux joueurs Or et plus. Montez en rang pour participer et remporter ces récompenses exclusives !</Text>
-                    </View>
-                )}
-
-                <View style={styles.partieHautContainer}>
-                    <View style={styles.titreContainer}>
-                        <Image
-                            source={medaille}
-                            style={styles.icon}
-                        />
-                        <Text style={styles.titre}>Événements</Text>
-                        <VoirPlusMobile/>
-                    </View>
-                    <Text style={styles.tempsRestantText}>Fin dans {tempsRestant(evenements_DATA.Date_fin)}</Text>
-                    <Text style={styles.nomText}>{evenements_DATA.Nom} <Text style={styles.etatText}>(en cours)</Text></Text>
-                </View>
-                { evenementAccesible &&
-                    <>
-                        {
-                            evenements_user_DATA ?
-                                <View style={styles.avancementContainer}>
-                                    <Text style={styles.avancementText}><Text style={{color : "#e5a1ee"}}>{pointsRecolte} points</Text> récoltés sur {pointsObjectif}</Text>
-                                    <View style={styles.barreDAvancementContainer}>
-                                        <View style={{backgroundColor: "#e5a1ee", borderRadius : 24, width : `${pourcentageDAvancement*100}%`}}/>
-                                        <View style={{width : `${(1-pourcentageDAvancement)*100}%`}}/>
-                                    </View>
-                                </View>
-                                :
-                                <View style={[styles.inscriptionBoutonContainer,{backgroundColor: "#e5a1ee"}]}>
-                                    <Text style={styles.inscriptionText}>S&#39;inscrire</Text>
-                                </View>
-
-                        }
-                        <VoirPlusWeb/>
-                    </>
-                }
-            </Pressable>
-        )
-    }
+const EvenementsCarte = ({onPress, evenements_DATA, evenements_user_DATA, user_DATA}) => {
     return (
-        <Pressable style={styles.carteContainer} onPress={onPress}>
-            <View style={styles.partieHautContainer}>
-                <View style={styles.titreContainer}>
-                    <Image
-                        source={medaille}
-                        style={styles.icon}
-                    />
-                    <Text style={styles.titre}>Événements</Text>
-                    <VoirPlusMobile/>
-                </View>
-                <View style={styles.alertContainer}>
-                    <Text style={styles.messageAlert}>Aucun concours disponible</Text>
-                </View>
-            </View>
-            <VoirPlusWeb/>
-        </Pressable>
+        <EventCarte
+            type="evenement"
+            onPress={onPress}
+            event_DATA={evenements_DATA}
+            event_user_DATA={evenements_user_DATA}
+            user_DATA={user_DATA}
+        />
     )
 }
 
-const Classement = ({onPress, user_DATA, podium_DATA}) => {
+const ClassementCarte = ({onPress, user_DATA, podium_DATA}) => {
     if (!podium_DATA || podium_DATA.length < 3) return null;
 
     return (
@@ -377,15 +390,15 @@ export default function Social(){
                     }
 
                     <View style={styles.cartesWrapper}>
-                        <View style={styles.cartesContainer}>
+                        <View style={styles.eventContainer}>
 
-                            <Concours
+                            <ConcoursCarte
                                 onPress={() => router.push("./concours")}
                                 concours_DATA={concours_DATA}
                                 concours_user_DATA={concours_user_DATA}
                             />
 
-                            <Evenements
+                            <EvenementsCarte
                                 onPress={() => router.push("./evenements")}
                                 evenements_DATA={evenements_DATA}
                                 evenements_user_DATA={evenements_user_DATA}
@@ -394,7 +407,7 @@ export default function Social(){
 
                         </View>
                         <View style={styles.classementContainer}>
-                            <Classement
+                            <ClassementCarte
                                 onPress={() => router.push("./classement")}
                                 user_DATA={user_DATA}
                                 podium_DATA={podium_DATA}

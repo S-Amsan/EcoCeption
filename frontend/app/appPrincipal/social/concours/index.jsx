@@ -1,105 +1,72 @@
-import { ScrollView, Text, View, Image} from "react-native";
 import React from "react";
 
-import Navbar from "../../../../components/Navbar";
-import Header from "../../../../components/Header";
-import TabNavbarWeb from "../../../../components/TabNavbarWeb";
-import TabNavbarMobile from "../../../../components/TabNavbarMobile";
-
-import { isWeb } from "../../../../utils/platform";
-
-import cible from "../../../../assets/icones/social/cible.png";
-import horloge from "../../../../assets/icones/social/horloge.png";
-
-import styles from "./styles/styles";
-
-const EnCours = ({ isActive }) => {
-    return (
-        <View style={[styles.contenuContainer,{ display: isActive ? "flex" : "none"}]}>
-            <View style={styles.partieInfoContainer}>
-                <View style={styles.nomEventContainer}>
-                    <Text style={styles.nomEventText}>Concours du 11/25</Text>
-                </View>
-                <View style={styles.InfoEventWrapper}>
-                    <View style={styles.InfoEventContainer}>
-                        <Image source={cible} style={styles.InfoEventImage}></Image>
-                        <Text style={styles.InfoEventNom}>Objectif : atteindre 10 000 points</Text>
-                    </View>
-                    <View style={styles.InfoEventContainer}>
-                        <Image source={horloge} style={styles.InfoEventImage}></Image>
-                        <Text style={styles.InfoEventNom}>Fin dans 19 jours </Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.carteInfoContainer}></View>
-            <View style={styles.boutonsContainer}></View>
-            <View style={styles.infosContainer}></View>
-        </View>
-    );
-};
-
-const Statistiques = ({ isActive }) => {
-    return (
-        <View style={[styles.contenuContainer,{ display: isActive ? "flex" : "none"}]}>
-            <Text>Contenu Statistiques</Text>
-        </View>
-    );
-};
+import EventPage from "../_components/EventPage";
 
 export default function Concours() {
-    const ongletsWeb = [
-        { id: "classement", label: "Leaderboard", page: "social/classement" },
-        { id: "concours", label: "Concours", page: "social/concours" },
-        { id: "evenements", label: "Événements", page: "social/evenements" },
-    ];
+    const concours_DATA = {
+        Nom : "Concours de Décembre 2025",
+        Date_fin : "2025-12-30T17:59:59",
+        Points_objectif : 10000,
+        Participants : 112,
+        Qualifies : 54,
+        Cout_inscription : 1000,
+    }; //TODO récupérer les vrai données -> renvoyer null si pas de concours en cours
 
-    const ongletsMobile = [
-        { id: "encours", label: "En cours", component: EnCours },
-        { id: "statistiques", label: "Statistiques", component: Statistiques },
-    ];
+    const concours_user_DATA = {
+        Points_recolte : 2324
+    }; //TODO récupérer les vrai données -> renvoyer null si l'utilisateur actuel n'est pas inscrit
 
-    const [ongletActifId, setOngletActifId] = React.useState("encours");
+    const user_DATA = {
+        Id : 1,
+        Nom : "",
+        Pseudo : "",
+        Photo_url : "",
+        Trophees : 57400,
+        Classement : 1544487,
 
-    return (
-        <View style={styles.container}>
-            {isWeb && (
-                <View style={{ width: "15%" }}>
-                    <Navbar />
-                </View>
-            )}
+    }; //TODO récupérer les vrai données
 
-            <View style={{ flex: 1 }}>
-                {isWeb ? (
-                    <Header userDetails={true} />
-                ) : (
-                    <Header titre={"Concours"} boutonRetour={true} />
-                )}
+    const user_event_DATA = [{
+        Nom : "Concours de Décembre 2025",
+        Date_fin : "2025-12-30T23:59:59",
+        Points_objectif : 10000,
+        Points_recolte : 1234,
+        Recompense : {Nom : "E-carte cadeau 25€ (Amazon)"},
+        Participants : 112,
+        Qualifies : 54,
+    },{
+        Nom : "Concours de Novembre 2025",
+        Date_fin : "2025-11-30T23:59:59",
+        Points_objectif : 10000,
+        Points_recolte : 12000,
+        Recompense : null,
+        Participants : 112,
+        Qualifies : 54,
+    },{
+        Nom : "Concours de Septembre 2025",
+        Date_fin : "2025-09-30T23:59:59",
+        Points_objectif : 10000,
+        Points_recolte : 500,
+        Recompense : null,
+        Participants : 112,
+        Qualifies : 54,
+    },{
+        Nom : "Concours de Juin 2025",
+        Date_fin : "2025-06-30T23:59:59",
+        Points_objectif : 10000,
+        Points_recolte : 42332,
+        Recompense : null,
+        Participants : 112,
+        Qualifies : 54,
+    },{
+        Nom : "Concours de Mai 2025",
+        Date_fin : "2025-05-30T23:59:59",
+        Points_objectif : 10000,
+        Points_recolte : 15000,
+        Recompense : {Nom : "E-carte cadeau 25€ (Amazon)"},
+        Participants : 112,
+        Qualifies : 54,
+    },];
 
-                <ScrollView>
-                    {isWeb ? (
-                        <TabNavbarWeb onglets={ongletsWeb} pageBack={"social"} />
-                    ) : (
-                        <TabNavbarMobile
-                            ongletActifId={ongletActifId}
-                            onglets={ongletsMobile}
-                            setOngletActif={setOngletActifId}
-                        />
-                    )}
-
-                    {/* Affichage des onglets mobile */}
-                    {!isWeb &&
-                        ongletsMobile.map((onglet) => {
-                            const OngletComponent = onglet.component;
-                            return (
-                                <OngletComponent
-                                    key={onglet.id}
-                                    isActive={onglet.id === ongletActifId}
-                                />
-                            );
-                        })}
-                </ScrollView>
-            </View>
-        </View>
-    );
-}
+    return <EventPage type={"concours"} event_DATA={concours_DATA} event_user_DATA={concours_user_DATA} user_DATA={user_DATA} user_event_DATA={user_event_DATA}/>
+};

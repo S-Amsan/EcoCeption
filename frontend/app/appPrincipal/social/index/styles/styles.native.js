@@ -85,7 +85,7 @@ export default StyleSheet.create({
         height: "100%",
         marginHorizontal : 30,
     },
-    cartesContainer : {
+    eventContainer : {
         justifyContent: "space-around",
         gap : 20,
         marginBottom : 10,

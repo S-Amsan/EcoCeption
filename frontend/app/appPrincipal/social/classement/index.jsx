@@ -38,6 +38,5 @@ export default function Classement(){
                 </ScrollView>
             </ View>
         </View>
-
     );
 };

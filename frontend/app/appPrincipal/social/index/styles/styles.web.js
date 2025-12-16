@@ -45,7 +45,7 @@ export default StyleSheet.create({
         margin : 50,
         marginTop : 100,
     },
-    cartesContainer : {
+    eventContainer : {
         flexDirection: "row",
         justifyContent: "space-around",
         marginBottom : 25,
