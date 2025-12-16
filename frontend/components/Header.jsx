@@ -12,7 +12,10 @@ import flamme from "../assets/icones/flamme.png";
 import parametres from "../assets/icones/Header/parametres.png";
 import notificationPastille from "../assets/icones/Header/notificationPastille.png";
 import notificationSansPastille from "../assets/icones/Header/notificationSansPastille.png";
-import DEFAULT_PICTURE from "../assets/icones/Header/default_picture.png";
+import DEFAULT_PICTURE from "../assets/icones/default_picture.jpg";
+
+import {formatNombreCourt} from "../utils/format";
+import {isWeb} from "../utils/platform";
 
 export default function Header({
     recherche,setRecherche, //Barre de recherche (web)
@@ -24,6 +27,7 @@ export default function Header({
     boutonNotification = false, // bouton notification (mobile)
     userProfil = false, // photo de profil de l'utilisateur (mobile)
     userDetails = false, // info de l'utilisateur (web et mobile)
+    fondTransparent = false, //pas de fond blanc et pas d'ombre (mobile)
     }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -42,13 +46,6 @@ export default function Header({
     };
 
     // Affichage des détails :
-    const formatNombreCourt  = (n) => {
-        return n >= 1e9 ? (n / 1e9).toFixed(1).replace('.0', '') + 'B'
-            : n >= 1e6 ? (n / 1e6).toFixed(1).replace('.0', '') + 'M'
-                : n >= 1e3 ? (n / 1e3).toFixed(1).replace('.0', '') + 'k'
-                    : n.toString();
-    };
-
     const userDetailsData = [
         {type : "points", valeur : 4501124},
         {type : "trophees", valeur : 654684},
@@ -100,7 +97,7 @@ export default function Header({
         return notificationSansPastille;
     }
 
-    if (Platform.OS === "web"){
+    if (isWeb){
         return (
             <>
                 {/* OVERLAY : clique extérieur */}
@@ -173,13 +170,13 @@ export default function Header({
                             {onglets && (
                                 <View style={styles.ongletsContainer}>
                                     {onglets.map(onglet => {
-                                        const isActive = pathname === `/appPrincipal/social/${onglet.page}`;
+                                        const isActive = pathname === `/appPrincipal/${onglet.page}`;
 
                                         return (
                                             <TouchableOpacity
                                                 key={onglet.id}
                                                 style={styles.ongletContainer}
-                                                onPress={() => !isActive && router.push(`/appPrincipal/social/${onglet.page}`)}
+                                                onPress={() => !isActive && router.push(`/appPrincipal/${onglet.page}`)}
                                             >
                                                 <Text  style={styles.ongletLabel}>{onglet.label}</Text>
                                                 {isActive && <View style={styles.ongletUnderline}/>}
@@ -216,13 +213,13 @@ export default function Header({
             </>
         );
     }
-    return <View style={styles.container}>
+    return (<View style={fondTransparent ? styles.containerTransparent : styles.container}>
         {/* ---- GAUCHE ----- */}
         {/* BOUTON RETOUR */}
         {boutonRetour && (
             <TouchableOpacity style={styles.boutonRetourContainer} onPress={() => navigation.goBack()}>
-                <Ionicons name="chevron-back" size={25} color="#06DA95" />
-                <Text style={styles.boutonRetourText}>Retour</Text>
+                <Ionicons name="chevron-back" size={25} color={fondTransparent ? '#FFFFFF' : '#06DA95'} />
+                <Text style={[styles.boutonRetourText, fondTransparent && {color : "#FFFFFF"}]}>Retour</Text>
             </TouchableOpacity>
         )}
 
@@ -263,7 +260,7 @@ export default function Header({
         {/* TITRE */}
         {titre && (
             <View style={styles.titreContainer}>
-                <Text style={styles.titre}>{titre}</Text>
+                <Text style={[styles.titre,fondTransparent && {color : "#FFFFFF"}]}>{titre}</Text>
             </View>
         )}
 
@@ -287,8 +284,7 @@ export default function Header({
                 />
             </TouchableOpacity>
         )}
-    </View>
-
+    </View>)
 }
 
 
