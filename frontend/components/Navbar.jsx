@@ -48,6 +48,8 @@ function UserCard({ user }) {
 // NAVBAR PRINCIPALE
 // ------------------------------
 export default function Navbar() {
+    const { width } = useWindowDimensions();
+    const styles = getStyles(width);
     const router = useRouter();
     const pathname = usePathname();
 
