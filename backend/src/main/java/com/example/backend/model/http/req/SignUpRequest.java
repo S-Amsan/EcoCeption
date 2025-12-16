@@ -13,10 +13,12 @@ public class SignUpRequest {
     @NotBlank
     private String email;
 
+    @NotBlank
+    private String name;
+
     @Size(min = 8)
     private String password;
 
-    @NotBlank
     private String phone;
 
     @Min(13)
