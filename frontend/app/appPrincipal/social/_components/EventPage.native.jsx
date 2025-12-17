@@ -1,4 +1,4 @@
-import {ScrollView, Text, View, Image, TouchableOpacity, Modal} from "react-native";
+import {ScrollView, Text, View, Image, TouchableOpacity, Modal, Pressable} from "react-native";
 import React, {useState} from "react";
 
 import Header from "../../../../components/Header";
@@ -11,6 +11,8 @@ import horloge from "../../../../assets/icones/social/horloge.png";
 import styles from "./styles/styles";
 import {formatNombreEspace} from "../../../../utils/format";
 import {tempsEcoule, tempsRestant} from "../../../../utils/temps";
+import {Ionicons} from "@expo/vector-icons";
+import {getMessageEncouragement} from "../../../../utils/message";
 
 
 const EVENT_CONFIG = {
@@ -36,12 +38,11 @@ const EnCours = ({isActive, config, event_DATA, event_user_DATA}) => {
 
     const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
     const pointsRecolte = formatNombreEspace(event_user_DATA?.Points_recolte ?? 0);
-    const pourcentageDAvancement = Math.min(
-        (event_user_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif,
-        1
-    );
+    const pourcentageDAvancement = Math.min((event_user_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+
     const eventNom = event_DATA.Nom
     const eventFin = tempsRestant(event_DATA.Date_fin)
+
     const participants = event_DATA.Participants
     const qualifies = event_DATA.Qualifies
     const coutInscriptionEvent = formatNombreEspace(event_DATA.Cout_inscription)
@@ -54,7 +55,7 @@ const EnCours = ({isActive, config, event_DATA, event_user_DATA}) => {
             {/* Partie Info */}
             <View style={styles.partieInfoContainer}>
                 <View style={styles.nomEventContainer}>
-                    <Text style={styles.nomEventText}>{eventNom}</Text>
+                    <Text style={styles.nomEventText}>{config.titre + " " +eventNom}</Text>
                 </View>
                 <View style={styles.InfoEventWrapper}>
                     <View style={styles.InfoEventContainer}>
@@ -132,8 +133,8 @@ const EnCours = ({isActive, config, event_DATA, event_user_DATA}) => {
     );
 };
 
-const Statistiques = ({isActive, config, user_event_DATA}) => {
-    const [eventClique, setEventClique] = useState(1);
+const Statistiques = ({isActive, config, user_event_DATA, setOngletActifId}) => {
+    const [eventClique, setEventClique] = useState(null);
 
     if (!user_event_DATA) {
         return (
@@ -162,14 +163,17 @@ const Statistiques = ({isActive, config, user_event_DATA}) => {
 
     return (
         <>
-
             {eventClique && (
 
-                <Modal transparent visible={!!eventClique} onPress={() => setEventClique(null)}>
+                <Modal transparent visible={!!eventClique} statusBarTranslucent>
                     <TouchableOpacity
                         style={styles.overlay}
+                        activeOpacity={1}
                         onPress={() => setEventClique(null)}
                     />
+                    {user_event_DATA.map((event_DATA, index)=> (
+                        <EventPopup key={index} event_DATA={event_DATA} eventClique={eventClique} setEventClique={setEventClique} id={index+1} config={config}/>
+                    ))}
                 </Modal>
             )}
             <View style={[styles.statistiqueContainer, {display: isActive ? "flex" : "none"}]}>
@@ -186,7 +190,7 @@ const Statistiques = ({isActive, config, user_event_DATA}) => {
                     <View><Text style={styles.titre}>Historique des {config.titre.toLowerCase()}</Text></View>
                     <View style={styles.carteEventContainer}>
                         {user_event_DATA.map((event_DATA, index) => (
-                            <CarteEvent key={index} event_DATA={event_DATA} id={index+1}/>
+                            <CarteEvent key={index} event_DATA={event_DATA} id={index+1} setEventClique={setEventClique} setOngletActifId={setOngletActifId}/>
                         ))}
                     </View>
                 </View>
@@ -196,7 +200,7 @@ const Statistiques = ({isActive, config, user_event_DATA}) => {
     );
 };
 
-const CarteEvent = ({event_DATA, id}) => {
+const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
     if (!event_DATA) {
         return null;
     }
@@ -212,7 +216,7 @@ const CarteEvent = ({event_DATA, id}) => {
     const eventTermine = tempsRestant(event_DATA.Date_fin) === "Terminé"
 
     return (
-        <View style={styles.carteEvent}>
+        <TouchableOpacity style={styles.carteEvent} onPress={() => eventTermine ? setEventClique(id) : setOngletActifId("encours")}>
             <Text style={styles.numText}>#{id || -1}</Text>
             <View style={styles.carteContenu}>
                     <Text style={styles.infoNom}>{event_DATA.Nom}</Text>
@@ -230,6 +234,77 @@ const CarteEvent = ({event_DATA, id}) => {
                             :
                             <Text style={[styles.infoEtat, styles.defaite]}>Perdu</Text>
                     }
+                </View>
+            </View>
+        </TouchableOpacity>
+    )
+}
+
+const EventPopup = ({event_DATA, eventClique, setEventClique, id, config}) => {
+    if (!event_DATA || eventClique !== id) {
+        return null;
+    }
+    const eventNom = event_DATA.Nom
+    const eventFin = tempsEcoule(event_DATA.Date_fin)
+
+    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
+    const pointsRecolte = formatNombreEspace(event_DATA?.Points_recolte ?? 0);
+    const pourcentageDAvancement = Math.min((event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+
+    const participants = event_DATA.Participants
+    const qualifies = event_DATA.Qualifies
+    const pointsARedistribuer = formatNombreEspace(participants * event_DATA.Cout_inscription)
+
+    return (
+        <View style={styles.popupContainer}>
+            <View style={styles.popupEventContainer}>
+                <View style={styles.titreHautContainer}>
+                    <Text style={styles.popupTitre}>{eventNom}</Text>
+                    <Text style={styles.popupSousTitre}>{config.titre} #{id || -1}</Text>
+                </View>
+                <Pressable style={styles.closeBouton} onPress={() => {setEventClique(null)}}>
+                    <Ionicons name={"close"} size={24}  />
+                </Pressable>
+                <View style={styles.eventInfosContainer}>
+                    <View style={styles.eventInfoContainer}>
+                        <Image source={cible} style={styles.popupIcon}/>
+                        <Text style={styles.infoPopupText}>Objectif : atteindre {pointsObjectif} points</Text>
+                    </View>
+                    <View style={styles.eventInfoContainer}>
+                        <Image source={horloge} style={styles.popupIcon}/>
+                        <Text style={styles.infoPopupText}>Terminé il y a {eventFin}</Text>
+                    </View>
+                </View>
+                <Text style={styles.eventProgression}>{pointsRecolte} pts / {pointsObjectif} pts</Text>
+                <View style={styles.eventResultat}>
+                    {pourcentageDAvancement === 1 ?
+                        event_DATA.Recompense ?
+                            (<>
+                                <Text style={styles.eventResultatTitre}>🏆 Vous avez gagné : </Text>
+                                <Text style={styles.eventResultatSousTitre}>{event_DATA.Recompense.Nom}</Text>
+                                <Text style={styles.eventResultatInfo}><Text style={styles.gras}>Récompense disponible</Text> dans votre profil</Text>
+                            </>):
+                            (<>
+                                <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                                <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                                <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n’avez pas été tiré au sort cette fois.</Text></Text>
+                            </>)
+                        :
+                        (<>
+                            <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                            <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                            <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n&#39;avez pas réussi à vous qualifier</Text></Text>
+                        </>)
+                    }
+
+                </View>
+                <View style={styles.eventInfoSuppWrapper}>
+                    <Text style={styles.eventInfoSuppTitre}>Informations supplémentaires</Text>
+                    <View style={styles.eventInfoSuppContainer}>
+                        <Text style={styles.eventInfoSuppText}>Participants : {participants}</Text>
+                        <Text style={styles.eventInfoSuppText}>Qualifiés : {qualifies}</Text>
+                        <Text style={styles.eventInfoSuppText}>Points à redistribuer : {pointsARedistribuer}</Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -271,6 +346,7 @@ export default function EventPage({type, event_DATA, event_user_DATA, user_DATA,
                                 event_user_DATA={event_user_DATA}
                                 user_DATA={user_DATA}
                                 user_event_DATA={user_event_DATA}
+                                setOngletActifId={setOngletActifId}
                             />
                         );
                     })

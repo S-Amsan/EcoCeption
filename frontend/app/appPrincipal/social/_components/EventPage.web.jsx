@@ -5,16 +5,13 @@ import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
 import TabNavbarWeb from "../../../../components/TabNavbarWeb";
 
-import cible from "../../../../assets/icones/social/cible.png";
-import horloge from "../../../../assets/icones/social/horloge.png";
-
 import styles from "./styles/styles";
 
 const EVENT_CONFIG = {
     concours: {
         titre : "Concours", color : "#FFD54F"
     },
-    evenement: {
+    evenements: {
         titre : "Événements", color : "#E7A2F0"
     },
 }
@@ -22,25 +19,7 @@ const EVENT_CONFIG = {
 const EnCours = () => {
     return (
         <View>
-            <View style={styles.partieInfoContainer}>
-                <View style={styles.nomEventContainer}>
-                    <Text style={styles.nomEventText}>Concours du 11/25</Text>
-                </View>
-                <View style={styles.InfoEventWrapper}>
-                    <View style={styles.InfoEventContainer}>
-                        <Image source={cible} style={styles.InfoEventImage}></Image>
-                        <Text style={styles.InfoEventNom}>Objectif : atteindre 10 000 points</Text>
-                    </View>
-                    <View style={styles.InfoEventContainer}>
-                        <Image source={horloge} style={styles.InfoEventImage}></Image>
-                        <Text style={styles.InfoEventNom}>Fin dans 19 jours </Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.carteInfoContainer}></View>
-            <View style={styles.boutonsContainer}></View>
-            <View style={styles.infosContainer}></View>
+            <Text>Contenu En cours</Text>
         </View>
     );
 };
@@ -60,6 +39,12 @@ export default function EventPage({type, event_DATA, event_user_DATA, user_DATA}
         { id: "evenements", label: "Événements", page: "social/evenements" },
     ];
 
+    const config = EVENT_CONFIG[type]
+
+    if (!config) {
+        return null;
+    }
+
     return (
         <View style={styles.container}>
 
@@ -72,7 +57,7 @@ export default function EventPage({type, event_DATA, event_user_DATA, user_DATA}
 
                 <ScrollView>
                         <TabNavbarWeb onglets={ongletsWeb} pageBack={"social"} />
-                    <Text>{EVENT_CONFIG[type].titre}</Text>
+                    <Text>{config.titre}</Text>
                     <EnCours/>
                     <Statistiques/>
 

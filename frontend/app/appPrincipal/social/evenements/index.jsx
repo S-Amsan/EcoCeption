@@ -5,7 +5,7 @@ import EventPage from "../_components/EventPage";
 export default function Evenements() {
 
     const evenements_DATA = {
-        Nom : "Événements Hiver Durable ❄️",
+        Nom : "Hiver Durable ❄️",
         Date_fin : "2026-01-15T17:59:59",
         Points_objectif : 50000,
         Participants : 342,

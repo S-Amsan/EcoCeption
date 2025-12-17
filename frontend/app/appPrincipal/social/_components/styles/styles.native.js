@@ -2,9 +2,25 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     overlay: {
-        ...StyleSheet.absoluteFillObject,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: "rgba(0,0,0,0.8)",
         zIndex: 50,
+    },
+    popupContainer : {
+        flex : 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    popupEventContainer : {
+        zIndex: 100,
+        backgroundColor: "#FFFFFF",
+        width: "75%",
+        height: "47%",
+        borderRadius: 15 ,
     },
     container: {
         flex: 1,
@@ -236,5 +252,104 @@ export default StyleSheet.create({
         color : "#ffffff",
         backgroundColor : "#FF5858",
     },
-
+    closeBouton : {
+        position : "absolute",
+        top : 20,
+        right : 20,
+    },
+    titreHautContainer : {
+        alignItems : "center",
+        padding : 20,
+    },
+    popupTitre : {
+        fontSize : 20,
+        fontWeight : "bold",
+    },
+    popupSousTitre : {
+        fontSize : 13,
+        fontWeight : "bold",
+        color : "#666666",
+    },
+    popupIcon : {
+        height : 11,
+        width : 11,
+    },
+    eventInfosContainer : {
+        backgroundColor : "#F5F5F5",
+        borderWidth : 1,
+        borderColor : "#AAAAAA",
+        borderRadius : 15,
+        marginHorizontal : 20,
+        marginTop : 0,
+        marginBottom : 10,
+        padding: 10,
+    },
+    eventInfoContainer : {
+        flexDirection : "row",
+        alignItems: "center",
+        gap : 5,
+    },
+    infoPopupText : {
+        fontSize : 12,
+    },
+    eventProgression : {
+        textAlign: "center",
+        borderWidth : 1,
+        borderColor : "#AAAAAA",
+        borderRadius : 15,
+        padding: 15,
+        marginHorizontal : 20,
+        marginBottom : 15,
+        fontSize : 18,
+        fontWeight : "bold",
+    },
+    eventResultat : {
+        marginHorizontal : 20,
+        marginBottom : 15,
+    },
+    eventResultatTitre : {
+        fontSize : 16,
+        fontWeight : "bold",
+    },
+    eventResultatSousTitre : {
+        fontSize : 15,
+        fontWeight : "bold",
+    },
+    eventResultatInfo : {
+        fontSize : 13,
+        color: "#00C98D",
+    },
+    gras : {
+        fontWeight : "bold",
+    },
+    eventInfoSuppWrapper : {
+        backgroundColor : "#F5F5F5",
+        borderWidth : 1,
+        borderColor : "#AAAAAA",
+        borderRadius : 15,
+        marginHorizontal : 20,
+        marginTop : 0,
+        marginBottom : 10,
+        padding: 10,
+    },
+    eventInfoSuppTitre : {
+        position : "absolute",
+        top : 0,
+        alignSelf : "center",
+        fontSize : 12,
+        fontWeight : "bold",
+        marginVertical : 10,
+    },
+    eventInfoSuppContainer : {
+        marginTop : 30,
+        marginBottom : 10,
+        gap : 5,
+    },
+    eventInfoSuppText : {
+        marginLeft : 10,
+        fontSize : 10,
+    },
+    rougeText : {
+        color: "#FF5858"
+    },
 });
