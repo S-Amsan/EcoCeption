@@ -55,11 +55,17 @@ public class AuthService {
         SignUpRequest request
     ) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AccountAlreadyExistsException(request.getEmail());
+            throw new AccountAlreadyExistsException(
+                AccountAlreadyExistsException.Type.EMAIL,
+                request.getEmail()
+            );
         }
 
         if (userRepository.existsByPseudo(request.getPseudo())) {
-            throw new IllegalArgumentException("Pseudo already exists");
+            throw new AccountAlreadyExistsException(
+                AccountAlreadyExistsException.Type.PSEUDO,
+                request.getPseudo()
+            );
         }
 
         User user = new User(request.getPseudo(), request.getEmail());
