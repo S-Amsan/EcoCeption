@@ -1,45 +1,314 @@
-import { ScrollView, Text, View, Image} from "react-native";
-import React from "react";
+import {ScrollView, Text, View, Image, TouchableOpacity, Pressable} from "react-native";
+import React, {useState} from "react";
 
-import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
-import TabNavbarWeb from "../../../../components/TabNavbarWeb";
+
+import cible from "../../../../assets/icones/social/cible.png";
+import horloge from "../../../../assets/icones/social/horloge.png";
 
 import styles from "./styles/styles";
+import {formatNombreEspace} from "../../../../utils/format";
+import {tempsEcoule, tempsRestant} from "../../../../utils/temps";
+import {Ionicons} from "@expo/vector-icons";
+import {getMessageEncouragement} from "../../../../utils/message";
+import PopUp from "../../../../components/PopUp";
+import TabNavbarWeb from "../../../../components/TabNavbarWeb";
+import Navbar from "../../../../components/Navbar";
+
 
 const EVENT_CONFIG = {
     concours: {
-        titre : "Concours", color : "#FFD54F"
+        titre: "Concours", couleur: "#FFD54F"
     },
     evenements: {
-        titre : "Événements", color : "#E7A2F0"
+        titre: "Événements", couleur: "#E7A2F0"
     },
 }
 
-const EnCours = () => {
+const EnCours = ({config, event_DATA, user_event_DATA}) => {
+
+    if (!event_DATA) {
+        return (
+            <View style={styles.enCoursContainer}>
+                <View style={styles.alertContainer}>
+                    <Text style={styles.messageAlert}>Aucun {config.titre.toLowerCase()} disponible :(</Text>
+                </View>
+            </View>
+        )
+    }
+
+    const now = new Date();
+
+    const event_user_DATA = user_event_DATA ?
+        user_event_DATA
+            .filter(e => new Date(e.Date_fin) > now) // dates non passées
+            .sort((a, b) => new Date(a.Date_fin) - new Date(b.Date_fin))[0]
+            || null
+        : null;
+
+    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
+    const pointsRecolte = formatNombreEspace(event_user_DATA?.Points_recolte ?? 0);
+    const pourcentageDAvancement = Math.min((event_user_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+
+    const eventNom = event_DATA.Nom
+    const eventFin = tempsRestant(event_DATA.Date_fin)
+
+    const participants = event_DATA.Participants
+    const qualifies = event_DATA.Qualifies
+    const coutInscriptionEvent = formatNombreEspace(event_DATA.Cout_inscription)
+    const pointsARedistribuer = formatNombreEspace(participants * event_DATA.Cout_inscription)
+
     return (
-        <View>
-            <Text>Contenu En cours</Text>
+        <View style={styles.enCoursContainer}>
+
+            {/* ---- HAUT ----- */}
+            {/* Partie Info */}
+            <View style={styles.partieInfoContainer}>
+                <View style={styles.nomEventContainer}>
+                    <Text style={styles.nomEventText}>{config.titre + " " +eventNom}</Text>
+                </View>
+                <View style={styles.InfoEventWrapper}>
+                    <View style={styles.InfoEventContainer}>
+                        <Image source={cible} style={styles.InfoEventImage}></Image>
+                        <Text style={styles.InfoEventNom}>Objectif : atteindre {pointsObjectif} points</Text>
+                    </View>
+                    <View style={styles.InfoEventContainer}>
+                        <Image source={horloge} style={styles.InfoEventImage}></Image>
+                        <Text style={styles.InfoEventNom}>Fin dans {eventFin}</Text>
+                    </View>
+                </View>
+            </View>
+
+            {/* ---- MILIEU ----- */}
+            {/* Carte Info */}
+            <View style={styles.contenuMilieuContainer}>
+
+                {event_user_DATA ? (
+                    <View style={styles.carteInfoContainer}>
+                        <Text style={styles.infoPointsText}>{pointsRecolte} pts / {pointsObjectif} pts</Text>
+                        <View style={styles.barreDAvancementContainer}>
+                            <View
+                                style={{
+                                    backgroundColor: config.couleur,
+                                    borderRadius: 24,
+                                    width: `${pourcentageDAvancement * 100}%`,
+                                }}
+                            />
+                            <View
+                                style={{
+                                    width: `${(1 - pourcentageDAvancement) * 100}%`,
+                                }}
+                            />
+                        </View>
+                        <Text style={styles.infoSousText}>Tu es à {(pourcentageDAvancement * 100).toFixed(2)}% de l&#39;objectif ! 🤤</Text>
+                    </View>
+                ) : (
+                    <View style={[styles.carteInfoContainer, {padding: 30, gap: 10}]}>
+                        <Text style={styles.infoPointsText}>Coût d’incription</Text>
+                        <Text style={styles.coutText}>{coutInscriptionEvent} points</Text>
+                    </View>
+                )
+                }
+                <View style={styles.boutonsContainer}>
+                    {event_user_DATA ? (
+                            <TouchableOpacity style={[styles.boutonPrincipaleContainer, styles.boutonDesinscrire]}><Text
+                                style={styles.boutonPrincipaleText}>Se désinscrire</Text></TouchableOpacity>
+                        ) :
+                        (
+                            <TouchableOpacity style={[styles.boutonPrincipaleContainer, styles.boutonSinscrire]}><Text
+                                style={styles.boutonPrincipaleText}>S’inscrire</Text></TouchableOpacity>
+                        )
+                    }
+                        <TouchableOpacity style={styles.boutonSecondaireContainer}><Text
+                            style={styles.boutonsSecondaireText}>En savoir plus</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.boutonSecondaireContainer}><Text
+                            style={styles.boutonsSecondaireText}>Voir les récompences</Text>
+                        </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* ---- BAS ----- */}
+            {/* Infos Supplementaires */}
+            <View style={styles.infosCarteContainer}>
+                <Text style={styles.infoTitre}>Informations supplémentaires</Text>
+                <View style={styles.infosContainer}>
+                    <Text style={styles.infoText}>Participants : {participants}</Text>
+                    <Text style={styles.infoText}>Qualifiés : {qualifies}</Text>
+                    <Text style={styles.infoText}>Points à redistribuer : {pointsARedistribuer}</Text>
+                    <Text style={styles.infoText}>Chances de gagner : ~{((1 / qualifies) * 100).toFixed(2)}%</Text>
+                </View>
+            </View>
         </View>
     );
 };
 
-const Statistiques = () => {
+const Statistiques = ({config, user_event_DATA}) => {
+    const [eventClique, setEventClique] = useState(null);
+
+    if (!user_event_DATA) {
+        return (
+            <View style={styles.statistiqueContainer}>
+                <View style={styles.alertContainer}>
+                    <Text style={styles.messageInformatif}>Rejoignez un {config.titre.toLowerCase()} et commencez à suivre vos performances !</Text>
+                </View>
+            </View>
+        )
+    }
+
+    const nbParticipations = user_event_DATA.length;
+    const nbQualifications = user_event_DATA.filter(e => e.Points_recolte > e.Points_objectif).length;
+    const nbConcoursGagnes = user_event_DATA.filter(e => e.Recompense !== null).length;
+    const efficacite = nbParticipations > 0 ? Math.round((nbQualifications / nbParticipations) * 100) : 0;
+
     return (
-        <View>
-            <Text>Contenu Statistiques</Text>
-        </View>
+        <>
+
+            <PopUp visible={eventClique} setVisible={setEventClique}>
+                <EventPopup event_DATA={eventClique} setEventClique={setEventClique} config={config}/>
+            </PopUp>
+
+            <View style={styles.statistiqueContainer}>
+                <View style={styles.infosCarteContainer}>
+                    <Text style={styles.infoTitre}>Récapitulatif</Text>
+                    <View style={styles.infosContainer}>
+                        <Text style={styles.infoText}>Participations : {nbParticipations}</Text>
+                        <Text style={styles.infoText}>Qualifications : {nbQualifications}</Text>
+                        <Text style={styles.infoText}>Concours gagnés : {nbConcoursGagnes}</Text>
+                        <Text style={styles.infoText}>Efficacité : ~{efficacite}%</Text>
+                    </View>
+                </View>
+                <View style={styles.historiqueContainer}>
+                    <View><Text style={styles.titre}>Historique des {config.titre.toLowerCase()}</Text></View>
+                    <ScrollView
+                        style={styles.scrollView}
+                        contentContainerStyle={styles.carteEventContainer}
+                    >
+                        {user_event_DATA.map((event_DATA, index) => (
+                            <CarteEvent key={index} event_DATA={event_DATA} id={index+1} setEventClique={setEventClique}/>
+                        ))}
+                        <Text style={styles.finText}>Vous avez atteins la fin</Text>
+                    </ScrollView>
+                </View>
+            </View>
+        </>
     );
 };
 
-export default function EventPage({type, event_DATA, event_user_DATA, user_DATA}) {
+const CarteEvent = ({event_DATA,setEventClique, id}) => {
+    if (!event_DATA) {
+        return null;
+    }
+
+
+    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
+    const pointsRecolte = formatNombreEspace(event_DATA?.Points_recolte ?? 0);
+    const pourcentageDAvancement = Math.min((event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+
+    const eventTermine = tempsRestant(event_DATA.Date_fin) === "Terminé"
+
+    return (
+        <TouchableOpacity style={styles.carteEvent} onPress={() => eventTermine && setEventClique({ ...event_DATA, id })}>
+            <Text style={styles.numText}>#{id || -1}</Text>
+            <View style={styles.carteContenu}>
+                <Text style={styles.infoNom}>{event_DATA.Nom}</Text>
+                <Text style={styles.infoTemps}>{eventTermine ? ("Il y a " + tempsEcoule(event_DATA.Date_fin)): ("Fin dans " + tempsRestant(event_DATA.Date_fin))}</Text>
+                <View style={styles.infoEvent}>
+                    <Text style={styles.progressionText}>{pointsRecolte} / {pointsObjectif} ({(pourcentageDAvancement * 100).toFixed(1)}%)</Text>
+                    { pourcentageDAvancement !== 1 ?
+                        eventTermine ?
+                            <Text style={[styles.infoEtat, styles.defaite]}>Non qualifié</Text>
+                            :
+                            <Text style={styles.infoEtat}>En cours</Text>
+                        :
+                        event_DATA.Recompense ?
+                            <Text style={[styles.infoEtat, styles.victoire]}>Gagné</Text>
+                            :
+                            <Text style={[styles.infoEtat, styles.defaite]}>Perdu</Text>
+                    }
+                </View>
+            </View>
+        </TouchableOpacity>
+    )
+}
+
+const EventPopup = ({event_DATA, setEventClique, config}) => {
+    if (!event_DATA) {
+        return null;
+    }
+    const eventNom = event_DATA.Nom
+    const eventFin = tempsEcoule(event_DATA.Date_fin)
+
+    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
+    const pointsRecolte = formatNombreEspace(event_DATA?.Points_recolte ?? 0);
+    const pourcentageDAvancement = Math.min((event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+
+    const participants = event_DATA.Participants
+    const qualifies = event_DATA.Qualifies
+    const pointsARedistribuer = formatNombreEspace(participants * event_DATA.Cout_inscription)
+
+    return (
+            <View style={styles.popupEventContainer}>
+                <View style={styles.titreHautContainer}>
+                    <Text style={styles.popupTitre}>{eventNom}</Text>
+                    <Text style={styles.popupSousTitre}>{config.titre} #{event_DATA.id || -1}</Text>
+                </View>
+                <Pressable style={styles.closeBouton} onPress={() => {setEventClique(null)}}>
+                    <Ionicons name={"close"} size={24}  />
+                </Pressable>
+                <View style={styles.eventInfosContainer}>
+                    <View style={styles.eventInfoContainer}>
+                        <Image source={cible} style={styles.popupIcon}/>
+                        <Text style={styles.infoPopupText}>Objectif : atteindre {pointsObjectif} points</Text>
+                    </View>
+                    <View style={styles.eventInfoContainer}>
+                        <Image source={horloge} style={styles.popupIcon}/>
+                        <Text style={styles.infoPopupText}>Terminé il y a {eventFin}</Text>
+                    </View>
+                </View>
+                <Text style={styles.eventProgression}>{pointsRecolte} pts / {pointsObjectif} pts</Text>
+                <View style={styles.eventResultat}>
+                    {pourcentageDAvancement === 1 ?
+                        event_DATA.Recompense ?
+                            (<>
+                                <Text style={styles.eventResultatTitre}>🏆 Vous avez gagné : </Text>
+                                <Text style={styles.eventResultatSousTitre}>{event_DATA.Recompense.Nom}</Text>
+                                <Text style={styles.eventResultatInfo}><Text style={styles.gras}>Récompense disponible</Text> dans votre profil</Text>
+                            </>):
+                            (<>
+                                <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                                <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                                <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n’avez pas été tiré au sort cette fois.</Text></Text>
+                            </>)
+                        :
+                        (<>
+                            <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                            <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                            <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n&#39;avez pas réussi à vous qualifier</Text></Text>
+                        </>)
+                    }
+
+                </View>
+                <View style={styles.eventInfoSuppWrapper}>
+                    <Text style={styles.eventInfoSuppTitre}>Informations supplémentaires</Text>
+                    <View style={styles.eventInfoSuppContainer}>
+                        <Text style={styles.eventInfoSuppText}>Participants : {participants}</Text>
+                        <Text style={styles.eventInfoSuppText}>Qualifiés : {qualifies}</Text>
+                        <Text style={styles.eventInfoSuppText}>Points à redistribuer : {pointsARedistribuer}</Text>
+                    </View>
+                </View>
+        </View>
+    )
+}
+
+export default function EventPage({type, event_DATA,user_event_DATA}) {
     const ongletsWeb = [
         { id: "classement", label: "Leaderboard", page: "social/classement" },
         { id: "concours", label: "Concours", page: "social/concours" },
         { id: "evenements", label: "Événements", page: "social/evenements" },
     ];
 
-    const config = EVENT_CONFIG[type]
+    const config = EVENT_CONFIG[type];
 
     if (!config) {
         return null;
@@ -47,21 +316,21 @@ export default function EventPage({type, event_DATA, event_user_DATA, user_DATA}
 
     return (
         <View style={styles.container}>
-
             <View style={{ width: "15%" }}>
                 <Navbar />
             </View>
-
             <View style={{ flex: 1 }}>
-                    <Header userDetails={true} />
 
-                <ScrollView>
-                        <TabNavbarWeb onglets={ongletsWeb} pageBack={"social"} />
-                    <Text>{config.titre}</Text>
-                    <EnCours/>
-                    <Statistiques/>
+                <Header userDetails={true}/>
+                <View style={styles.contenuContainer}>
 
-                </ScrollView>
+                    <TabNavbarWeb onglets={ongletsWeb} pageBack={"social"} />
+                    <View style={{flexDirection: "row", flex: 1}}>
+                            <EnCours config={config} event_DATA={event_DATA} user_event_DATA={user_event_DATA}/>
+                            <Statistiques config={config} user_event_DATA={user_event_DATA}/>
+                    </View>
+                </View>
+
             </View>
         </View>
     );

@@ -1,4 +1,4 @@
-import {ScrollView, Text, View, Image, TouchableOpacity, Modal, Pressable} from "react-native";
+import {ScrollView, Text, View, Image, TouchableOpacity, Pressable} from "react-native";
 import React, {useState} from "react";
 
 import Header from "../../../../components/Header";
@@ -13,6 +13,7 @@ import {formatNombreEspace} from "../../../../utils/format";
 import {tempsEcoule, tempsRestant} from "../../../../utils/temps";
 import {Ionicons} from "@expo/vector-icons";
 import {getMessageEncouragement} from "../../../../utils/message";
+import PopUp from "../../../../components/PopUp";
 
 
 const EVENT_CONFIG = {
@@ -24,7 +25,7 @@ const EVENT_CONFIG = {
     },
 }
 
-const EnCours = ({isActive, config, event_DATA, event_user_DATA}) => {
+const EnCours = ({isActive, config, event_DATA, user_event_DATA}) => {
 
     if (!event_DATA) {
         return (
@@ -35,6 +36,15 @@ const EnCours = ({isActive, config, event_DATA, event_user_DATA}) => {
             </View>
         )
     }
+    const now = new Date();
+
+    const event_user_DATA = user_event_DATA ?
+        user_event_DATA
+            .filter(e => new Date(e.Date_fin) > now) // dates non passées
+            .sort((a, b) => new Date(a.Date_fin) - new Date(b.Date_fin))[0]
+        || null
+        : null;
+
 
     const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
     const pointsRecolte = formatNombreEspace(event_user_DATA?.Points_recolte ?? 0);
@@ -147,35 +157,17 @@ const Statistiques = ({isActive, config, user_event_DATA, setOngletActifId}) => 
     }
 
     const nbParticipations = user_event_DATA.length;
-
-    const nbQualifications = user_event_DATA.filter(
-        e => e.Points_recolte > e.Points_objectif
-    ).length;
-
-    const nbConcoursGagnes = user_event_DATA.filter(
-        e => e.Recompense !== null
-    ).length;
-
-    const efficacite = nbParticipations > 0
-        ? Math.round((nbQualifications / nbParticipations) * 100)
-        : 0;
-
+    const nbQualifications = user_event_DATA.filter(e => e.Points_recolte > e.Points_objectif).length;
+    const nbConcoursGagnes = user_event_DATA.filter(e => e.Recompense !== null).length;
+    const efficacite = nbParticipations > 0 ? Math.round((nbQualifications / nbParticipations) * 100) : 0;
 
     return (
         <>
-            {eventClique && (
 
-                <Modal transparent visible={!!eventClique} statusBarTranslucent>
-                    <TouchableOpacity
-                        style={styles.overlay}
-                        activeOpacity={1}
-                        onPress={() => setEventClique(null)}
-                    />
-                    {user_event_DATA.map((event_DATA, index)=> (
-                        <EventPopup key={index} event_DATA={event_DATA} eventClique={eventClique} setEventClique={setEventClique} id={index+1} config={config}/>
-                    ))}
-                </Modal>
-            )}
+            <PopUp visible={eventClique} setVisible={setEventClique}>
+                <EventPopup event_DATA={eventClique} setEventClique={setEventClique} config={config}/>
+            </PopUp>
+
             <View style={[styles.statistiqueContainer, {display: isActive ? "flex" : "none"}]}>
                 <View style={styles.infosCarteContainer}>
                     <Text style={styles.infoTitre}>Récapitulatif</Text>
@@ -208,15 +200,12 @@ const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
 
     const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
     const pointsRecolte = formatNombreEspace(event_DATA?.Points_recolte ?? 0);
-    const pourcentageDAvancement = Math.min(
-        (event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif,
-        1
-    );
+    const pourcentageDAvancement = Math.min((event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
 
     const eventTermine = tempsRestant(event_DATA.Date_fin) === "Terminé"
 
     return (
-        <TouchableOpacity style={styles.carteEvent} onPress={() => eventTermine ? setEventClique(id) : setOngletActifId("encours")}>
+        <TouchableOpacity style={styles.carteEvent} onPress={() => eventTermine ? setEventClique({ ...event_DATA, id }) : setOngletActifId("encours")}>
             <Text style={styles.numText}>#{id || -1}</Text>
             <View style={styles.carteContenu}>
                     <Text style={styles.infoNom}>{event_DATA.Nom}</Text>
@@ -240,8 +229,8 @@ const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
     )
 }
 
-const EventPopup = ({event_DATA, eventClique, setEventClique, id, config}) => {
-    if (!event_DATA || eventClique !== id) {
+const EventPopup = ({event_DATA, setEventClique, config}) => {
+    if (!event_DATA) {
         return null;
     }
     const eventNom = event_DATA.Nom
@@ -260,7 +249,7 @@ const EventPopup = ({event_DATA, eventClique, setEventClique, id, config}) => {
             <View style={styles.popupEventContainer}>
                 <View style={styles.titreHautContainer}>
                     <Text style={styles.popupTitre}>{eventNom}</Text>
-                    <Text style={styles.popupSousTitre}>{config.titre} #{id || -1}</Text>
+                    <Text style={styles.popupSousTitre}>{config.titre} #{event_DATA.id || -1}</Text>
                 </View>
                 <Pressable style={styles.closeBouton} onPress={() => {setEventClique(null)}}>
                     <Ionicons name={"close"} size={24}  />
@@ -311,7 +300,7 @@ const EventPopup = ({event_DATA, eventClique, setEventClique, id, config}) => {
     )
 }
 
-export default function EventPage({type, event_DATA, event_user_DATA, user_DATA, user_event_DATA}) {
+export default function EventPage({type, event_DATA,user_event_DATA}) {
 
     const ongletsMobile = [
         {id: "encours", label: "En cours", component: EnCours},
@@ -343,8 +332,6 @@ export default function EventPage({type, event_DATA, event_user_DATA, user_DATA,
                                 isActive={onglet.id === ongletActifId}
                                 config={config}
                                 event_DATA={event_DATA}
-                                event_user_DATA={event_user_DATA}
-                                user_DATA={user_DATA}
                                 user_event_DATA={user_event_DATA}
                                 setOngletActifId={setOngletActifId}
                             />
