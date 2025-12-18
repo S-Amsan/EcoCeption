@@ -64,6 +64,7 @@ public class AuthService {
         User user = new User(request.getPseudo(), request.getEmail());
         user.setPhone(request.getPhone());
         user.setName(request.getName());
+        user.setAge(request.getAge());
         userRepository.save(user);
 
         PasswordService.HashSalt hashsalt = passwordService.generate(
