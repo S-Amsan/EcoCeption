@@ -131,5 +131,37 @@ export default StyleSheet.create({
         boxShadow: "0px 1px 8px rgba(0,0,0,0.5)",
         paddingVertical : 15,
     },
+    rankContainer : {
+        flexDirection : "row",
+        alignItems: "center",
+        justifyContent : "center",
+    },
+    rankCoter : {
+        width : 100,
+        height : 100,
+    },
+    rankSombre : {
+        opacity: 0.7,
+        tintColor: "#000000",
+        position: "absolute"
+    },
+    rankActuel : {
+        width : 150,
+        height : 150,
+    },
+    barreDeProgressionContainer : {
+        flexDirection : "row",
+        alignItems: "center",
+        justifyContent : "center",
+        gap : 10,
+    },
+    barreDAvancementContainer : {
+        backgroundColor: "#F8F8F8",
+        height : 10,
+        width : "70%",
+        borderRadius : 24,
+        flexDirection: "row",
+        overflow: "hidden",
+    },
 
 });

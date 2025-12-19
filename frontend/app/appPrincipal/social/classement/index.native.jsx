@@ -8,7 +8,7 @@ import TabNavbarMobile from "../../../../components/TabNavbarMobile";
 
 import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 import tropheeIcon from "../../../../assets/icones/trophee.png";
-import {getRankImageUrl} from "../../../../constants/rank";
+import {getCarriere, getRankImage} from "../../../../constants/rank";
 
 // ---------------- LEADERBOARD ----------------
 
@@ -102,29 +102,44 @@ const UserCarte = ({user_DATA, separateur = true}) => {
 // ---------------- MA CARRIERE ----------------
 
 const MaCarriere = ({isActive}) => {
+    const {rankPrecedent , rankActuel, rankSuivant} = getCarriere(23);
+    const pourcentageDAvancement = 0.1;
     return (
         <View style={[{display: isActive ? "flex" : "none"}]}>
            <View>
                <Text>Vous êtes</Text>
-               <View>
+               <View style={styles.rankContainer}>
                    <View>
-                       <Image source={getRankImageUrl(200000)}/>
-                       <Image source={getRankImageUrl(200000)} style={{ opacity: 0.8, tintColor: "#000000", position: "absolute"}} />
+                       <Image source={rankPrecedent?.image || null} style={styles.rankCoter}/>
+                       <Image source={rankPrecedent?.image || null} style={[styles.rankCoter, styles.rankSombre]} />
                    </View>
-                   <Image source={getRankImageUrl(1000)}/>
-                   <Image source={getRankImageUrl(1000)}/>
+                   <Image source={rankActuel.image} style={styles.rankActuel}/>
+                   <View>
+                       <Image source={rankSuivant?.image || null} style={styles.rankCoter}/>
+                       <Image source={rankSuivant?.image || null} style={[styles.rankCoter, styles.rankSombre]} />
+                   </View>
                </View>
-               <Text>Or III</Text>
-               <Text>Un éco-responsable en Or</Text>
+               <Text>{rankActuel.name + " " + rankActuel.division}</Text>
+               <Text>{rankActuel.description}</Text>
            </View>
            <View>
-               <View>
-                   <Text>{-1}</Text>
-                   <View>
-                       <View/>
-                       <View/>
+               <View style={styles.barreDeProgressionContainer}>
+                   <Text>{rankActuel?.requiredTrophies || "0"}</Text>
+                   <View style={styles.barreDAvancementContainer}>
+                       <View
+                           style={{
+                               backgroundColor: "red",
+                               borderRadius: 24,
+                               width: `${pourcentageDAvancement * 100}%`,
+                           }}
+                       />
+                       <View
+                           style={{
+                               width: `${(1 - pourcentageDAvancement) * 100}%`,
+                           }}
+                       />
                    </View>
-                   <Text>{-1}</Text>
+                   <Text>{rankSuivant?.requiredTrophies || ""}</Text>
                </View>
                <Text>{-1} Trophées</Text>
            </View>
@@ -159,7 +174,7 @@ export default function Classement(){
         {id: "macarriere", label: "Ma carrière", component: MaCarriere},
     ];
 
-    const [ongletActifId, setOngletActifId] = React.useState("leaderboard");
+    const [ongletActifId, setOngletActifId] = React.useState("macarriere");
 
     const config = CONFIG_TABNAVBAR[ongletActifId];
 

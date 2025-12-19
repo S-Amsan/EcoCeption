@@ -43,6 +43,35 @@ const IMAGE_BY_FULL_RANK = {
     "Elite": elite,
 };
 
+export const DESCRIPTION_BY_FULL_RANK = {
+    "Bronze III": "Un débutant de l’éco-engagement",
+    "Bronze II": "Un citoyen sensible à l’écologie",
+    "Bronze I": "Un citoyen engagé pour la planète",
+
+    "Argent III": "Un éco-responsable en devenir",
+    "Argent II": "Un éco-responsable régulier",
+    "Argent I": "Un éco-responsable confirmé",
+
+    "Or III": "Un éco-responsable en Or",
+    "Or II": "Un éco-acteur exemplaire",
+    "Or I": "Un éco-acteur de référence",
+
+    "Platine III": "Un pilier de l’écologie quotidienne",
+    "Platine II": "Un modèle d’engagement écologique",
+    "Platine I": "Un leader éco-responsable",
+
+    "Diamant III": "Un ambassadeur de la transition écologique",
+    "Diamant II": "Un ambassadeur écologique reconnu",
+    "Diamant I": "Un ambassadeur écologique d’exception",
+
+    "Maitre III": "Un maître des actions durables",
+    "Maitre II": "Un expert de l’engagement écologique",
+    "Maitre I": "Un maître incontesté de l’écologie",
+
+    "Elite": "Une légende de l’engagement écologique"
+};
+
+
 // Les rangs de base de l'application (sans divisions)
 const BASE_RANKS = [
     "Bronze",
@@ -70,12 +99,14 @@ export const RANK_PALIERS = [];
 // Génération des rangs avec divisions (Bronze à Maître)
 for (const rankName of BASE_RANKS.slice(0, -1)) { // Exclut 'Élite'
     for (const division of DIVISIONS) {
+        const fullName = `${rankName} ${division}`;
         RANK_PALIERS.push({
             id: rankId++,
             name: rankName,
             division: division,
             requiredTrophies: currentTrophies,
-            imageUrl: `../assets/icones/rank/${rankName}.png`, // Utilise le nom principal
+            image: IMAGE_BY_FULL_RANK[fullName],
+            description: DESCRIPTION_BY_FULL_RANK[fullName]
         });
         currentTrophies += TROPHIES_PER_STEP;
     }
@@ -87,7 +118,7 @@ RANK_PALIERS.push({
     name: "Élite",
     division: "", // Pas de division pour Elite
     requiredTrophies: currentTrophies,
-    imageUrl: `../assets/icones/rank/elite.png`,
+    image: elite,
 });
 
 
@@ -113,9 +144,32 @@ export function getCurrentRank(userTrophies) {
  * @param userTrophies Le nombre de trophées de l'utilisateur.
  * @returns Le chemin d'accès à l'image du rang.
  */
-export function getRankImageUrl(userTrophies) {
+export function getRankImage(userTrophies) {
     const fullRankName = getFullRankName(userTrophies);
     return IMAGE_BY_FULL_RANK[fullRankName] || elite;}
+
+
+export function getCarriere(userTrophies) {
+
+    let rankActuelID;
+    for (let i = RANK_PALIERS.length - 1; i >= 0; i--) {
+        if (userTrophies >= RANK_PALIERS[i].requiredTrophies) {
+            rankActuelID = i;
+            break;
+        }
+    }
+    const carriere = {
+        rankPrecedent : rankActuelID === 0 ? null : RANK_PALIERS[rankActuelID-1],
+        rankActuel : RANK_PALIERS[rankActuelID],
+        rankSuivant : rankActuelID === RANK_PALIERS.length ? null : RANK_PALIERS[rankActuelID+1],
+    }
+
+    return carriere;
+
+}
+
+
+
 
 /**
  * Retourne le rang complet (ex: "Bronze III").
