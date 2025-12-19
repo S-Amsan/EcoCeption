@@ -6,6 +6,14 @@ export default StyleSheet.create({
         backgroundColor: "#ffffff",
         flexDirection: "row",
     },
+    leaderboardContainer : {
+        flex: 1,
+    },
+    macarriereContainer : {
+        flex: 1,
+        marginHorizontal: 30,
+        marginVertical: 30,
+    },
     podiumContainer : {
         flex: 1,
         flexDirection: "row",
@@ -38,7 +46,7 @@ export default StyleSheet.create({
         alignItems : "center",
         justifyContent : "center",
         gap : 5,
-        width : "50%",
+        width : "70%",
         paddingVertical: 2,
     },
     placeTropheesText : {
@@ -86,7 +94,8 @@ export default StyleSheet.create({
         gap : 15,
     },
     userTopText : {
-        paddingHorizontal : 30,
+        width: "17%",
+        textAlign: "center",
         paddingVertical : 25,
         fontSize : 18,
         fontWeight : "bold",
@@ -131,6 +140,15 @@ export default StyleSheet.create({
         boxShadow: "0px 1px 8px rgba(0,0,0,0.5)",
         paddingVertical : 15,
     },
+    titreCarriere : {
+        fontSize : 26,
+        fontWeight : "900",
+        textAlign : "center",
+        color : "#3b3b3b"
+    },
+    rankInfoContainer : {
+        gap : 10,
+    },
     rankContainer : {
         flexDirection : "row",
         alignItems: "center",
@@ -149,6 +167,22 @@ export default StyleSheet.create({
         width : 150,
         height : 150,
     },
+    rankNomText : {
+        fontSize : 26,
+        fontWeight : "bold",
+        textAlign : "center",
+    },
+    rankDescriptionText : {
+        fontSize : 16,
+        fontWeight : "600",
+        textAlign : "center",
+        color : "#3b3b3b"
+    },
+    tropheesInfoContainer : {
+        marginBottom : 35,
+        gap : 10,
+        marginTop : 10,
+    },
     barreDeProgressionContainer : {
         flexDirection : "row",
         alignItems: "center",
@@ -156,12 +190,64 @@ export default StyleSheet.create({
         gap : 10,
     },
     barreDAvancementContainer : {
-        backgroundColor: "#F8F8F8",
+        backgroundColor: "#e4e4e4",
         height : 10,
-        width : "70%",
+        width : "75%",
         borderRadius : 24,
         flexDirection: "row",
         overflow: "hidden",
+    },
+    tropheesPalier : {
+        fontSize : 15,
+        fontWeight : "bold",
+        color : "#3b3b3b"
+    },
+    tropheesUser : {
+        fontSize : 18,
+        fontWeight : "bold",
+        textAlign : "center",
+        color : "#3b3b3b"
+    },
+    boutonsContainer : {
+        flex : 1,
+        gap : 20,
+    },
+    bulleInfoPrincipal : {
+        padding : 30,
+        borderRadius : 15,
+        boxShadow : "0px 1px 4px rgba(0,0,0,0.25)",
+        alignItems: "center",
+        justifyContent : "center",
+        flexDirection : "row",
+
+    },
+    infoPrincipalImage : {
+        width : 20,
+        height : 20,
+    },
+    infoPrincipalText : {
+        textAlign : "center",
+        fontWeight : "900",
+        fontSize : 17,
+    },
+    classementGlobalText : {
+        color : "#05D993"
+    },
+    boutonsSecondaireContainer : {
+        flexDirection : "row",
+        gap : 20,
+        width: "100%",
+    },
+    boutonSecondaire : {
+        flex: 1,
+        boxShadow : "0px 1px 4px rgba(0,0,0,0.25)",
+        borderRadius : 15,
+        padding : 12,
+    },
+    boutonSecondaireText : {
+        fontSize : 15,
+        fontWeight : "600",
+        textAlign : "center",
     },
 
 });

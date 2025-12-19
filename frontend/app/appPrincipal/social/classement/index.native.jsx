@@ -8,28 +8,33 @@ import TabNavbarMobile from "../../../../components/TabNavbarMobile";
 
 import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 import tropheeIcon from "../../../../assets/icones/trophee.png";
-import {getCarriere, getRankImage} from "../../../../constants/rank";
+import medaille from "../../../../assets/icones/social/medailleClassement.png";
+
+import {getCarriere} from "../../../../constants/rank";
+import {formatNombreCourt} from "../../../../utils/format";
 
 // ---------------- LEADERBOARD ----------------
 
-const Leaderboard = ({isActive}) => {
-    const user_classement = [0,1,2,3,4,5,6,7,8,9,10] // TODO remplacer par des vrai donné
+const Leaderboard = ({isActive, leaderboard_DATA, user_DATA}) => {
+    const podium_users = leaderboard_DATA.slice(0,3);
+    const users_hors_podium = leaderboard_DATA.slice(3);
+
     return (
-        <View style={[{display: isActive ? "flex" : "none", flex : 1}]}>
+        <View style={[{display: isActive ? "flex" : "none"}, styles.leaderboardContainer]}>
             <View style={styles.podiumContainer}>
                 {
-                    PODIUM_ORDRE.map((index) => (<Place key={index} id={index} />))
+                    PODIUM_ORDRE.map((index) => (<Place key={index} user_DATA={podium_users[index]}/>))
                 }
             </View>
             <View style={styles.classementTableauContainer}>
                 <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
                     {
-                        user_classement.map((index) => (<UserCarte key={index} separateur={index !== user_classement.length - 1}/>))
+                        users_hors_podium.map((user, index) => (<UserCarte key={index} user_DATA={user} userActuel={user_DATA.Id === user.Id} separateur={index !== users_hors_podium.length - 1}/>))
                     }
                     <Text style={styles.finText}>Seul le Top 100 est affiché</Text>
                 </ScrollView>
                 <View style={styles.userActuelCarte}>
-                    <UserCarte separateur={false}/>
+                    <UserCarte user_DATA={user_DATA} userActuel={true} separateur={false}/>
                 </View>
             </View>
         </View>
@@ -52,10 +57,10 @@ const podiumStyle = [0, 1, 2].map((index) => ({
 }));
 
 
-const Place = ({user_DATA, id}) => {
-    //if (!user_DATA) return null;
+const Place = ({user_DATA}) => {
+    if (!user_DATA) return null;
 
-    const num = id+1;//user_DATA.Classement || 0;
+    const num = user_DATA.Classement;
     const style = podiumStyle[num-1];
 
     return (
@@ -66,7 +71,7 @@ const Place = ({user_DATA, id}) => {
             />
             <Text style={styles.placeNomText}>{user_DATA?.Nom || "USER_NOM"}</Text>
             <View style={styles.placeTropheesContainer}>
-                <Text style={styles.placeTropheesText}>{user_DATA?.Trophees || -1}</Text>
+                <Text style={styles.placeTropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
                 <Image source={tropheeIcon} style={styles.podiumTropheeIcon}/>
             </View>
             <View style={[styles.place, style.place]}>
@@ -76,16 +81,16 @@ const Place = ({user_DATA, id}) => {
     )
 }
 
-const UserCarte = ({user_DATA, separateur = true}) => {
+const UserCarte = ({user_DATA, userActuel = false, separateur = true}) => {
     return (
         <View style={styles.userTopContainer}>
-            <Text style={styles.userTopText}>{user_DATA?.Top || -1}</Text>
+            <Text style={styles.userTopText}>{user_DATA?.Classement || -1}</Text>
             <View style={styles.userInfoContainer}>
                 <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userTopPicture}/>
-                <Text style={styles.userTopName}>{user_DATA?.Nom || "USER_NOM"}</Text>{/* TODO Mettre (Vous quand c'est le user Actuel)*/}
+                <Text style={styles.userTopName}>{user_DATA?.Nom || "USER_NOM"} {userActuel && "(Vous)"}</Text>{/* TODO Mettre (Vous quand c'est le user Actuel)*/}
             </View>
             <View style={styles.userTropheesContainer}>
-                <Text style={styles.userTropheesText}>{user_DATA?.Trophees || -1}</Text>
+                <Text style={styles.userTropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
                 <Image source={tropheeIcon} style={styles.TropheesIcon}/>
             </View>
             {
@@ -101,13 +106,19 @@ const UserCarte = ({user_DATA, separateur = true}) => {
 
 // ---------------- MA CARRIERE ----------------
 
-const MaCarriere = ({isActive}) => {
-    const {rankPrecedent , rankActuel, rankSuivant} = getCarriere(23);
-    const pourcentageDAvancement = 0.1;
+const MaCarriere = ({isActive, user_DATA}) => {
+    if (!user_DATA) return null;
+
+    const {rankPrecedent , rankActuel, rankSuivant} = getCarriere(user_DATA.Trophees);
+
+    const tropheesPourPalierSuivant = rankSuivant ? (rankSuivant.requiredTrophies - rankActuel.requiredTrophies) : 0;
+    const tropheesDepuisPalierActuel = user_DATA.Trophees - rankActuel.requiredTrophies;
+    const pourcentageDAvancement = Math.min((tropheesDepuisPalierActuel) / tropheesPourPalierSuivant, 1);
+
     return (
-        <View style={[{display: isActive ? "flex" : "none"}]}>
-           <View>
-               <Text>Vous êtes</Text>
+        <View style={[{display: isActive ? "flex" : "none"}, styles.macarriereContainer]}>
+           <View style={styles.rankInfoContainer}>
+               <Text style={styles.titreCarriere}>Vous êtes</Text>
                <View style={styles.rankContainer}>
                    <View>
                        <Image source={rankPrecedent?.image || null} style={styles.rankCoter}/>
@@ -119,16 +130,18 @@ const MaCarriere = ({isActive}) => {
                        <Image source={rankSuivant?.image || null} style={[styles.rankCoter, styles.rankSombre]} />
                    </View>
                </View>
-               <Text>{rankActuel.name + " " + rankActuel.division}</Text>
-               <Text>{rankActuel.description}</Text>
+               <View>
+                   <Text style={[styles.rankNomText,{color : rankActuel.color}]}>{rankActuel.name + " " + rankActuel.division}</Text>
+                   <Text style={styles.rankDescriptionText}>{rankActuel.description}</Text>
+               </View>
            </View>
-           <View>
+           <View style={styles.tropheesInfoContainer}>
                <View style={styles.barreDeProgressionContainer}>
-                   <Text>{rankActuel?.requiredTrophies || "0"}</Text>
+                   <Text style={styles.tropheesPalier}>{rankActuel ? formatNombreCourt(rankActuel.requiredTrophies) : ""}</Text>
                    <View style={styles.barreDAvancementContainer}>
                        <View
                            style={{
-                               backgroundColor: "red",
+                               backgroundColor: rankActuel.color,
                                borderRadius: 24,
                                width: `${pourcentageDAvancement * 100}%`,
                            }}
@@ -139,20 +152,21 @@ const MaCarriere = ({isActive}) => {
                            }}
                        />
                    </View>
-                   <Text>{rankSuivant?.requiredTrophies || ""}</Text>
+                   <Text style={styles.tropheesPalier}>{rankSuivant ? formatNombreCourt(rankSuivant.requiredTrophies) : "∞"}</Text>
                </View>
-               <Text>{-1} Trophées</Text>
+               <Text style={styles.tropheesUser}>{formatNombreCourt(user_DATA.Trophees)} Trophées</Text>
            </View>
-           <View>
-               <TouchableOpacity>
-                   <Image/><Text>Classement global :<Text>{"#-1"}</Text></Text>
-               </TouchableOpacity>
-               <View>
-                   <TouchableOpacity>
-                       <Text>En savoir plus sur le classement</Text>
+           <View style={styles.boutonsContainer}>
+               <View style={styles.bulleInfoPrincipal}>
+                   <Image source={medaille} style={styles.infoPrincipalImage}/>
+                   <Text style={styles.infoPrincipalText}>Classement global : <Text style={styles.classementGlobalText}>#{user_DATA.Classement}</Text></Text>
+               </View>
+               <View style={styles.boutonsSecondaireContainer}>
+                   <TouchableOpacity style={styles.boutonSecondaire}>
+                       <Text style={styles.boutonSecondaireText}>En savoir plus sur le classement</Text>
                    </TouchableOpacity>
-                   <TouchableOpacity>
-                       <Text>Voir les rangs disponibles</Text>
+                   <TouchableOpacity style={styles.boutonSecondaire}>
+                       <Text style={styles.boutonSecondaireText}>Voir les rangs disponibles</Text>
                    </TouchableOpacity>
                </View>
            </View>
@@ -174,9 +188,44 @@ export default function Classement(){
         {id: "macarriere", label: "Ma carrière", component: MaCarriere},
     ];
 
-    const [ongletActifId, setOngletActifId] = React.useState("macarriere");
+    const [ongletActifId, setOngletActifId] = React.useState("leaderboard");
 
     const config = CONFIG_TABNAVBAR[ongletActifId];
+
+    const user_DATA = {
+        Id : 35,
+        Nom : "",
+        Pseudo : "",
+        Photo_url : "",
+        Trophees : 57400,
+    };//TODO récupérer les vrai données
+
+    const users_DATA = Array.from({ length: 300 }, (_, index) => ({
+        Id: index + 1,
+        Nom: `USER_NOM`,
+        Pseudo: `USER_PSEUDO`,
+        Photo_url: "",
+        Trophees: Math.floor(Math.random() * 100000),
+    }));//TODO récupérer les vrai données
+
+    const allUsers = [
+        ...users_DATA.filter(u => u.Id !== user_DATA.Id),
+        user_DATA,
+    ];
+
+    const usersSortedByRank = [...allUsers]
+        .sort((a, b) => b.Trophees - a.Trophees)
+        .map((u, i) => ({ ...u, Classement: i + 1 }));
+
+    const userClassement =
+        usersSortedByRank.findIndex(u => u.Id === user_DATA.Id) + 1;
+
+    const user_DATA_WITH_RANK = {
+        ...user_DATA,
+        Classement: userClassement,
+    };
+
+    const leaderboard_DATA = usersSortedByRank.slice(0,100)
 
     return(
         <View style={[styles.container, config.transparent && {backgroundColor: "#05D991"}]}>
@@ -199,6 +248,8 @@ export default function Classement(){
                                     key={onglet.id}
                                     isActive={onglet.id === ongletActifId}
                                     setOngletActifId={setOngletActifId}
+                                    user_DATA={user_DATA_WITH_RANK}
+                                    leaderboard_DATA={leaderboard_DATA}
                                 />
                             );
                         })

@@ -1,49 +1,86 @@
-// Ranks, pour le classement
-// Import des images de chaque rang
+// =======================
+// IMPORT DES IMAGES
+// =======================
 import bronzeIII from '../assets/icones/rank/Bronze III.png'
 import bronzeII from '../assets/icones/rank/Bronze II.png'
 import bronzeI from '../assets/icones/rank/Bronze I.png'
+
 import argentIII from '../assets/icones/rank/Argent III.png'
 import argentII from '../assets/icones/rank/Argent II.png'
 import argentI from '../assets/icones/rank/Argent I.png'
+
 import orIII from '../assets/icones/rank/Or III.png'
 import orII from '../assets/icones/rank/Or II.png'
 import orI from '../assets/icones/rank/Or I.png'
+
 import platineIII from '../assets/icones/rank/Platine III.png'
 import platineII from '../assets/icones/rank/Platine II.png'
 import platineI from '../assets/icones/rank/Platine I.png'
+
 import diamantIII from '../assets/icones/rank/Diamant III.png'
 import diamantII from '../assets/icones/rank/Diamant II.png'
 import diamantI from '../assets/icones/rank/Diamant I.png'
+
 import maitreIII from '../assets/icones/rank/Maitre III.png'
 import maitreII from '../assets/icones/rank/Maitre II.png'
 import maitreI from '../assets/icones/rank/Maitre I.png'
+
 import elite from '../assets/icones/rank/Elite.png'
 
+
+// =======================
+// CONSTANTES
+// =======================
+
+const TROPHIES_PER_STEP = 5000
+export const RANG_MINIMUM_EVENEMENT = "Or III"
+
+const BASE_RANKS = [
+    "Bronze",
+    "Argent",
+    "Or",
+    "Platine",
+    "Diamant",
+    "Maitre",
+    "Elite",
+]
+
+const DIVISIONS = ["III", "II", "I"]
+
+
+// =======================
+// MAPPINGS
+// =======================
 
 const IMAGE_BY_FULL_RANK = {
     "Bronze III": bronzeIII,
     "Bronze II": bronzeII,
     "Bronze I": bronzeI,
+
     "Argent III": argentIII,
     "Argent II": argentII,
     "Argent I": argentI,
+
     "Or III": orIII,
     "Or II": orII,
     "Or I": orI,
+
     "Platine III": platineIII,
     "Platine II": platineII,
     "Platine I": platineI,
+
     "Diamant III": diamantIII,
     "Diamant II": diamantII,
     "Diamant I": diamantI,
+
     "Maitre III": maitreIII,
     "Maitre II": maitreII,
     "Maitre I": maitreI,
-    "Elite": elite,
-};
 
-export const DESCRIPTION_BY_FULL_RANK = {
+    "Elite": elite,
+}
+
+const DESCRIPTION_BY_FULL_RANK = {
     "Bronze III": "Un débutant de l’éco-engagement",
     "Bronze II": "Un citoyen sensible à l’écologie",
     "Bronze I": "Un citoyen engagé pour la planète",
@@ -68,159 +105,104 @@ export const DESCRIPTION_BY_FULL_RANK = {
     "Maitre II": "Un expert de l’engagement écologique",
     "Maitre I": "Un maître incontesté de l’écologie",
 
-    "Elite": "Une légende de l’engagement écologique"
-};
+    "Elite": "Une légende de l’engagement écologique",
+}
+
+const COLOR_BY_RANK = {
+    "Bronze": "#ac5f26",
+    "Argent": "#898b87",
+    "Or": "#f8c131",
+    "Platine": "#88aacc",
+    "Diamant": "#4cdecc",
+    "Maitre": "#e2aded",
+    "Elite": "#ed4f3c",
+}
 
 
-// Les rangs de base de l'application (sans divisions)
-const BASE_RANKS = [
-    "Bronze",
-    "Argent",
-    "Or",
-    "Platine",
-    "Diamant",
-    "Maitre",
-    "Elite",
-];
+// =======================
+// GÉNÉRATION DES RANGS
+// =======================
 
-// Les divisions (dans l'ordre croissant)
-const DIVISIONS = ["III", "II", "I"];
+export const RANK_PALIERS = []
 
-// Le seuil de trophées par palier (5000)
-const TROPHIES_PER_STEP = 5000;
+let trophies = 0
+let id = 1
 
-export const RANG_MINIMUM_EVENEMENT = "Or III";
-
-let currentTrophies = 0;
-let rankId = 1;
-
-export const RANK_PALIERS = [];
-
-// Génération des rangs avec divisions (Bronze à Maître)
-for (const rankName of BASE_RANKS.slice(0, -1)) { // Exclut 'Élite'
+for (const rank of BASE_RANKS.slice(0, -1)) {
     for (const division of DIVISIONS) {
-        const fullName = `${rankName} ${division}`;
+        const fullName = `${rank} ${division}`
+
         RANK_PALIERS.push({
-            id: rankId++,
-            name: rankName,
-            division: division,
-            requiredTrophies: currentTrophies,
+            id: id++,
+            name: rank,
+            division,
+            requiredTrophies: trophies,
             image: IMAGE_BY_FULL_RANK[fullName],
-            description: DESCRIPTION_BY_FULL_RANK[fullName]
-        });
-        currentTrophies += TROPHIES_PER_STEP;
+            description: DESCRIPTION_BY_FULL_RANK[fullName],
+            color : COLOR_BY_RANK[rank],
+        })
+
+        trophies += TROPHIES_PER_STEP
     }
 }
 
-// Ajout du rang Élite (sans division)
+// Rang Elite
 RANK_PALIERS.push({
-    id: rankId++,
-    name: "Élite",
-    division: "", // Pas de division pour Elite
-    requiredTrophies: currentTrophies,
+    id: id,
+    name: "Elite",
+    division: "",
+    requiredTrophies: trophies,
     image: elite,
-});
+    description: DESCRIPTION_BY_FULL_RANK["Elite"],
+    color : COLOR_BY_RANK["Elite"],
+})
 
 
-// --- Fonctions utilitaires ---
+// =======================
+// FONCTIONS UTILITAIRES
+// =======================
 
-/**
- * Retourne le palier de rang actuel de l'utilisateur.
- * @param userTrophies Le nombre de trophées de l'utilisateur (issu du serveur).
- * @returns Le palier de rang le plus élevé atteint.
- */
 export function getCurrentRank(userTrophies) {
-    // Parcourt le tableau à l'envers pour trouver rapidement le rang le plus haut atteint
     for (let i = RANK_PALIERS.length - 1; i >= 0; i--) {
         if (userTrophies >= RANK_PALIERS[i].requiredTrophies) {
-            return RANK_PALIERS[i];
+            return { rank: RANK_PALIERS[i], index: i }
         }
     }
-    return RANK_PALIERS[0];
+    return { rank: RANK_PALIERS[0], index: 0 }
 }
 
-/**
- * Retourne l'URL de l'image de rang associée.
- * @param userTrophies Le nombre de trophées de l'utilisateur.
- * @returns Le chemin d'accès à l'image du rang.
- */
-export function getRankImage(userTrophies) {
-    const fullRankName = getFullRankName(userTrophies);
-    return IMAGE_BY_FULL_RANK[fullRankName] || elite;}
+export function getFullRankName(userTrophies) {
+    const { rank } = getCurrentRank(userTrophies)
+    return rank.division ? `${rank.name} ${rank.division}` : rank.name
+}
 
+export function getRankImage(userTrophies) {
+    const fullName = getFullRankName(userTrophies)
+    return IMAGE_BY_FULL_RANK[fullName] ?? elite
+}
 
 export function getCarriere(userTrophies) {
+    const { rank, index } = getCurrentRank(userTrophies)
 
-    let rankActuelID;
-    for (let i = RANK_PALIERS.length - 1; i >= 0; i--) {
-        if (userTrophies >= RANK_PALIERS[i].requiredTrophies) {
-            rankActuelID = i;
-            break;
-        }
+    return {
+        rankPrecedent: index > 0 ? RANK_PALIERS[index - 1] : null,
+        rankActuel: rank,
+        rankSuivant: index < RANK_PALIERS.length - 1 ? RANK_PALIERS[index + 1] : null,
     }
-    const carriere = {
-        rankPrecedent : rankActuelID === 0 ? null : RANK_PALIERS[rankActuelID-1],
-        rankActuel : RANK_PALIERS[rankActuelID],
-        rankSuivant : rankActuelID === RANK_PALIERS.length ? null : RANK_PALIERS[rankActuelID+1],
-    }
-
-    return carriere;
-
 }
 
-
-
-
-/**
- * Retourne le rang complet (ex: "Bronze III").
- * @param userTrophies Le nombre de trophées de l'utilisateur.
- * @returns Le nom complet du rang.
- */
-export function getFullRankName(userTrophies) {
-    const rank = getCurrentRank(userTrophies);
-    return rank.division ? `${rank.name} ${rank.division}` : rank.name;
-}
-
-/**
- * Retourne le nombre minimum de trophées requis pour un ID de rang donné.
- * ID 1 = Bronze III, ID 4 = Argent III, etc.
- * @param rankId L'identifiant numérique du rang (commençant à 1).
- * @returns Le nombre de trophées requis, ou -1 si l'ID n'existe pas.
- */
 export function getRequiredTrophiesByRankId(rankId) {
-    const index = rankId - 1;
-
-    if (index >= 0 && index < RANK_PALIERS.length) {
-        return RANK_PALIERS[index].requiredTrophies;
-    }
-
-    // Si l'ID est invalide ou hors des limites du tableau.
-    console.error(`ID de rang invalide : ${rankId}`);
-    return -1;
+    const rank = RANK_PALIERS.find(r => r.id === rankId)
+    return rank ? rank.requiredTrophies : -1
 }
 
-/**
- * Retourne le nombre minimum de trophées requis pour un rang donné.
- * @param fullRankName Le nom complet du rang (ex: "Or III", "Élite").
- * @returns Le nombre de trophées requis, ou -1 si le rang n'existe pas.
- */
 export function getRequiredTrophiesByRankName(fullRankName) {
-    const normalizedInput = fullRankName.trim().toLowerCase();
+    const normalized = fullRankName.trim().toLowerCase()
 
-    const foundRank = RANK_PALIERS.find(rank => {
-        // Construction du nom complet du rang pour la comparaison
-        const rankFullName = rank.division
-            ? `${rank.name} ${rank.division}`
-            : rank.name;
+    const rank = RANK_PALIERS.find(r => {
+        const name = r.division ? `${r.name} ${r.division}` : r.name
+        return name.toLowerCase() === normalized
+    })
 
-        return rankFullName.toLowerCase() === normalizedInput;
-    });
-
-    if (foundRank) {
-        return foundRank.requiredTrophies;
-    }
-
-    // Si le rang n'est pas trouvé
-    console.error(`Nom de rang invalide : ${fullRankName}`);
-    return -1;
+    return rank ? rank.requiredTrophies : -1
 }

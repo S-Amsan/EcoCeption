@@ -332,41 +332,40 @@ export default function Social(){
     }; //TODO récupérer les vrai données -> renvoyer null si pas inscrit
 
     const user_DATA = {
-        Id : 1,
+        Id : 35,
         Nom : "",
         Pseudo : "",
         Photo_url : "",
         Trophees : 57400,
-        Classement : 1544487,
+    };//TODO récupérer les vrai données
 
-    }; //TODO récupérer les vrai données
+    const users_DATA = Array.from({ length: 300 }, (_, index) => ({
+        Id: index + 1,
+        Nom: `USER_NOM`,
+        Pseudo: `USER_PSEUDO`,
+        Photo_url: "",
+        Trophees: Math.floor(Math.random() * 100000),
+    }));//TODO récupérer les vrai données
 
-    const podium_DATA = [
-        {
-            Id : 1,
-            Nom : "",
-            Photo_url : "",
-            Trophees : 6504140,
-            Classement : 1,
+    const allUsers = [
+        ...users_DATA.filter(u => u.Id !== user_DATA.Id),
+        user_DATA,
+    ];
 
-        },
-        {
-            Id : 2,
-            Nom : "",
-            Photo_url : "",
-            Trophees : 6504130,
-            Classement : 2,
+    const usersSortedByRank = [...allUsers]
+        .sort((a, b) => b.Trophees - a.Trophees)
+        .map((u, i) => ({ ...u, Classement: i + 1 }));
 
-        },
-        {
-            Id : 3,
-            Nom : "",
-            Photo_url : "",
-            Trophees : 6504120,
-            Classement : 3,
 
-        }
-    ] //TODO récupérer les vrai données, les 3 premier du classement -> ce qui ont le plus de trophées
+    const podium_DATA = usersSortedByRank.slice(0,3)
+
+    const userClassement =
+        usersSortedByRank.findIndex(u => u.Id === user_DATA.Id) + 1;
+
+    const user_DATA_WITH_RANK = {
+        ...user_DATA,
+        Classement: userClassement,
+    };
 
     return(
         <View style={styles.container}>
@@ -409,7 +408,7 @@ export default function Social(){
                         <View style={styles.classementContainer}>
                             <ClassementCarte
                                 onPress={() => router.push("./classement")}
-                                user_DATA={user_DATA}
+                                user_DATA={user_DATA_WITH_RANK}
                                 podium_DATA={podium_DATA}
                             />
                         </View>
