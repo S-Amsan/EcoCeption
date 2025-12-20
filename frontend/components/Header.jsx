@@ -178,7 +178,7 @@ export default function Header({
                                                 style={styles.ongletContainer}
                                                 onPress={() => !isActive && router.push(`/appPrincipal/${onglet.page}`)}
                                             >
-                                                <Text  style={styles.ongletLabel}>{onglet.label}</Text>
+                                                <Text  style={[styles.ongletLabel, isActive && styles.ongletActiveLabel]}>{onglet.label}</Text>
                                                 {isActive && <View style={styles.ongletUnderline}/>}
                                             </TouchableOpacity>
                                         )})}
