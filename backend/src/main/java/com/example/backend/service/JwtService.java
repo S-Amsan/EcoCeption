@@ -26,26 +26,18 @@ public class JwtService {
     private Long tokenDuration;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserService userService;
 
-    public String generateToken(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(email, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+    public String generateToken(String email) {
         long currentTimeMillis = System.currentTimeMillis();
         Date issuedDate = new Date(currentTimeMillis);
         Date expireDate = new Date(currentTimeMillis + tokenDuration);
 
         return Jwts.builder()
-            .claim(CLAIM_USERID, (UserDetails) authentication.getPrincipal())
             .setIssuedAt(issuedDate)
             .setExpiration(expireDate)
             .signWith(getKeySigner(), SignatureAlgorithm.HS256)
+            .setSubject(email)
             .compact();
     }
 
