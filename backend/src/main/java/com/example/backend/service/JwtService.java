@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.model.security.UserDetails;
+import com.example.backend.model.security.MyUserDetails;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -8,10 +8,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +41,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(privateKey.getBytes());
     }
 
-    public UserDetails tryVerifyJwt(String token) {
+    public MyUserDetails tryVerifyJwt(String token) {
         Long userId = ((Number) Jwts.parserBuilder()
                 .setSigningKey(getKeySigner())
                 .build()
@@ -53,6 +49,6 @@ public class JwtService {
                 .getBody()
                 .get(CLAIM_USERID)).longValue();
 
-        return new UserDetails(userService.getUserById(userId));
+        return new MyUserDetails(userService.getUserById(userId));
     }
 }

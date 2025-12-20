@@ -1,6 +1,6 @@
 package com.example.backend.security;
 
-import com.example.backend.model.security.UserDetails;
+import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (token != null) {
             // Verify the JWT if one is provided
-            final UserDetails details = jwtService.tryVerifyJwt(token);
+            final MyUserDetails details = jwtService.tryVerifyJwt(token);
 
             // Tell spring the authentication is valid if no exception was thrown
             SecurityContextHolder.getContext().setAuthentication(

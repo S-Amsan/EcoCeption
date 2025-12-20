@@ -7,10 +7,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RequiredArgsConstructor
-public class UserDetails
-    implements org.springframework.security.core.userdetails.UserDetails {
+public class MyUserDetails implements UserDetails {
 
     @Autowired
     private HashSaltRepository hashSaltRepository;
