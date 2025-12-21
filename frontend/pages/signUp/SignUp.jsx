@@ -13,9 +13,13 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import {saveRegisterData, loadRegisterData, clearRegisterData} from "../../services/RegisterStorage";
+import {
+    saveRegisterData,
+    loadRegisterData,
+    clearRegisterData,
+    updateRegisterData
+} from "../../services/RegisterStorage";
 import Toast from "react-native-toast-message";
-
 
 import style from "./styles/signUpStyles";
 
@@ -58,19 +62,34 @@ export default function SignUp(){
         loadDraft();
     }, []);
 
-    // Sauvegarde auto
     useEffect(() => {
-        const data = {
-            pseudo,
-            email,
-            password,
-            phone,
-            age,
-            selectedCountry
-        };
+        async function sync() {
+            const current = await loadRegisterData();
 
-        saveRegisterData(data);
-    }, [pseudo, email, password, phone, age, selectedCountry]);
+            if (!current) {
+
+                await saveRegisterData({
+                    pseudo,
+                    email,
+                    password,
+                    phone,
+                    age
+                });
+            } else {
+
+                await updateRegisterData({
+                    pseudo,
+                    email,
+                    password,
+                    phone,
+                    age
+                });
+            }
+        }
+
+        sync();
+    }, [pseudo, email, password, phone, age]);
+
 
 
     const handleSignUp = async () => {

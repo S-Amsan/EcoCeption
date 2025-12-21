@@ -21,7 +21,10 @@ export default function Parrainage() {
     }, []);
 
     const handleNext = async () => {
-        await updateRegisterData({ parrainCode });
+        await updateRegisterData({
+            parrainCode: parrainCode.trim() || undefined
+        });
+
 
         Toast.show({
             type: "success",
@@ -31,6 +34,16 @@ export default function Parrainage() {
 
         navigation.navigate("age");
     };
+
+    useEffect(() => {
+        async function guard() {
+            const data = await loadRegisterData();
+            if (!data?.pseudo || !data?.email) {
+                navigation.replace("SignUp");
+            }
+        }
+        guard();
+    }, []);
 
     const handleSkip = () => {
         navigation.navigate("age");

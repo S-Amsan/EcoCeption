@@ -9,7 +9,6 @@ import {
     Platform
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import Toast from "react-native-toast-message";
@@ -21,12 +20,16 @@ import {
     updateRegisterData,
     saveUser
 } from "../../services/RegisterStorage";
+import { signupMultipart } from "../../services/signup.api";
 
 import styles from "./styles/photoStyles";
 
-export default function Photo() {
-    const navigation = useNavigation();
+const API_URL =
+    Platform.OS === "android"
+        ? "http://10.0.2.2:8080"
+        : "http://localhost:8080";
 
+export default function Photo() {
     const [photoUri, setPhotoUri] = useState(null);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -44,7 +47,6 @@ export default function Photo() {
     useEffect(() => {
         async function load() {
             const saved = await loadRegisterData();
-
             if (saved?.photo?.uri) setPhotoUri(saved.photo.uri);
             if (saved?.name) setName(saved.name);
         }
@@ -52,7 +54,7 @@ export default function Photo() {
     }, []);
 
     // ===============================
-    // PICK IMAGE (Mobile + Web)
+    // PICK IMAGE
     // ===============================
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -65,25 +67,26 @@ export default function Photo() {
 
         let uri = result.assets[0].uri;
 
-        // Convert HEIC → JPEG (iOS only)
         if (Platform.OS !== "web") {
-            const manipulated = await ImageManipulator.manipulateAsync(
+            const resized = await ImageManipulator.manipulateAsync(
                 uri,
                 [{ resize: { width: 1024 } }],
                 { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
             );
-            uri = manipulated.uri;
+            uri = resized.uri;
         }
 
-        // Save lightweight data only
         await updateRegisterData({ photo: { uri } });
-
         setPhotoUri(uri);
-        Toast.show({ type: "success", text1: "Photo sélectionnée" });
+
+        Toast.show({
+            type: "success",
+            text1: "Photo sélectionnée"
+        });
     };
 
     // ===============================
-    // SUBMIT REGISTRATION
+    // FINAL SIGNUP
     // ===============================
     const handleFinishSignup = async () => {
         if (!photoUri)
@@ -93,7 +96,7 @@ export default function Photo() {
                 text2: "Veuillez choisir une photo."
             });
 
-        if (name.trim().length === 0)
+        if (!name.trim())
             return Toast.show({
                 type: "error",
                 text1: "Nom manquant",
@@ -109,69 +112,48 @@ export default function Photo() {
             });
 
         await updateRegisterData({ name: name.trim() });
-
-        const formData = new FormData();
-        formData.append("pseudo", data.pseudo);
-        formData.append("email", data.email);
-        formData.append("password", data.password);
-        formData.append("phone", data.phone);
-        formData.append("age", String(data.age ?? ""));
-        formData.append("parrainCode", data.parrainCode ?? "");
-        formData.append("name", name.trim());
-
-        // ===============================
-        // Handle photo properly
-        // ===============================
-        if (Platform.OS === "web") {
-            const blob = await fetch(photoUri).then(r => r.blob());
-            formData.append("photo", blob, "profile.jpg");
-        } else {
-            formData.append("photo", {
-                uri: photoUri,
-                type: "image/jpeg",
-                name: "profile.jpg"
-            });
-        }
-
         setLoading(true);
+
         try {
-            const response = await fetch("http://localhost:8080/api/auth/signupMultipart", {
-                method: "POST",
-                body: formData
+            const user = await signupMultipart({
+                pseudo: data.pseudo,
+                email: data.email,
+                password: data.password,
+                name: name.trim(),
+                phone: data.phone,
+                age: data.age,
+                photoUri
             });
 
-            const user = await response.json();
-            await saveUser(user); // Save to AsyncStorage
-
-            if (!response.ok) {
-                Toast.show({
-                    type: "error",
-                    text1: "Erreur d'inscription",
-                    text2: JSON.stringify(user)
-                });
-                return;
-            }
-
+            await saveUser(user);
             await clearRegisterData();
-            Toast.show({ type: "success", text1: "Compte créé", text2: "Bienvenue !" });
+
+            Toast.show({
+                type: "success",
+                text1: "Compte créé",
+                text2: "Bienvenue !"
+            });
 
             router.replace("/appPrincipal/accueil");
         } catch (err) {
-            console.log("Erreur réseau:", err);
+            console.log("Erreur signup:", err);
             Toast.show({
                 type: "error",
-                text1: "Erreur réseau",
-                text2: "Impossible de contacter le serveur."
+                text1: "Erreur d'inscription",
+                text2: "Veuillez réessayer."
             });
         }
 
         setLoading(false);
     };
 
+
     return (
         <LinearGradient colors={["#00DB83", "#0CD8A9"]} style={styles.gradient}>
             <View style={styles.container}>
-                <Text style={styles.title}>Personnaliser{"\n"}votre profil</Text>
+                <Text style={styles.title}>
+                    Personnaliser{"\n"}votre profil
+                </Text>
 
                 <Text style={styles.label}>Photo de profil</Text>
 
@@ -179,7 +161,10 @@ export default function Photo() {
                     <View style={styles.photoWrapper}>
                         <View style={styles.photoCircle}>
                             {photoUri ? (
-                                <Image source={{ uri: photoUri }} style={styles.photoPreview} />
+                                <Image
+                                    source={{ uri: photoUri }}
+                                    style={styles.photoPreview}
+                                />
                             ) : (
                                 <Image
                                     source={require("../../assets/icones/photo.png")}
@@ -199,14 +184,19 @@ export default function Photo() {
                     onChangeText={setName}
                 />
 
-                <TouchableOpacity style={styles.submitButton} onPress={handleFinishSignup}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={handleFinishSignup}
+                >
                     <Text style={styles.submitText}>Valider</Text>
                 </TouchableOpacity>
 
                 {loading && (
                     <View style={{ marginTop: 20 }}>
                         <ActivityIndicator size="large" color="#fff" />
-                        <Text style={{ color: "white", marginTop: 10 }}>Création du compte...</Text>
+                        <Text style={{ color: "white", marginTop: 10 }}>
+                            Création du compte...
+                        </Text>
                     </View>
                 )}
             </View>

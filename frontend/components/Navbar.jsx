@@ -1,9 +1,18 @@
-import {View, Text, TouchableOpacity, Image, ScrollView, Platform, Pressable} from "react-native";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    Pressable
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, usePathname } from "expo-router";
+import { useWindowDimensions } from "react-native-web";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { loadUser } from "../services/RegisterStorage";
+import { fetchUserByEmail } from "../services/user.api";
 
 import IconAccueil from "../assets/icones/Navbar/Acceuil.png";
 import IconMission from "../assets/icones/Navbar/Mission.png";
@@ -22,35 +31,25 @@ import IconQrCodeOn from "../assets/icones/Navbar/QrCodeOn.png";
 import IconTrophyOn from "../assets/icones/Navbar/SocialOn.png";
 
 import ProfilCard from "./ProfilCard";
-import mobileStyles from "./styles/StyleNavbar.native"
-import {isWeb} from "../utils/platform"
-import {getStyles} from "./styles/StyleNavbar.web";
-import {useWindowDimensions} from "react-native-web";
+import mobileStyles from "./styles/StyleNavbar.native";
+import { isWeb } from "../utils/platform";
+import { getStyles } from "./styles/StyleNavbar.web";
 
-const BASE_URL = "http://localhost:8080/uploads/";
-
-
-// ------------------------------
-// Correct UserCard
-// ------------------------------
 function UserCard({ user }) {
+    console.log("USER CARD PHOTO:", user?.photoProfileUrl);
+
     return (
         <ProfilCard
-            photo={BASE_URL + user.photoProfile}
-            name={user.name}
-            username={user.pseudo}
+            photo={user?.photoProfileUrl ?? null}
+            name={user?.name}
+            username={user?.pseudo}
         />
     );
 }
 
-
-// ------------------------------
-// NAVBAR PRINCIPALE
-// ------------------------------
 export default function Navbar() {
     const { width, height } = useWindowDimensions();
     const styles = isWeb ? getStyles(width, height) : mobileStyles;
-    console.log(styles);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -58,13 +57,28 @@ export default function Navbar() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        async function fetchUser() {
-            const u = await loadUser();
-            console.log("Utilisateur chargé Navbar :", u);
-            setUser(u);
+        async function loadUser() {
+            try {
+                const email = await AsyncStorage.getItem("@auth_email");
+                console.log("AUTH EMAIL:", email);
+
+                if (!email) return;
+
+                const user = await fetchUserByEmail(email);
+                console.log("USER FETCHED:", user);
+
+                setUser(user);
+            } catch (e) {
+                console.error("Erreur chargement user :", e);
+            }
         }
-        fetchUser();
+
+        loadUser();
     }, []);
+
+
+    console.log("RENDER USER:", user);
+    console.log("RENDER PHOTO URL:", user?.photoProfileUrl);
 
     const tabs = [
         { id: "accueil", label: "Accueil", Icon: IconAccueil, IconActive: IconAccueilOn },
@@ -73,17 +87,14 @@ export default function Navbar() {
         { id: "boutique", label: "Boutique", Icon: IconBoutique, IconActive: IconBoutiqueOn },
         { id: "qrcode", label: "QR Code", Icon: IconQrCode, IconActive: IconQrCodeOn },
         { id: "notifications", label: "Notifications", Icon: IconNotif, IconActive: IconNotifOn },
-        { id: "parametres", label: "Paramètres", Icon: IconParam, IconActive: IconParamOn },
+        { id: "parametres", label: "Paramètres", Icon: IconParam, IconActive: IconParamOn }
     ];
-
 
     // ---------------- WEB ----------------
     if (isWeb) {
-
         return (
             <LinearGradient colors={["#1DDE9A", "#1FDDA0"]} style={styles.container}>
                 <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-
                     <View style={styles.titleContainer}>
                         <Image
                             source={require("../assets/logo.png")}
@@ -94,29 +105,26 @@ export default function Navbar() {
                     </View>
 
                     <View style={styles.tabsContainer}>
-                        {tabs.map((tab) => {
+                        {tabs.map(tab => {
                             const isActive = pathname.startsWith(`/appPrincipal/${tab.id}`);
-                            console.log(pathname)
                             const IconComponent = isActive ? tab.IconActive : tab.Icon;
 
                             return (
                                 <TouchableOpacity
                                     key={tab.id}
                                     style={styles.tabs}
-                                    activeOpacity={0.7}
                                     onPress={() => router.push(`/appPrincipal/${tab.id}`)}
                                 >
                                     <Image
                                         source={IconComponent}
                                         style={[styles.Icon, !isActive && { opacity: 0.45 }]}
                                     />
-
                                     <Text
                                         style={[
                                             styles.IconText,
                                             isActive
-                                                ? { color: "#FFFFFF", fontWeight: "600" }
-                                                : { color: "#107956", fontWeight: "400" }
+                                                ? { color: "#FFF", fontWeight: "600" }
+                                                : { color: "#107956" }
                                         ]}
                                     >
                                         {tab.label}
@@ -126,34 +134,31 @@ export default function Navbar() {
                         })}
                     </View>
 
-                    {/* Carte utilisateur */}
                     {user && <UserCard user={user} />}
-
                 </ScrollView>
             </LinearGradient>
         );
     }
 
-
     // ---------------- MOBILE ----------------
     return (
         <View style={styles.container}>
-            {tabs.slice(0,4).map((tab) => {
+            {tabs.slice(0, 4).map(tab => {
                 const isActive = pathname.startsWith(`/appPrincipal/${tab.id}`);
                 const IconComponent = isActive ? tab.IconActive : tab.Icon;
+
                 return (
                     <Pressable
                         key={tab.id}
-                        style={[!isActive && {opacity : 0.45},{alignItems: "center", justifyContent: "center"}]}
+                        style={{ alignItems: "center", opacity: isActive ? 1 : 0.45 }}
                         onPress={() => !isActive && router.push(`/appPrincipal/${tab.id}`)}
                     >
-                        <Image
-                            source={IconComponent}
-                            style={{ width: 25, height: 25 }}
-                        />
-                        <Text style={[{fontSize : 11}, isActive && {color : "#FFFFFF"}]}>{tab.label}</Text>
+                        <Image source={IconComponent} style={{ width: 25, height: 25 }} />
+                        <Text style={{ fontSize: 11, color: isActive ? "#FFF" : "#000" }}>
+                            {tab.label}
+                        </Text>
                     </Pressable>
-                )
+                );
             })}
         </View>
     );

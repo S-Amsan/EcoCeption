@@ -20,14 +20,15 @@ export default function Age() {
         load();
     }, []);
 
-    const handleSkip = () => {
+    const handleSkip = async () => {
+        await updateRegisterData({ age: undefined });
         navigation.navigate("photo");
     };
 
     const handleNext = async () => {
         const cleanAge = Number(age);
 
-        if (!cleanAge || cleanAge < 13 || cleanAge > 120) {
+        if (Number.isNaN(cleanAge) || cleanAge < 13 || cleanAge > 120) {
             return Toast.show({
                 type: "error",
                 text1: "Âge invalide",

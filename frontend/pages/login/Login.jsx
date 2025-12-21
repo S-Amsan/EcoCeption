@@ -12,6 +12,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {useNavigation, useRouter} from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import style from "./styles/loginStyles";
+import {saveUser} from "../../services/RegisterStorage";
+import { login } from "../../services/login.api";
+import Toast from "react-native-toast-message";
+
 
 export default function Login(){
     const router = useRouter();
@@ -22,34 +26,28 @@ export default function Login(){
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async () => {
-        /*try {
-            console.log("Connexion :", { email, password });
+        console.log("CLICK LOGIN");
 
-            const response = await fetch("http://localhost:8080/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+        if (!email || !password) {
+            return Toast.show({
+                type: "error",
+                text1: "Champs manquants"
             });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.log("Erreur backend :", errorText);
-                alert("Email ou mot de passe incorrect");
-                return;
-            }
-
-            const data = await response.json();
-            console.log("Utilisateur connecté :", data);
-
-            alert("Connexion réussie !");
-
-        } catch (error) {
-            console.log("Erreur réseau :", error);
-            alert("Impossible de contacter le serveur");
         }
-         */
-        router.replace('appPrincipal/accueil');
+
+        try {
+            await login(email.trim(), password);
+            router.replace("/appPrincipal/accueil");
+        } catch (e) {
+            console.log("LOGIN ERROR", e);
+            Toast.show({
+                type: "error",
+                text1: "Erreur de connexion",
+                text2: "Email ou mot de passe incorrect"
+            });
+        }
     };
+
 
 
     const handleSignUp = () => {
