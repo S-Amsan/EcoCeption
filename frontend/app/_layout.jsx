@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import Toast from 'react-native-toast-message';
-import { NotificationProvider } from "../components/NotificationContext"; // chemin relatif depuis app/
-import NotificationDrawer from "../components/NotificationDrawer";
+import { NotificationProvider } from "./appPrincipal/notifications/NotificationContext"; // chemin relatif depuis app/
+import NotificationDrawer from "./appPrincipal/notifications/NotificationDrawer";
 
 export default function RootLayout() {
     return (
