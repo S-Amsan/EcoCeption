@@ -303,7 +303,7 @@ const EventPopup = ({event_DATA, setEventClique, config}) => {
 
 export default function EventPage({type, event_DATA,user_event_DATA}) {
     const ongletsWeb = [
-        { id: "classement", label: "Leaderboard", page: "social/classement" },
+        { id: "classement", label: "Classement", page: "social/classement" },
         { id: "concours", label: "Concours", page: "social/concours" },
         { id: "evenements", label: "Événements", page: "social/evenements" },
     ];
@@ -323,11 +323,10 @@ export default function EventPage({type, event_DATA,user_event_DATA}) {
 
                 <Header userDetails={true}/>
                 <View style={styles.contenuContainer}>
-
                     <TabNavbarWeb onglets={ongletsWeb} pageBack={"social"} />
                     <View style={{flexDirection: "row", flex: 1}}>
-                            <EnCours config={config} event_DATA={event_DATA} user_event_DATA={user_event_DATA}/>
-                            <Statistiques config={config} user_event_DATA={user_event_DATA}/>
+                        <EnCours config={config} event_DATA={event_DATA} user_event_DATA={user_event_DATA}/>
+                        <Statistiques config={config} user_event_DATA={user_event_DATA}/>
                     </View>
                 </View>
 

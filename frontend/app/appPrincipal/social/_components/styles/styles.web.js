@@ -121,7 +121,7 @@ export default StyleSheet.create({
         flexDirection : "row",
         flex : 1,
         justifyContent : "space-between",
-        gap : "5%",
+        gap : "2.5%",
     },
     boutonPrincipaleContainer: {
         padding : 17,

@@ -11,7 +11,7 @@ import tropheeIcon from "../../../../assets/icones/trophee.png";
 import medaille from "../../../../assets/icones/social/medailleClassement.png";
 
 import {getCarriere} from "../../../../constants/rank";
-import {formatNombreCourt} from "../../../../utils/format";
+import {formatNombreCourt, formatNombreEspace} from "../../../../utils/format";
 
 // ---------------- LEADERBOARD ----------------
 
@@ -84,7 +84,7 @@ const Place = ({user_DATA}) => {
 const UserCarte = ({user_DATA, userActuel = false, separateur = true}) => {
     return (
         <View style={styles.userTopContainer}>
-            <Text style={styles.userTopText}>{user_DATA?.Classement || -1}</Text>
+            <Text style={styles.userTopText}>{formatNombreCourt(user_DATA.Classement || -1)}</Text>
             <View style={styles.userInfoContainer}>
                 <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userTopPicture}/>
                 <Text style={styles.userTopName}>{user_DATA?.Nom || "USER_NOM"} {userActuel && "(Vous)"}</Text>{/* TODO Mettre (Vous quand c'est le user Actuel)*/}
@@ -159,7 +159,8 @@ const MaCarriere = ({isActive, user_DATA}) => {
            <View style={styles.boutonsContainer}>
                <View style={styles.bulleInfoPrincipal}>
                    <Image source={medaille} style={styles.infoPrincipalImage}/>
-                   <Text style={styles.infoPrincipalText}>Classement global : <Text style={styles.classementGlobalText}>#{user_DATA.Classement}</Text></Text>
+
+                   <Text style={styles.infoPrincipalText}>Classement global : <Text style={styles.classementGlobalText}>#{formatNombreEspace(user_DATA.Classement || -1)}</Text></Text>
                </View>
                <View style={styles.boutonsSecondaireContainer}>
                    <TouchableOpacity style={styles.boutonSecondaire}>
