@@ -39,7 +39,7 @@ public class UserService {
         throws IOException {
         boolean update = false;
 
-        {
+        if (request.getPseudo() != null) {
             if (!request.getPseudo().equals(user.getPseudo())) {
                 // Pseudo update needed
                 update = true;
@@ -47,7 +47,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getEmail() != null) {
             if (!request.getEmail().equals(user.getEmail())) {
                 // Email update needed
                 update = true;
@@ -55,7 +55,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getName() != null) {
             if (!request.getName().equals(user.getName())) {
                 // Name update needed
                 update = true;
@@ -63,7 +63,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getPassword() != null) {
             HashSalt new_hs = passwordService.generate(request.getPassword());
             UserHashSalt userHashSalt = hashSaltRepository
                 .findByUserId(user.getId())
@@ -82,7 +82,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getPhone() != null) {
             if (!request.getPhone().equals(user.getPhone())) {
                 // Phone update needed
                 update = true;
@@ -90,7 +90,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getAge() != null) {
             if (!request.getAge().equals(user.getAge())) {
                 // Age update needed
                 update = true;
@@ -98,7 +98,7 @@ public class UserService {
             }
         }
 
-        {
+        if (request.getAvatarImage() != null) {
             String oldUrl = user.getPhotoProfileUrl();
             String newUrl = imageUploadService
                 .upload(request.getAvatarImage())
