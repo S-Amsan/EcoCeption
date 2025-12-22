@@ -72,6 +72,10 @@ export default StyleSheet.create({
         fontSize:20
     },
 
+    skip:{
+        alignItems:'flex-end'
+    },
+
     skipText: {
         color: "#fff",
         fontSize: 16,

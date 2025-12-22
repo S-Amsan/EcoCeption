@@ -3,7 +3,6 @@ import { StyleSheet, Platform } from "react-native";
 export default StyleSheet.create({
     gradient: {
         flex: 1,
-        paddingHorizontal: 20,
     },
 
     container: {
@@ -21,7 +20,7 @@ export default StyleSheet.create({
     },
 
     label: {
-        width: "100%",
+        width:'20%',
         textAlign: "left",
         color: "#fff",
         fontSize: 18,
@@ -59,7 +58,7 @@ export default StyleSheet.create({
     },
 
     input: {
-        width: "100%",
+        width: "20%",
         backgroundColor: "#fff",
         borderRadius: 12,
         paddingVertical: 12,
@@ -74,7 +73,7 @@ export default StyleSheet.create({
     },
 
     submitButton: {
-        width: "100%",
+        width: "15%",
         backgroundColor: "#fff",
         borderRadius: 25,
         paddingVertical: 15,
