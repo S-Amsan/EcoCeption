@@ -84,17 +84,33 @@ export default StyleSheet.create({
         fontSize: 12,
     },
 
-    /* COLONNE DROITE */
     rightPanel: {
         flex: 1,
         padding: 16,
     },
 
+    infoBox:{
+        margin:15
+    },
+
     infoCard: {
+        position: "relative",
         backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 16,
+        borderRadius: 16,
+        overflow: "hidden",
         marginBottom: 16,
+
+        elevation: 6,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        boxShadow: "0px 4px 12px rgba(0,0,0,0.12)",
+    },
+
+    infoContent: {
+        padding: 16,
+        paddingRight: 130,
     },
 
     infoTitle: {
@@ -103,10 +119,18 @@ export default StyleSheet.create({
         marginBottom: 6,
     },
 
+    imageWrapper: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        width: 110,
+    },
+
     infoDesc: {
-        fontSize: 13,
+        fontSize: 14,
         color: "#666",
-        marginBottom: 12,
+        width:230
     },
 
     infoButton: {
@@ -115,10 +139,35 @@ export default StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 8,
         alignSelf: "flex-start",
+        marginTop:15
     },
 
     infoButtonText: {
         color: "#fff",
         fontWeight: "600",
     },
+
+    infoImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "cover",
+    },
+
+    infoHeader:{
+        backgroundColor:"#0ED49B",
+        borderRadius: 12,
+        marginBottom: 10,
+        padding:20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        margin:15
+    },
+
+    HeaderImage:{
+        width:80,
+        height:80,
+    }
+
 });

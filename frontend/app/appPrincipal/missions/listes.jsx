@@ -18,7 +18,7 @@ const items = [
         distance: "13 km",
         author: "@Maitre",
         time: "2 min",
-        image: require("../../../assets/equip.png"),
+        image: require("../../../assets/missions/equip.png"),
     },
 ];
 

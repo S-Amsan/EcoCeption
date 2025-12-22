@@ -27,7 +27,8 @@ export default function Header({
     boutonNotification = false, // bouton notification (mobile)
     userProfil = false, // photo de profil de l'utilisateur (mobile)
     userDetails = false, // info de l'utilisateur (web et mobile)
-    fondTransparent = false, //pas de fond blanc et pas d'ombre (mobile)
+    fondTransparent = false,
+    user
     }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -77,12 +78,28 @@ export default function Header({
     };
 
     // Photo de profil
-    const getPhotoDeProfil = () => {
-        // TODO Récupérer dans la bd la photo
+    const getPhotoDeProfil = (user) => {
+        if (!user) {
+            console.log("HEADER → user NULL");
+            return DEFAULT_PICTURE;
+        }
+
+        const photo =
+            user.photoProfileUrl ||
+            user.photoProfile ||
+            null;
+
+        if (!photo) {
+            console.log("HEADER → photoProfile manquante");
+            return DEFAULT_PICTURE;
+        }
+
+        console.log("HEADER → photo OK :", photo);
+
+        return { uri: photo };
+    };
 
 
-        return DEFAULT_PICTURE; // Par défault
-    }
 
     // Notification
     const getNotificationIcon = () => {
@@ -277,11 +294,19 @@ export default function Header({
 
         {/* PHOTO DE PROFIL*/}
         {userProfil && (
-            <TouchableOpacity style={styles.photoProfilContainer} onPress={() => router.push(`/appPrincipal/social/votreProfil`)}>
+            <TouchableOpacity
+                style={styles.photoProfilContainer}
+                onPress={() => router.push(`/appPrincipal/social/votreProfil`)}
+            >
                 <Image
-                    source={getPhotoDeProfil()}
+                    source={
+                        user?.photoProfileUrl
+                            ? { uri: user.photoProfileUrl }
+                            : DEFAULT_PICTURE
+                    }
                     style={styles.photoProfil}
                 />
+
             </TouchableOpacity>
         )}
     </View>)

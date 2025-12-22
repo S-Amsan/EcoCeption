@@ -8,7 +8,7 @@ export default function Gestes() {
             id: "ratp",
             name: "RATP",
             title: "Associer votre abonnement Ratp à Ecoception",
-            status: "pending", // pending | validated | start
+            status: "pending",
             logo: require("../../../../../assets/icones/missions/ratp.png"),
             points: "+50 000",
         },

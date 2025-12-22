@@ -2,14 +2,14 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
 
-    /* --- Wrapper principal --- */
+
     content: {
         flex: 1,
         paddingHorizontal: 15,
         paddingTop: 10,
     },
 
-    /* --- Header (déjà géré dans ton composant Header) --- */
+
     header: {
         padding: 20,
         flexDirection: "row",
@@ -17,9 +17,7 @@ export default StyleSheet.create({
         alignItems: "center",
     },
 
-    /* --- Searchbox + Filters (si tu veux les réutiliser dans le feed) --- */
     searchBox: {
-        width: "50%",
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#eee",
@@ -32,7 +30,7 @@ export default StyleSheet.create({
     input: {
         marginLeft: 8,
         flex: 1,
-        outlineStyle: "none", // 🔥 important pour web
+        outlineStyle: "none",
     },
 
     filtersContainer: {

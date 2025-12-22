@@ -64,14 +64,12 @@ export default StyleSheet.create({
     },
     photoProfilContainer: {
         position: "absolute",
-        bottom: 15,
-        right: 21,
-
-
+        bottom: 22,
+        right: 15,
     },
     photoProfil: {
-        width: 46,
-        height: 46,
+        width: 48,
+        height: 48,
         borderRadius : 46,
         boxShadow: "0px 2px 6px rgba(0,0,0,0.15)",
     },

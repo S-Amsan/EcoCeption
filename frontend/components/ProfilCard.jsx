@@ -35,8 +35,8 @@ const getStyles = (width) => {
         },
 
         photo: {
-            width: isSmall ? 48 : 60,
-            height: isSmall ? 48 : 60,
+            width: isSmall ? 40 : 60,
+            height: isSmall ? 40: 60,
             borderRadius: 999,
             borderWidth: 2,
             borderColor: "#fff",
@@ -47,7 +47,7 @@ const getStyles = (width) => {
         },
 
         name: {
-            fontSize: isSmall ? 18 : 22,
+            fontSize: isSmall ? 16 : 22,
             fontWeight: "700",
             color: "#fff",
             lineHeight: 26,
