@@ -1,5 +1,6 @@
 import { Pressable, View, Text, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
+import point from "../../assets/icones/point.png";
 
 export default function HeaderBoutique({ filtreActif, setFiltreActif }) {
     const router = useRouter();
@@ -39,8 +40,13 @@ export default function HeaderBoutique({ filtreActif, setFiltreActif }) {
 
                 <View style={styles.blocPoints}>
                     <Text style={styles.textePoints}>Solde de points :</Text>
-                    <Text style={styles.valeurPoints}>150k</Text>
+
+                    <View style={styles.pointsWrapper}>
+                        <Text style={styles.valeurPoints}>150k</Text>
+                        <Image source={point} style={styles.pointIcon} />
+                    </View>
                 </View>
+
             </View>
         </View>
     );
@@ -120,14 +126,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
         height: 60,
         borderWidth: 1,
+        gap : 8,
         borderColor: "#EDEDED",
+    },
+
+    pointsWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
     },
 
     textePoints: {
         fontSize: 20,
         color: "#278674",
         fontWeight: "600",
-        marginRight: 6,
     },
 
     valeurPoints: {
@@ -135,4 +147,12 @@ const styles = StyleSheet.create({
         color: "#278674",
         fontWeight: "600",
     },
+
+    pointIcon: {
+        width: 25,
+        height: 25,
+        resizeMode: "contain",
+        marginTop: 2,
+    },
+
 });

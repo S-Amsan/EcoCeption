@@ -1,6 +1,8 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import {useRouter} from "expo-router";
 
+import point from "../../assets/icones/point.png";
+
 export default function BlocProduit({ titre, description, points, image, action, style }) {
 
     const router = useRouter();
@@ -13,14 +15,15 @@ export default function BlocProduit({ titre, description, points, image, action,
                 <View style={styles.contenu}>
                     <View style={styles.ligneTitre}>
                         <Text style={styles.titre}>{titre}</Text>
-                        <Text style={styles.points}>{points} pts</Text>
+
+                        <View style={styles.pointsWrapper}>
+                            <Text style={styles.points}>{points}</Text>
+                            <Image source={point} style={styles.pointIcon} />
+                        </View>
                     </View>
 
                     <Text style={styles.description}>{description}</Text>
 
-                    <TouchableOpacity style={styles.bouton} onPress={action}>
-                        <Text style={styles.texteBouton}>Ajouter au panier</Text>
-                    </TouchableOpacity>
                 </View>
             </TouchableOpacity>
         </View>
@@ -70,10 +73,22 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
 
+    pointsWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+    },
+
     points: {
         fontSize: 18,
         fontWeight: "500",
         color: "#97D7B8",
+    },
+
+    pointIcon: {
+        width: 20,
+        height: 20,
+        resizeMode: "contain",
     },
 
     bouton: {
@@ -89,6 +104,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
 });
+
 
 
 
