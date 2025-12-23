@@ -12,8 +12,7 @@ import lombok.Data;
 public class UserHashSalt {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // TODO: Use user id as actual id
