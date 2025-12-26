@@ -29,6 +29,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/update")
                     .authenticated()
+                    .requestMatchers("/post")
+                    .authenticated()
             )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sess ->
