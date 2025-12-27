@@ -2,14 +2,11 @@ package com.example.backend.service;
 
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.AccountUpdateRequest;
-import com.example.backend.model.security.UserHashSalt;
-import com.example.backend.repository.HashSaltRepository;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.service.security.PasswordService;
-import com.example.backend.service.security.PasswordService.HashSalt;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,13 +16,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordService passwordService;
-
-    @Autowired
-    private HashSaltRepository hashSaltRepository;
-
-    @Autowired
     private ImageUploadService imageUploadService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -64,21 +58,13 @@ public class UserService {
         }
 
         if (request.getPassword() != null) {
-            HashSalt new_hs = passwordService.generate(request.getPassword());
-            UserHashSalt userHashSalt = hashSaltRepository
-                .findByUserId(user.getId())
-                .get();
-            HashSalt old_hs = new HashSalt(
-                userHashSalt.getSalt(),
-                userHashSalt.getHash()
-            );
+            String newHash = passwordEncoder.encode(request.getPassword());
+            String oldHash = user.getPasswordHash();
 
-            if (!new_hs.equals(old_hs)) {
+            if (!newHash.equals(oldHash)) {
                 // Password update needed
                 update = true;
-                userHashSalt.setHash(new_hs.getHash());
-                userHashSalt.setSalt(new_hs.getSalt());
-                hashSaltRepository.save(userHashSalt);
+                user.setPasswordHash(newHash);
             }
         }
 

@@ -6,14 +6,12 @@ import com.example.backend.model.http.req.LoginRequest;
 import com.example.backend.model.http.req.SignUpRequest;
 import com.example.backend.model.http.res.AuthenticationResponse;
 import com.example.backend.model.http.res.ImageUploadResponse;
-import com.example.backend.model.security.UserHashSalt;
-import com.example.backend.repository.HashSaltRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.security.JwtService;
-import com.example.backend.service.security.PasswordService;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,29 +24,19 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private HashSaltRepository hashSaltRepository;
-
-    @Autowired
-    private PasswordService passwordService;
-
-    @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<AuthenticationResponse> login(LoginRequest request) {
         User user = userRepository
             .findByEmail(request.getEmail())
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        UserHashSalt hs = hashSaltRepository
-            .findByUserId(user.getId())
-            .orElseThrow(() ->
-                new RuntimeException("Erreur interne : hash introuvable")
-            );
-
-        boolean ok = passwordService.verifyPassword(
+        boolean ok = passwordEncoder.matches(
             request.getPassword(),
-            hs.getSalt(),
-            hs.getHash()
+            user.getPasswordHash()
         );
 
         if (!ok) {
@@ -83,6 +71,7 @@ public class AuthService {
         user.setPhone(request.getPhone());
         user.setName(request.getName());
         user.setAge(request.getAge());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         ImageUploadResponse imageUploadResponse;
 
@@ -108,12 +97,6 @@ public class AuthService {
         );
 
         userRepository.save(user);
-
-        PasswordService.HashSalt hashsalt = passwordService.generate(
-            request.getPassword()
-        );
-        UserHashSalt userHashSalt = new UserHashSalt(user, hashsalt);
-        hashSaltRepository.save(userHashSalt);
 
         String token = jwtService.generateToken(request.getEmail());
 

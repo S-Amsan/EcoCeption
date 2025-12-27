@@ -18,6 +18,9 @@ public class User {
     @Column(unique = true, nullable = false, length = 50)
     private String pseudo;
 
+    @Column(nullable = false)
+    private String passwordHash;
+
     @Column(unique = true, nullable = false, length = 255)
     private String email;
 
