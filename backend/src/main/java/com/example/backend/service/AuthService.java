@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.exceptions.AccountAlreadyExistsException;
+import com.example.backend.exceptions.LoginException;
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.LoginRequest;
 import com.example.backend.model.http.req.SignUpRequest;
@@ -32,7 +33,7 @@ public class AuthService {
     public ResponseEntity<AuthenticationResponse> login(LoginRequest request) {
         User user = userRepository
             .findByEmail(request.getEmail())
-            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+            .orElseThrow(() -> new LoginException("Utilisateur non trouvé"));
 
         boolean ok = passwordEncoder.matches(
             request.getPassword(),
@@ -40,7 +41,7 @@ public class AuthService {
         );
 
         if (!ok) {
-            throw new RuntimeException("Mot de passe incorrect");
+            throw new LoginException("Mot de passe incorrect");
         }
 
         String token = jwtService.generateToken(request.getEmail());
@@ -80,11 +81,11 @@ public class AuthService {
                 request.getAvatarImage()
             );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload avatar image", e);
+            throw new LoginException("Failed to upload avatar image", e);
         }
 
         if (imageUploadResponse.getError() != null) {
-            throw new RuntimeException(
+            throw new LoginException(
                 "Error uploading avatar image: " +
                     imageUploadResponse.getError()
             );
