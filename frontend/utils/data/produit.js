@@ -49,9 +49,9 @@ export const PRODUITS = [
             "Recharge ton portefeuille Steam pour acheter jeux, DLC et contenus. Valable sur PC, Mac et Linux sur toute la boutique Steam.",
         points: 10000,
         imageCarte:
-            "https://cdn.startselect.com/production/products/images/2e388/72571/1230372280.png?id=9c99fe9e236f8649b81a57587b01cf44",
+            "https://gaming-cdn.com/images/products/18107/orig/steam-gift-card-10eur-eur10-card-pc-mac-jeu-steam-eur-cover.jpg?v=1746612780",
         banniere:
-            "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/steamworks_docs/french/Header_1.jpg",
+            "https://preview.redd.it/does-anyone-know-where-to-get-this-background-image-v0-316mnvm20sle1.png?width=1280&format=png&auto=webp&s=f8682a6309fff63f63f7b28dd334a77ad6f2b3c3",
         type: "carte",
     },
 ];

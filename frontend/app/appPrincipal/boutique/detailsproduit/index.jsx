@@ -1,31 +1,26 @@
 import React from "react";
-import {Platform, View, Text, Image, Pressable, StyleSheet, ScrollView, ImageBackground} from "react-native";
+import {Platform, View, Text, Image, Pressable, StyleSheet, ScrollView, ImageBackground,} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
 import HeaderBoutique from "../../../../components/boutique/headerBoutique";
 
 import point from "../../../../assets/icones/point.png";
+import partage from "../../../../assets/icones/boutique/partage.png";
+import coeur from "../../../../assets/icones/boutique/coeur.png";
 
 import styles from "./styles/styles";
 
 export default function DetailProduit() {
-
     const router = useRouter();
     const params = useLocalSearchParams();
 
     const titreCourt = params.titre ?? "Produit";
-    const titreComplet =
-        params.titreComplet ?? `E-carte cadeau ${titreCourt} de 10€`;
-
-    const description =
-        params.descriptionLongue ??
-        params.description ??
-        "Aucune description disponible.";
-
+    const titreComplet = params.titreComplet ?? `E-carte cadeau ${titreCourt} de 10€`;
+    const description = params.descriptionLongue ?? params.description ?? "Aucune description disponible.";
     const points = params.points ?? "0";
-
     const imageCarte = params.imageCarte ?? params.image ?? "";
     const imageBanniere = params.banniere ?? params.image ?? "";
 
@@ -41,82 +36,110 @@ export default function DetailProduit() {
                 <Header />
 
                 <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator>
-                    <View style={styles.bandeau}>
-                        <ImageBackground
-                            source={{ uri: imageBanniere }}
-                            style={styles.imageBandeau}
-                        >
-                            <View style={styles.filtreBandeau} />
-                            <View style={styles.bandeauBasBlanc} />
 
+                    <View style={styles.bandeau}>
+
+                        <View style={styles.bandeauImageLayer}>
+                            <ImageBackground source={{ uri: imageBanniere }} style={styles.imageBandeau}>
+
+                                <View style={styles.filtreBandeau} />
+
+                                <View style={styles.zoneFlou} pointerEvents="none">
+                                    <BlurView intensity={35} style={StyleSheet.absoluteFillObject} />
+                                    <LinearGradient
+                                        colors={[
+                                            "rgba(255,255,255,0)",
+                                            "rgba(255,255,255,0.25)",
+                                            "rgba(255,255,255,1)",
+                                        ]}
+                                        locations={[0, 0.65, 1]}
+                                        style={StyleSheet.absoluteFillObject}
+                                    />
+                                </View>
+
+                                <View style={styles.bandeauBasBlanc} />
+                            </ImageBackground>
+                        </View>
+
+                        <View style={styles.bandeauOverlay}>
                             <View style={styles.headerBoutiqueFlottant}>
                                 <HeaderBoutique mode="detail" />
                             </View>
 
                             <View style={styles.contenuBandeau}>
-
                                 <View style={styles.carteGauche}>
-                                    <Image
-                                        source={{ uri: imageCarte }}
-                                        style={styles.imagePrincipale}
-                                    />
+                                    <Image source={{ uri: imageCarte }} style={styles.imagePrincipale} />
                                 </View>
 
                                 <View style={[styles.blocDroite, styles.memeTaille]}>
-
                                     <View style={styles.blocDroiteHaut}>
-                                        <Text style={styles.titreProduit}>
-                                            {titreComplet}
-                                        </Text>
+                                        <BlurView intensity={30} tint="dark" style={styles.blurFond} />
 
-                                        <View style={styles.ligneBadges}>
-                                            <View style={styles.badge}>
-                                                <Text style={styles.badgeTexte}>
-                                                    ✅ En stock
-                                                </Text>
-                                            </View>
-                                            <View style={styles.badge}>
-                                                <Text style={styles.badgeTexte}>
-                                                    ✅ Téléchargement digital
-                                                </Text>
+                                        <View style={styles.overlayFond} />
+
+                                        <View style={styles.blocDroiteHautContenu}>
+                                            <Text style={styles.titreProduit}>{titreComplet}</Text>
+
+                                            <View style={styles.badgesBar}>
+                                                <View style={styles.badgeItem}>
+                                                    <Text style={styles.badgeIcon}>✅</Text>
+                                                    <Text style={styles.badgeText}>En stock</Text>
+                                                </View>
+
+                                                <View style={styles.badgeDivider} />
+
+                                                <View style={styles.badgeItem}>
+                                                    <Text style={styles.badgeIcon}>✅</Text>
+                                                    <Text style={styles.badgeText}>Téléchargement digital</Text>
+                                                </View>
                                             </View>
                                         </View>
                                     </View>
 
                                     <View style={styles.blocDroiteBas}>
                                         <View style={styles.prixCentre}>
-                                            <Text style={styles.prixTexte}>
-                                                Dès {points}
-                                            </Text>
-                                            <Image
-                                                source={point}
-                                                style={styles.iconePoint}
-                                            />
+                                            <Text style={styles.prixTexte}>Dès {points}</Text>
+                                            <Image source={point} style={styles.iconePoint} />
                                         </View>
 
                                         <View style={styles.ligneActions}>
                                             <Pressable style={styles.boutonSecondaire}>
-                                                <Text style={styles.boutonSecondaireTexte}>
-                                                    ↗
-                                                </Text>
+                                                <LinearGradient
+                                                    colors={["#00DB83", "#0CD8A9"]}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={styles.boutonGradient}
+                                                    pointerEvents="none"
+                                                />
+                                                <Image source={partage} style={styles.boutonSecondaireIcon} resizeMode="contain"/>
                                             </Pressable>
 
                                             <Pressable style={styles.boutonSecondaire}>
-                                                <Text style={styles.boutonSecondaireTexte}>
-                                                    ♡
-                                                </Text>
+                                                <LinearGradient
+                                                    colors={["#00DB83", "#0CD8A9"]}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={styles.boutonGradient}
+                                                    pointerEvents="none"
+                                                />
+                                                <Image source={coeur} style={styles.boutonSecondaireIcon} resizeMode="contain"/>
                                             </Pressable>
 
                                             <Pressable style={styles.boutonPrincipal}>
-                                                <Text style={styles.boutonPrincipalTexte}>
-                                                    Acheter l’offre
-                                                </Text>
+                                                <LinearGradient
+                                                    colors={["#00DB83", "#0CD8A9"]}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={styles.boutonGradient}
+                                                    pointerEvents="none"
+                                                />
+                                                <Text style={styles.boutonPrincipalTexte}>Ajouter au panier</Text>
                                             </Pressable>
                                         </View>
                                     </View>
                                 </View>
                             </View>
-                        </ImageBackground>
+                        </View>
                     </View>
 
                     <View style={styles.section}>
@@ -148,8 +171,6 @@ export default function DetailProduit() {
                             </View>
                         </View>
                     </View>
-
-
                 </ScrollView>
             </View>
         </View>

@@ -16,7 +16,7 @@ export const DONS = [
         id: "wwf",
         type: "don",
         titre: "WWF",
-        titreComplet: "Don au WWF – Protection de la planète",
+        titreComplet: "Don au WWF",
         description: "Don solidaire de 10€",
         descriptionLongue:
             "Votre don au WWF permet de financer des actions concrètes pour la protection des espèces menacées et la préservation des écosystèmes.",

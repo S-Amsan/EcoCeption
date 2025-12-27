@@ -16,16 +16,26 @@ export default StyleSheet.create({
     },
 
     bandeau: {
-        height: 545,
+        height: 535,
+        position: "relative",
+        overflow: "hidden",
+    },
+
+    bandeauImageLayer: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 1,
     },
 
     imageBandeau: {
         flex: 1,
+        position: "relative",
+        overflow: "hidden",
+        opacity : 0.92
     },
 
     filtreBandeau: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(0,0,0,0.45)",
+        backgroundColor: "rgba(0,0,0,0.55)",
     },
 
     bandeauBasBlanc: {
@@ -35,6 +45,19 @@ export default StyleSheet.create({
         bottom: 0,
         height: 180,
         backgroundColor: "#FFFFFF",
+    },
+
+    zoneFlou: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 180,
+    },
+
+    bandeauOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 5,
     },
 
     headerBoutiqueFlottant: {
@@ -50,11 +73,11 @@ export default StyleSheet.create({
         alignItems: "center",
         gap: 120,
         paddingHorizontal: 40,
-        paddingTop: 190,
+        paddingTop: 180,
     },
 
     carteGauche: {
-        width: 520,
+        width: 611,
         height: 350,
         borderRadius: 14,
         overflow: "hidden",
@@ -67,12 +90,12 @@ export default StyleSheet.create({
     },
 
     memeTaille: {
-        width: 520,
+        width: 611,
         height: 350,
     },
 
     blocDroite: {
-        width: 520,
+        width: 611,
         height: 350,
         flexDirection: "column",
         borderRadius: 14,
@@ -88,45 +111,75 @@ export default StyleSheet.create({
     blocDroiteHaut: {
         flex: 1,
         padding: 22,
-        backgroundColor: "rgba(0,0,0,0.45)",
         alignItems: "center",
         justifyContent: "center",
+
+        position: "relative",
+        overflow: "hidden",
+    },
+
+    blurFond: {
+        ...StyleSheet.absoluteFillObject,
+    },
+
+    overlayFond: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(0,0,0,0.35)",
+    },
+
+    blocDroiteHautContenu: {
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 2,
     },
 
     blocDroiteBas: {
         flex: 1,
         padding: 22,
         backgroundColor: "#FFFFFF",
-
-        justifyContent: "center"
+        justifyContent: "center",
     },
 
     titreProduit: {
         color: "#FFFFFF",
-        fontSize: 30,
-        fontWeight: "700",
+        fontSize: 32,
+        fontWeight: "500",
         textAlign: "center",
         marginBottom: 16,
     },
 
-    ligneBadges: {
+    badgesBar: {
         flexDirection: "row",
-        gap: 12,
-        flexWrap: "wrap",
+        alignItems: "center",
         justifyContent: "center",
-    },
-
-    badge: {
-        backgroundColor: "#0E2A1E",
+        paddingVertical: 14,
         paddingHorizontal: 18,
-        paddingVertical: 12,
         borderRadius: 999,
+        backgroundColor: "rgba(0,0,0,0.41)",
+        gap: 18,
     },
 
-    badgeTexte: {
+    badgeItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+
+    badgeIcon: {
+        fontSize: 21,
+    },
+
+    badgeText: {
         color: "#FFFFFF",
-        fontSize: 15,
-        fontWeight: "600",
+        fontSize: 18,
+        fontWeight: "400",
+    },
+
+    badgeDivider: {
+        width: 2,
+        height: 28,
+        backgroundColor: "rgba(255,255,255,0.65)",
+        borderRadius: 2,
     },
 
     prixCentre: {
@@ -139,13 +192,13 @@ export default StyleSheet.create({
 
     prixTexte: {
         fontSize: 40,
-        fontWeight: "600",
-        color: "#278674",
+        fontWeight: "500",
+        color: "#429585",
     },
 
     iconePoint: {
-        width: 45,
-        height: 45,
+        width: 48,
+        height: 50,
         resizeMode: "contain",
     },
 
@@ -156,49 +209,62 @@ export default StyleSheet.create({
     },
 
     boutonSecondaire: {
-        width: 52,
-        height: 44,
+        width: 85,
+        height: 54,
         borderRadius: 10,
-        backgroundColor: "#04DA90",
         alignItems: "center",
         justifyContent: "center",
+        overflow: "hidden",
+        position: "relative",
     },
 
-    boutonSecondaireTexte: {
-        color: "#FFFFFF",
-        fontSize: 18,
-        fontWeight: "700",
+    boutonSecondaireIcon: {
+        width: 30,
+        height: 30,
+        zIndex: 2,
     },
 
     boutonPrincipal: {
         flex: 1,
-        height: 44,
+        height: 54,
         borderRadius: 10,
-        backgroundColor: "#04DA90",
         alignItems: "center",
         justifyContent: "center",
+        overflow: "hidden",
+        position: "relative",
     },
 
     boutonPrincipalTexte: {
         color: "#FFFFFF",
-        fontWeight: "800",
-        fontSize: 16,
+        fontWeight: "500",
+        fontSize: 24,
+        zIndex: 2,
+    },
+
+    boutonGradient: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        borderRadius: 10,
+        zIndex: 1,
     },
 
     section: {
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        gap: 180,
+        gap: 280,
         paddingHorizontal: 40,
         paddingVertical: 40,
-        paddingLeft: 230,
+        paddingLeft: 140,
         backgroundColor: "#FFFFFF",
     },
 
     sectionTitre: {
-        fontSize: 28,
-        fontWeight: "800",
+        fontSize: 30,
+        fontWeight: "400",
         marginBottom: 22,
     },
 
@@ -210,8 +276,7 @@ export default StyleSheet.create({
     },
 
     label: {
-        fontSize: 18,
-        fontWeight: "700",
+        fontSize: 23,
         marginBottom: 8,
     },
 
@@ -219,12 +284,6 @@ export default StyleSheet.create({
         fontSize: 18,
         color: "#04DA90",
         textDecorationLine: "underline",
-    },
-
-    ligneBas: {
-        flexDirection: "row",
-        gap: 120,
-        alignItems: "flex-start",
     },
 
     colonneGauche: {
@@ -258,5 +317,4 @@ export default StyleSheet.create({
     voirPlus: {
         fontWeight: "700",
     },
-
 });
