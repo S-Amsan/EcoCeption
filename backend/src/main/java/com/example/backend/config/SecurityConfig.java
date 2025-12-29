@@ -33,6 +33,8 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers("/post")
                     .authenticated()
+                    .requestMatchers("/donation/**")
+                    .permitAll()
             )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sess ->
