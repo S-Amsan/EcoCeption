@@ -3,6 +3,7 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import java.util.Date;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -30,6 +31,10 @@ public class Competition {
 
     @Column(nullable = false)
     private int inscriptionCost;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private Date creationDate;
 
     public Competition() {}
 }
