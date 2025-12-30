@@ -48,8 +48,6 @@ export default function Login(){
         }
     };
 
-
-
     const handleSignUp = () => {
         navigation.navigate('SignUp');
     };
@@ -168,7 +166,9 @@ export default function Login(){
                     </View>
                 </View>
                 </ScrollView>
-                    ) : ( <View style={style.container}>
+                    ) : (
+                <ScrollView>
+                        <View style={style.container}>
                 <Image
                     source={require('../../assets/logo.png')}
                     style={style.logo}
@@ -269,7 +269,10 @@ export default function Login(){
                     </Text>
                 </View>
             </View>
+                </ScrollView>
             )}
+
         </LinearGradient>
+
     );
 };

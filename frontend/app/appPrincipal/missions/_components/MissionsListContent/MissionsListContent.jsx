@@ -152,72 +152,69 @@ export default function MissionsPage() {
             </View>
         );
     }
-        return (
-            <ScrollView showsVerticalScrollIndicator={true}>
-                    <InfoHeader
-                        title={"Parrainer un ami"}
-                        image={require("../../../../../assets/missions/parrainage.png")}
-                        description="+1000/filleul"
-                    />
-                <View style={styles.infoBox}>
-                    <InfoCard
-                        title="Scanner un QR code et poster"
-                        description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
-                        button="Commencer"
-                        image={require("../../../../../assets/missions/scan.png")}
-                    />
+    return (
+        <ScrollView
+            showsVerticalScrollIndicator
+            contentContainerStyle={{ paddingBottom: 20 }}
+        >
+            {/* HEADER INFO */}
+            <InfoHeader
+                title="Parrainer un ami +1000/filleul"
+                image={require("../../../../../assets/missions/parrainage.png")}
+            />
 
-                    <InfoCard
-                        title="Objets abandonnés"
-                        description="Poster des objets abandonnés pour leur donner une seconde vie."
-                        button="Commencer"
-                        image={require("../../../../../assets/missions/objet.png")}
-                    />
-                </View>
+            {/* INFO CARDS */}
+            <View style={styles.infoBox}>
+                <InfoCard
+                    title="Scanner un QR code et poster"
+                    description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
+                    button="Commencer"
+                    image={require("../../../../../assets/missions/scan.png")}
+                />
 
-                <View>
-                    <View style={styles.header}>
-                        <Text style={styles.headerTitle}>
-                            Objets à récupérer autour de vous
-                        </Text>
+                <InfoCard
+                    title="Objets abandonnés"
+                    description="Poster des objets abandonnés pour leur donner une seconde vie."
+                    button="Commencer"
+                    image={require("../../../../../assets/missions/objet.png")}
+                />
+            </View>
+
+            {/* LIST HEADER */}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>
+                    Objets à récupérer autour de vous
+                </Text>
+            </View>
+
+            {/* LIST */}
+            <View>
+                {items.map(item => (
+                    <View key={item.id} style={styles.card}>
+                        <Image source={item.image} style={styles.image} />
+
+                        <View style={styles.content}>
+                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.address}>📍 {item.address}</Text>
+                            <Text style={styles.meta}>
+                                {item.author} • {item.time}
+                            </Text>
+                            {item.description && (
+                                <Text style={styles.describe}>{item.description}</Text>
+                            )}
+                        </View>
+
+                        <View style={styles.right}>
+                            <Text style={styles.distance}>{item.distance}</Text>
+                            <TouchableOpacity style={styles.button}>
+                                <Text style={styles.buttonText}>Voir l’objet</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View>
-                        {items.map(item => (
-                            <View key={item.id} style={styles.card}>
-                                <Image source={item.image} style={styles.image}/>
-
-                                <View style={styles.content}>
-                                    <View style={styles.content1}>
-                                        <Text style={styles.title}>{item.title}</Text>
-                                        <Text style={styles.address}>📍 {item.address}</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.meta}>
-                                            {item.author} • {item.time}
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.describe}>
-                                            {item.description}
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View style={styles.right}>
-                                    <Text style={styles.distance}>{item.distance}</Text>
-
-                                    <TouchableOpacity style={styles.button}>
-                                        <Text style={styles.buttonText}>
-                                            Voir l’objet
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-            </ScrollView>
-        );
+                ))}
+            </View>
+        </ScrollView>
+    );
 }
 
 
@@ -245,18 +242,17 @@ function InfoCard({ title, description, button, image }) {
 function InfoHeader({ title, description,image}) {
     return (
         <View style={styles.infoHeader}>
-            <View style={{flexDirection:"row"}}>
-            <View>
-                <Text style={styles.infoTitle}>{title}</Text>
-
-                <Text style={styles.infoDesc}>{description}</Text>
-
+            <View style={styles.spship}>
+            <View style={{justifyContent:'center'}}>
+                <Text style={styles.headerTitle}>{title}</Text>
             </View>
+            <View>
             <Image
                 source={image}
                 style={styles.HeaderImage}
                 resizeMode="contain"
             />
+        </View>
         </View>
         </View>
     );

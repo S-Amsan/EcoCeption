@@ -1,77 +1,88 @@
-import { StyleSheet, Platform } from "react-native";
-import {
-    width,
-    height,
-    scale,
-    verticalScale,
-    moderateScale,
-    isTablet,
-} from "../../../utils/dimensions";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export default StyleSheet.create({
     gradient: {
         flex: 1,
     },
+
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: "center",
+    },
+
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: verticalScale(70),
+        alignItems: "center",
+        minHeight: height,
     },
+
     logo: {
-        width: isTablet ? scale(180) : scale(160),
-        height: isTablet ? scale(180) : scale(160),
-        marginBottom: verticalScale(10),
-        marginTop: verticalScale(40),
+        marginTop:40,
+        width: 210,
+        height: 210,
+        marginBottom:20,
     },
+
     FormContainer: {
         flex:1,
-        padding: 35,
+        padding: 40,
         borderRadius: 45,
         backgroundColor: "white",
         width: width,
+        minHeight: 600,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
         elevation: 5,
     },
+
     title: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: "bold",
         color: "#00DB83",
         marginBottom: 8,
         textAlign: "center",
     },
+
     subtitle: {
-        fontSize: 14,
+        fontSize: 16,
         color: "#666",
         textAlign: "center",
-        marginBottom: 20,
+        marginBottom: 40,
         fontStyle: "italic",
     },
+
     inputGroup: {
         width: "100%",
         marginBottom: 25,
     },
+
     label: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: "600",
         color: "#333",
         marginBottom: 8,
         marginLeft: 5,
     },
+
     textInput: {
         backgroundColor: "#F8F9FA",
         borderWidth: 1,
         borderColor: "#E9ECEF",
         borderRadius: 15,
-        padding: 18,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
         fontSize: 16,
         color: "#333",
         width: "100%",
-        height:50,
+        minHeight: 48,
+        includeFontPadding: false,
+        textAlignVertical: "center",
     },
+
     passwordContainer: {
         flexDirection: "row",
         alignItems: "center",
@@ -80,59 +91,72 @@ export default StyleSheet.create({
         borderColor: "#E9ECEF",
         borderRadius: 15,
         overflow: "hidden",
-        height:50,
+        minHeight: 48,
     },
+
     passwordInput: {
         flex: 1,
-        padding: 18,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
         fontSize: 16,
         color: "#333",
+        includeFontPadding: false,
+        textAlignVertical: "center",
     },
+
     eyeIcon: {
-        padding: 10,
+        paddingHorizontal: 18,
     },
+
     forgotPasswordContainer: {
         alignItems: "flex-end",
         marginBottom: 30,
     },
+
     forgotPasswordText: {
         color: "#00DB83",
         fontSize: 14,
         fontWeight: "600",
         textDecorationLine: "underline",
     },
+
     primaryButton: {
         borderRadius: 25,
         width: "100%",
-        marginBottom: 5,
         overflow: "hidden",
     },
+
     gradientButton: {
         padding: 18,
         alignItems: "center",
         borderRadius: 25,
     },
+
     primaryButtonText: {
         color: "white",
         fontSize: 18,
         fontWeight: "bold",
     },
+
     separator: {
         flexDirection: "row",
         alignItems: "center",
-        marginVertical: 10,
+        marginVertical: 20,
     },
+
     separatorLine: {
         flex: 1,
         height: 1,
         backgroundColor: "#E9ECEF",
     },
+
     separatorText: {
         color: "#666",
         fontSize: 14,
         fontWeight: "600",
         marginHorizontal: 15,
     },
+
     secondaryButton: {
         borderWidth: 2,
         borderColor: "#00DB83",
@@ -140,13 +164,14 @@ export default StyleSheet.create({
         padding: 16,
         alignItems: "center",
         marginBottom: 25,
-        marginTop: 5,
     },
+
     secondaryButtonText: {
         color: "#00DB83",
         fontSize: 16,
         fontWeight: "bold",
     },
+
     policy: {
         color: "#1D3937",
         fontSize: 12,

@@ -32,7 +32,6 @@ export default StyleSheet.create({
     },
 
     card: {
-
         flexDirection: "row",
         backgroundColor: "#fff",
         borderRadius: 12,
@@ -120,7 +119,6 @@ export default StyleSheet.create({
         flex: 1,
         padding:15,
     },
-
     info:{
         alignItems: "flex-end",
     },

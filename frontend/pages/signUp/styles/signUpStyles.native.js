@@ -1,64 +1,72 @@
-import { StyleSheet, Dimensions } from "react-native";
-
-const { width, height} = Dimensions.get("window");
+import { StyleSheet, Platform } from "react-native";
+import {
+    width,
+    height,
+    scale,
+    verticalScale,
+    moderateScale,
+    isTablet,
+} from "../../../utils/dimensions";
 export default StyleSheet.create({
     gradient: {
         flex: 1,
     },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
-    },
     container: {
         flex: 1,
         alignItems: 'center',
-        minHeight: height,
+        justifyContent: 'center',
+        paddingTop: verticalScale(70),
     },
     logo: {
-        width: 240,
-        height: 240,
+        width: isTablet ? scale(180) : scale(160),
+        height: isTablet ? scale(180) : scale(160),
+        marginBottom: verticalScale(10),
+        marginTop: verticalScale(40),
     },
     FormContainer:{
-        padding: 40,
+        flex:1,
+        padding: 35,
         borderRadius: 45,
         backgroundColor: 'white',
-        minHeight: 600,
+        width: width,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
         elevation: 5,
-        marginBottom: 10,
     },
     title: {
-        fontSize: 24,
+        fontSize: isTablet ? moderateScale(38) : moderateScale(24),
         fontWeight: 'bold',
         color: '#00DB83',
-        marginBottom: 15,
+        marginBottom: moderateScale(10),
         textAlign: 'center',
     },
     inputGroup: {
         width: '100%',
-        marginBottom: 25,
+        marginBottom: 15,
     },
     label: {
-        fontSize: 16,
+        fontSize: isTablet ? moderateScale(18) : moderateScale(16),
         fontWeight: '600',
         color: '#333',
-        marginBottom: 8,
+        marginBottom: 5,
         marginLeft: 5,
     },
     textInput: {
+        outlineStyle: "none",
         backgroundColor: '#F8F9FA',
         borderWidth: 1,
         borderColor: '#E9ECEF',
         borderRadius: 15,
-        padding: 18,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
         fontSize: 16,
         color: '#333',
         width: '100%',
+        minHeight: 48,
     },
-    // Styles pour le champ téléphone
+
     phoneInputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -67,15 +75,17 @@ export default StyleSheet.create({
         borderColor: '#E9ECEF',
         borderRadius: 15,
         overflow: 'hidden',
+        minHeight: 48,
     },
+
     countrySelector: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#E9ECEF',
         paddingHorizontal: 15,
-        paddingVertical: 18,
         borderRightWidth: 1,
         borderRightColor: '#DEE2E6',
+        height:'100%'
     },
     countryFlag: {
         fontSize: 16,
@@ -87,10 +97,11 @@ export default StyleSheet.create({
         color: '#333',
     },
     phoneInput: {
+        outlineStyle: "none",
         flex: 1,
-        padding: 18,
         fontSize: 16,
         color: '#333',
+        margin:2
     },
     phoneHint: {
         fontSize: 12,
@@ -98,7 +109,6 @@ export default StyleSheet.create({
         marginTop: 5,
         marginLeft: 5,
     },
-    // Styles pour le champ mot de passe
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -107,15 +117,19 @@ export default StyleSheet.create({
         borderColor: '#E9ECEF',
         borderRadius: 15,
         overflow: 'hidden',
+        minHeight: 50,
     },
+
     passwordInput: {
         flex: 1,
-        padding: 18,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
         fontSize: 16,
         color: '#333',
     },
+
     eyeIcon: {
-        padding: 18,
+        padding: 10,
     },
 
     modalContainer: {
@@ -128,7 +142,7 @@ export default StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
-        width: '20%',
+        width: '90%',
         maxHeight: '70%',
     },
     modalTitle: {
@@ -169,7 +183,7 @@ export default StyleSheet.create({
     primaryButton: {
         borderRadius: 25,
         width: '100%',
-        marginTop: 20,
+        marginTop: 15,
         marginBottom: 25,
         overflow: 'hidden',
     },

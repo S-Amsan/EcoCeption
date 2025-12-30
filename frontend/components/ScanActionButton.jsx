@@ -1,14 +1,18 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import {TouchableOpacity, StyleSheet, Image} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function ScanActionButton({ label, onPress }) {
+export default function ScanActionButton({ onPress }) {
     return (
         <TouchableOpacity
-            style={styles.button}
             activeOpacity={0.85}
             onPress={onPress}
+            style={styles.button}
         >
-            <Text style={styles.text}>{label}</Text>
+            <Image
+                source={require("../assets/scan.png")}
+                style={{width: 46, height: 37}}
+            />
         </TouchableOpacity>
     );
 }
@@ -16,22 +20,28 @@ export default function ScanActionButton({ label, onPress }) {
 const styles = StyleSheet.create({
     button: {
         position: "absolute",
-        bottom: 24,
-        alignSelf: "center",
+        bottom: 50,
+        right: 24,
+
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+
         backgroundColor: "#1DDE9A",
-        paddingVertical: 14,
-        paddingHorizontal: 24,
-        borderRadius: 14,
-        elevation: 6,
+        justifyContent: "center",
+        alignItems: "center",
+
+
+        elevation: 5,
+
+
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
         shadowRadius: 6,
-        zIndex: 999,
-    },
-    text: {
-        color: "#fff",
-        fontWeight: "600",
-        fontSize: 16,
+
+        zIndex: 1000,
     },
 });
+
+
