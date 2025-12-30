@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Platform,
+    Modal,
+} from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ScanPage() {
-    const [permission, requestPermission] = useCameraPermissions();
-    const [scanned, setScanned] = useState(false);
     const router = useRouter();
+    const isWeb = Platform.OS === "web";
+
+    const [scanned, setScanned] = useState(false);
+    const [permission, requestPermission] = useCameraPermissions();
 
     useEffect(() => {
-        if (!permission) requestPermission();
-    }, [permission]);
+        if (!isWeb && !permission) {
+            requestPermission();
+        }
+    }, [permission, isWeb]);
 
     const handleBarcodeScanned = ({ data, type }) => {
         setScanned(true);
@@ -23,9 +34,50 @@ export default function ScanPage() {
         });
     };
 
+    if (isWeb) {
+        return (
+            <View style={styles.webContainer}>
+                <Modal transparent animationType="fade" visible>
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContent}>
+                            <Ionicons
+                                name="phone-portrait-outline"
+                                size={48}
+                                color="#1DDE9A"
+                            />
+                            <Text style={styles.modalTitle}>
+                                Fonctionnalité mobile uniquement
+                            </Text>
+                            <Text style={styles.modalText}>
+                                Retrouver le scan de code-barres uniquement
+                                sur l’application mobile.
+                            </Text>
+
+                            <TouchableOpacity
+                                style={styles.modalButton}
+                                onPress={() => router.back()}
+                            >
+                                <Text style={styles.modalButtonText}>
+                                    Retour
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        );
+    }
+
     if (!permission) return null;
+
     if (!permission.granted) {
-        return <Text>Accès caméra refusé</Text>;
+        return (
+            <View style={styles.permissionContainer}>
+                <Text style={styles.permissionText}>
+                    Accès caméra refusé
+                </Text>
+            </View>
+        );
     }
 
     return (
@@ -121,5 +173,64 @@ const styles = StyleSheet.create({
         color: "#fff",
         opacity: 0.7,
     },
-});
 
+    permissionContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#000",
+    },
+
+    permissionText: {
+        color: "#fff",
+    },
+
+    webContainer: {
+        flex: 1,
+        backgroundColor: "#000",
+    },
+
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.85)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    modalContent: {
+        width: "85%",
+        backgroundColor: "#111",
+        borderRadius: 20,
+        padding: 24,
+        alignItems: "center",
+    },
+
+    modalTitle: {
+        marginTop: 16,
+        fontSize: 18,
+        fontWeight: "600",
+        color: "#fff",
+        textAlign: "center",
+    },
+
+    modalText: {
+        marginTop: 12,
+        fontSize: 14,
+        color: "#ccc",
+        textAlign: "center",
+        lineHeight: 20,
+    },
+
+    modalButton: {
+        marginTop: 24,
+        backgroundColor: "#1DDE9A",
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 12,
+    },
+
+    modalButtonText: {
+        color: "#000",
+        fontWeight: "600",
+    },
+});

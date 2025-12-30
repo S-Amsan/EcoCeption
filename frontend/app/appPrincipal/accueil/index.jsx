@@ -98,18 +98,19 @@ export default function Index() {
                         userDetails
                         userProfil
                     />
-
+                    <ScrollView>
                     <View style={{ flex: 1, padding: 15 }}>
                         {loading ? (
                             <ActivityIndicator size="large" color="#1DDE9A" />
                         ) : (
-                            <ScrollView>
+                            <View>
                                 {posts.map(p => (
                                     <PostCard key={p.id} post={p} styles={style} />
                                 ))}
-                            </ScrollView>
+                            </View>
                         )}
                     </View>
+                    </ScrollView>
                 </View>
             </View>
         );

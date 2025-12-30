@@ -1,48 +1,67 @@
 import { StyleSheet } from "react-native";
+import { Platform } from "react-native";
+
 
 export default StyleSheet.create({
 
     page: {
         flex: 1,
         flexDirection: "row",
-        backgroundColor: "#F8F8F8",
     },
 
     left: {
-        flex: 2,
-        padding: 16,
+        padding: 30,
+        alignItems:'center',
     },
 
     header: {
-        backgroundColor: "#3EDFA4",
-        color: "#fff",
+        backgroundColor: "#45E2B2",
         padding: 16,
-        borderRadius: 8,
+        borderRadius: 5,
+        marginBottom: 16,
+        width:920,
+        height:110,
+        justifyContent:'center',
+    },
+
+    headerTitle: {
+        textAlign: "center",
+        color: "#fff",
         fontSize: 16,
         fontWeight: "600",
-        marginBottom: 16,
-        textAlign: "center",
     },
 
     card: {
+
         flexDirection: "row",
         backgroundColor: "#fff",
         borderRadius: 12,
         padding: 12,
         marginBottom: 12,
         alignItems: "center",
-    },
+        width:920,
 
-    image: {
-        width: 110,
-        height: 80,
-        borderRadius: 8,
     },
 
     content: {
         flex: 1,
+        flexDirection:'column',
         marginLeft: 12,
+
     },
+
+    content1: {
+        flex: 1,
+        flexDirection:'row',
+        marginVertical:10,
+    },
+
+    image: {
+        width: 180,
+        height: 130,
+        borderRadius: 8,
+    },
+
 
     title: {
         fontSize: 15,
@@ -51,19 +70,27 @@ export default StyleSheet.create({
 
     address: {
         color: "#666",
-        marginVertical: 4,
+        marginLeft:12,
         fontSize: 13,
+
     },
 
     meta: {
         color: "#999",
         fontSize: 12,
+
+    },
+
+    describe:{
+        fontSize:12,
+        marginVertical:10,
     },
 
     right: {
         alignItems: "flex-end",
         justifyContent: "space-between",
-        height: 80,
+        height: 100,
+        padding:20,
     },
 
     distance: {
@@ -73,39 +100,63 @@ export default StyleSheet.create({
 
     button: {
         backgroundColor: "#3EDFA4",
+        marginVertical:20,
         paddingHorizontal: 14,
         paddingVertical: 6,
         borderRadius: 8,
+        width:160,
+        height:33,
+        justifyContent:'center'
     },
 
     buttonText: {
         color: "#fff",
         fontWeight: "600",
         fontSize: 12,
+        textAlign:'center'
     },
 
     rightPanel: {
         flex: 1,
-        padding: 16,
+        padding:15,
+    },
+
+    info:{
+        alignItems: "flex-end",
     },
 
     infoBox:{
         margin:15
     },
 
+    Container:{
+        alignItems:'center',
+        padding:15,
+    },
+
     infoCard: {
         position: "relative",
         backgroundColor: "#fff",
-        borderRadius: 16,
+        borderRadius: 5,
         overflow: "hidden",
         marginBottom: 16,
 
-        elevation: 6,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        boxShadow: "0px 4px 12px rgba(0,0,0,0.12)",
+        elevation: Platform.OS === "android" ? 6 : 0,
+
+
+        shadowColor: Platform.OS === "ios" ? "#000" : undefined,
+        shadowOffset:
+            Platform.OS === "ios"
+                ? { width: 0, height: 4 }
+                : undefined,
+        shadowOpacity: Platform.OS === "ios" ? 0.15 : undefined,
+        shadowRadius: Platform.OS === "ios" ? 8 : undefined,
+
+        ...(Platform.OS === "web" && {
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.12)",
+            width:580,
+            height:250
+        }),
     },
 
     infoContent: {
@@ -124,7 +175,10 @@ export default StyleSheet.create({
         top: 0,
         right: 0,
         bottom: 0,
-        width: 110,
+        width:110,
+        ...(Platform.OS === "web" && {
+        width: 220,
+        }),
     },
 
     infoDesc: {

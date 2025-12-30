@@ -20,6 +20,7 @@ export default function MissionsPage() {
             author: "@Maitre",
             time: "2 min",
             image: require("../../../../../assets/missions/scan.png"),
+            description:"Venez me récuperer"
         },
         {
             id: 2,
@@ -39,27 +40,76 @@ export default function MissionsPage() {
             time: "hier",
             image: require("../../../../../assets/missions/scan.png"),
         },
+
+        {
+            id: 4,
+            title: "Équipements maison",
+            address: "96 Av. de La Liberté Tunis",
+            distance: "13 km",
+            author: "@Maitre",
+            time: "2 min",
+            image: require("../../../../../assets/missions/objet.png"),
+        },
+        {
+            id: 5,
+            title: "Canapé",
+            address: "96 Av. de La Liberté Tunis",
+            distance: "18 km",
+            author: "@Maitre",
+            time: "hier",
+            image: require("../../../../../assets/missions/scan.png"),
+        },
+        {
+            id: 6,
+            title: "Équipements maison",
+            address: "96 Av. de La Liberté Tunis",
+            distance: "13 km",
+            author: "@Maitre",
+            time: "2 min",
+            image: require("../../../../../assets/missions/objet.png"),
+        },
+        {
+            id: 7,
+            title: "Canapé",
+            address: "96 Av. de La Liberté Tunis",
+            distance: "18 km",
+            author: "@Maitre",
+            time: "hier",
+            image: require("../../../../../assets/missions/scan.png"),
+        },
     ];
 
     if (isWeb) {
         return (
             <View style={styles.page}>
-                {/* COLONNE GAUCHE */}
                 <View style={styles.left}>
-                        <Text style={styles.header}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>
                             Objets à récupérer autour de vous
                         </Text>
-                    <ScrollView showsVerticalScrollIndicator>
+                    </View>
+
+                    <ScrollView showsVerticalScrollIndicator style={{backgroundColor:"#fff"}}>
+                        <View>
                         {items.map(item => (
                             <View key={item.id} style={styles.card}>
                                 <Image source={item.image} style={styles.image}/>
 
                                 <View style={styles.content}>
+                                    <View style={styles.content1}>
                                     <Text style={styles.title}>{item.title}</Text>
                                     <Text style={styles.address}>📍 {item.address}</Text>
-                                    <Text style={styles.meta}>
-                                        {item.author} • {item.time}
-                                    </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.meta}>
+                                            {item.author} • {item.time}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.describe}>
+                                            {item.description}
+                                        </Text>
+                                    </View>
                                 </View>
 
                                 <View style={styles.right}>
@@ -73,21 +123,31 @@ export default function MissionsPage() {
                                 </View>
                             </View>
                         ))}
+                        </View>
                     </ScrollView>
                 </View>
 
                     <View style={styles.rightPanel}>
-                        <InfoCard
-                            title="Scanner un QR code et poster"
-                            description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
-                            button="Commencer"
-                        />
+                        <View style={styles.info}>
+                            <Text>
+                                Comment sa marche ?
+                            </Text>
+                            </View>
+                        <View style={styles.Container}>
+                            <InfoCard
+                                title="Scanner un QR code et poster"
+                                description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
+                                button="Commencer"
+                                image={require("../../../../../assets/missions/scan.png")}
+                            />
 
-                        <InfoCard
-                            title="Objets abandonnés"
-                            description="Poster des objets abandonnés pour leur donner une seconde vie."
-                            button="Commencer"
-                        />
+                            <InfoCard
+                                title="Objets abandonnés"
+                                description="Poster des objets abandonnés pour leur donner une seconde vie."
+                                button="Commencer"
+                                image={require("../../../../../assets/missions/objet.png")}
+                            />
+                        </View>
                     </View>
             </View>
         );

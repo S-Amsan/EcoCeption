@@ -17,7 +17,7 @@ export default function MissionsLayoutWeb() {
 
             <View style={{ flex: 1 }}>
                 <Header onglets={onglets} />
-                <View style={{ flex: 1, padding: 24 }}>
+                <View style={{ flex: 1}}>
                     <Slot />
                 </View>
             </View>
