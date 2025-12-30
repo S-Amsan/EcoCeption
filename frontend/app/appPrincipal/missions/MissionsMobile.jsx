@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Header from "../../../components/Header";
 import TabNavbarMobile from "../../../components/TabNavbarMobile";
-import MissionsListContent from "./_components/MissionsListContent/MissionsListContent";
-import Gestes from "./_components/Gestes/Gestes";
 import ScanActionButton from "../../../components/ScanActionButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
+
+import MissionsListContent from "./_components/MissionsListContent/MissionsListContent";
+import Gestes from "./_components/Gestes/Gestes";
 
 export default function MissionsMobile() {
     const [ongletActifId, setOngletActifId] = useState("listes");
@@ -27,7 +28,6 @@ export default function MissionsMobile() {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <Header titre="Missions" boutonRetour />
 
-            {/* Bouton flottant global */}
             <ScanActionButton
                 label="Scanner un produit"
                 onPress={() => router.push("/appPrincipal/codebar")}

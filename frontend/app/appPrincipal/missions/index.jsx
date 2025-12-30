@@ -1,9 +1,9 @@
-import { Redirect } from "expo-router";
 import { Platform } from "react-native";
+import MissionsMobile from "./MissionsMobile";
+import MissionsWeb from "./MissionsWeb";
 
-export default function Index() {
-    if (Platform.OS === "web") {
-        return <Redirect href="/appPrincipal/missions/listes" />;
-    }
-    return null;
+export default function MissionsIndex() {
+    return Platform.OS === "web"
+        ? <MissionsWeb />
+        : <MissionsMobile />;
 }

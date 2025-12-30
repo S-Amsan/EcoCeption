@@ -18,18 +18,25 @@ import {formatNombreCourt} from "../utils/format";
 import {isWeb} from "../utils/platform";
 
 export default function Header({
-    recherche,setRecherche, //Barre de recherche (web)
-    filtres, setFiltres, // filtre de la barre de recherche (web)
-    onglets, // onglet (web)
-    titre, // titre dans le header (mobile)
-    boutonRetour = false, // bouton retour (mobile)
-    boutonParametres = false, // bouton parametre (mobile)
-    boutonNotification = false, // bouton notification (mobile)
-    userProfil = false, // photo de profil de l'utilisateur (mobile)
-    userDetails = false, // info de l'utilisateur (web et mobile)
-    fondTransparent = false,
-    user
-    }) {
+                                   recherche,
+                                   setRecherche,
+                                   filtres,
+                                   setFiltres,
+
+                                   onglets,
+                                   ongletActifId,
+                                   setOngletActif,
+
+                                   titre,
+                                   boutonRetour = false,
+                                   boutonParametres = false,
+                                   boutonNotification = false,
+                                   userProfil = false,
+                                   userDetails = false,
+                                   fondTransparent = false,
+                                   user
+                               }) {
+
     const pathname = usePathname();
     const router = useRouter();
     const navigation = useNavigation();
@@ -184,21 +191,35 @@ export default function Header({
                             )}
 
                             {/* ONGLETS */}
+                            {/* ONGLETS */}
                             {onglets && (
                                 <View style={styles.ongletsContainer}>
-                                    {onglets.map(onglet => {
-                                        const isActive = pathname === `/appPrincipal/${onglet.page}`;
+                                    {onglets.map((onglet) => {
+                                        const isActive = onglet.id === ongletActifId;
 
                                         return (
                                             <TouchableOpacity
                                                 key={onglet.id}
                                                 style={styles.ongletContainer}
-                                                onPress={() => !isActive && router.push(`/appPrincipal/${onglet.page}`)}
+                                                onPress={() => {
+                                                    if (!isActive && setOngletActif) {
+                                                        setOngletActif(onglet.id);
+                                                    }
+                                                }}
                                             >
-                                                <Text  style={[styles.ongletLabel, isActive && styles.ongletActiveLabel]}>{onglet.label}</Text>
-                                                {isActive && <View style={styles.ongletUnderline}/>}
+                                                <Text
+                                                    style={[
+                                                        styles.ongletLabel,
+                                                        isActive && styles.ongletActiveLabel,
+                                                    ]}
+                                                >
+                                                    {onglet.label}
+                                                </Text>
+
+                                                {isActive && <View style={styles.ongletUnderline} />}
                                             </TouchableOpacity>
-                                        )})}
+                                        );
+                                    })}
                                 </View>
                             )}
 

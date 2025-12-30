@@ -147,7 +147,7 @@ export default function MissionsPage() {
                                 button="Commencer"
                                 image={require("../../../../../assets/missions/objet.png")}
                             />
-                        </View>
+                    </View>
                     </View>
             </View>
         );
@@ -175,35 +175,46 @@ export default function MissionsPage() {
                     />
                 </View>
 
-                <View style={styles.objetBox}>
-                    <View style={styles.left}>
-                        <Text style={styles.header}>
+                <View>
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>
                             Objets à récupérer autour de vous
                         </Text>
-                            {items.map(item => (
-                                <View key={item.id} style={styles.card}>
-                                    <Image source={item.image} style={styles.image}/>
+                    </View>
+                    <View>
+                        {items.map(item => (
+                            <View key={item.id} style={styles.card}>
+                                <Image source={item.image} style={styles.image}/>
 
-                                    <View style={styles.content}>
+                                <View style={styles.content}>
+                                    <View style={styles.content1}>
                                         <Text style={styles.title}>{item.title}</Text>
                                         <Text style={styles.address}>📍 {item.address}</Text>
+                                    </View>
+                                    <View>
                                         <Text style={styles.meta}>
                                             {item.author} • {item.time}
                                         </Text>
                                     </View>
-
-                                    <View style={styles.right}>
-                                        <Text style={styles.distance}>{item.distance}</Text>
-
-                                        <TouchableOpacity style={styles.button}>
-                                            <Text style={styles.buttonText}>
-                                                Voir l’objet
-                                            </Text>
-                                        </TouchableOpacity>
+                                    <View>
+                                        <Text style={styles.describe}>
+                                            {item.description}
+                                        </Text>
                                     </View>
                                 </View>
-                            ))}
-                </View>
+
+                                <View style={styles.right}>
+                                    <Text style={styles.distance}>{item.distance}</Text>
+
+                                    <TouchableOpacity style={styles.button}>
+                                        <Text style={styles.buttonText}>
+                                            Voir l’objet
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        ))}
+                    </View>
                 </View>
             </ScrollView>
         );
