@@ -5,7 +5,7 @@ import { fetchUserByEmail } from "./user.api";
 const API_URL = "http://192.168.1.8:8080";
 
 export async function login(email, password) {
-    const res = await fetch(`${API_URL}/api/auth/login`, {
+    const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"

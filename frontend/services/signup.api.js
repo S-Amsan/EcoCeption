@@ -34,7 +34,7 @@ export async function signupMultipart({
         });
     }
 
-    const response = await fetch(`${API_URL}/api/auth/signup`, {
+    const response = await fetch(`${API_URL}/auth/signup`, {
         method: "POST",
         body: formData
     });

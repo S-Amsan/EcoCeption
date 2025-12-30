@@ -143,7 +143,7 @@ export default function SignUp(){
             const encodedPhone = encodeURIComponent(selectedCountry.dialCode + cleanPhone);
 
             const response = await fetch(
-                `http://localhost:8080/api/auth/check?pseudo=${encodedPseudo}&email=${encodedEmail}&phone=${encodedPhone}`
+                `http://localhost:8080/auth/check?pseudo=${encodedPseudo}&email=${encodedEmail}&phone=${encodedPhone}`
             );
 
             const result = await response.json();
