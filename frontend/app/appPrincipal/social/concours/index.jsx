@@ -2,10 +2,10 @@ import React from "react";
 
 import EventPage from "../_components/EventPage";
 
-import { fetchCompetitions } from "../../../../services/competitions.api"
+import { fetchLatestCompetition } from "../../../../services/competitions.api"
 
 export default function Concours() {
-    const concours_DATA = fetchCompetitions();
+    const concours_DATA = fetchLatestCompetition(); // le concours le plus récent et pas fini, Date_fin > date d'aujourd'hui
 
     const user_event_DATA = [{
         Nom : "Novembre 2025",
