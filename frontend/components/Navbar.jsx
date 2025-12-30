@@ -34,6 +34,7 @@ import ProfilCard from "./ProfilCard";
 import mobileStyles from "./styles/StyleNavbar.native";
 import { isWeb } from "../utils/platform";
 import { getStyles } from "./styles/StyleNavbar.web";
+import { loadUser as loadUserFromStorage, saveUser } from "../services/RegisterStorage";
 
 function UserCard({ user }) {
     console.log("USER CARD PHOTO:", user?.photoProfileUrl);
@@ -67,7 +68,12 @@ export default function Navbar() {
                 const user = await fetchUserByEmail(email);
                 console.log("USER FETCHED:", user);
 
+                saveUser(user);
                 setUser(user);
+
+                if (!user) {
+                    user = loadUserFromStorage();
+                }
             } catch (e) {
                 console.error("Erreur chargement user :", e);
             }
