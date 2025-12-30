@@ -15,3 +15,10 @@ export async function fetchUserByEmail(email) {
 
     return user;
 }
+
+export async function fetchUsers() {
+    const res = await fetch(`${API_URL}/user/all`);
+    const users = await res.json();
+
+    return users;
+}

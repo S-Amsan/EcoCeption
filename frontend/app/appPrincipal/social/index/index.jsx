@@ -13,6 +13,9 @@ import cadena from "../../../../assets/icones/social/cadena.png";
 import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 import tropheeIcon from "../../../../assets/icones/trophee.png";
 
+import { loadUser } from "../../../../services/RegisterStorage";
+import { fetchUsers } from "../../../../services/user.api";
+
 import {formatNombreCourt,formatNombreEspace} from "../../../../utils/format";
 import {tempsRestant} from "../../../../utils/temps";
 import {isWeb} from "../../../../utils/platform";
@@ -46,10 +49,10 @@ const ProfilCarte = ({onPress, user_DATA}) => {
     return (
         <Pressable style={styles.userCarteContainer} onPress={onPress}>
             <View style={styles.userInfoContainer}>
-                <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userCartePhoto}/>
+                <Image source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} style={styles.userCartePhoto}/>
                 <View style={styles.userNameContainer}>
-                    <Text style={styles.userCarteNom}>{user_DATA?.Nom || "USER_NOM"}</Text>
-                    <Text style={styles.userCartePseudo}>@{user_DATA?.Pseudo || "USER_PSEUDO"}</Text>
+                    <Text style={styles.userCarteNom}>{user_DATA?.name || "USER_NOM"}</Text>
+                    <Text style={styles.userCartePseudo}>@{user_DATA?.pseudo || "USER_PSEUDO"}</Text>
                 </View>
             </View>
             <Ionicons name="chevron-forward" size={27} style={styles.carteIcon} />
@@ -237,8 +240,8 @@ const ClassementCarte = ({onPress, user_DATA, podium_DATA}) => {
                 <View style={styles.classementUserContainer}>
                     <View style={styles.topContainer}><Text style={styles.topText}>{isWeb && <Text style={styles.gras}>TOP</Text>} {formatNombreCourt(user_DATA?.Classement || -1)}</Text></View>
                     <View style={styles.userContainer}>
-                        <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userPhoto}/>
-                        <Text style={styles.userNomText}>{user_DATA?.Nom || "USER_NOM"} (Vous)</Text>
+                        <Image source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} style={styles.userPhoto}/>
+                        <Text style={styles.userNomText}>{user_DATA?.name || "USER_NOM"} (Vous)</Text>
                     </View>
                     <View style={styles.tropheesContainer}>
                         <Text style={styles.tropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
@@ -297,13 +300,13 @@ const Place = ({user_DATA}) => {
     return (
         <View style={styles.placeContainer}>
             <Image
-                source={user_DATA?.Photo_url || DEFAULT_PICTURE} // Si pas de photo alors celle par default
+                source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} // Si pas de photo alors celle par default
                 style={[styles.placePicture,style.picture]}
             />
             <View style={[styles.place, style.place]}>
                 <Text style={[styles.placeNumero, style.text]}>{num}</Text>
             </View>
-            <Text style={styles.placeNomText}>{user_DATA?.Nom || "USER_NOM"}</Text>
+            <Text style={styles.placeNomText}>{user_DATA?.name || "USER_NOM"}</Text>
         </View>
     )
 }
@@ -331,21 +334,13 @@ export default function Social(){
         Points_recolte : 2324
     }; //TODO récupérer les vrai données -> renvoyer null si pas inscrit
 
-    const user_DATA = {
-        Id : 35,
-        Nom : "",
-        Pseudo : "",
-        Photo_url : "",
-        Trophees : 57400,
-    };//TODO récupérer les vrai données
+    const user_DATA = loadUser();
 
-    const users_DATA = Array.from({ length: 300 }, (_, index) => ({
-        Id: index + 1,
-        Nom: `USER_NOM`,
-        Pseudo: `USER_PSEUDO`,
-        Photo_url: "",
-        Trophees: Math.floor(Math.random() * 100000),
-    }));//TODO récupérer les vrai données
+    const [users_DATA, setUsers_DATA] = React.useState([]);
+
+    React.useEffect(() => {
+        fetchUsers().then(setUsers_DATA);
+    }, [])
 
     const allUsers = [
         ...users_DATA.filter(u => u.Id !== user_DATA.Id),

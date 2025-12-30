@@ -10,6 +10,9 @@ import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 import tropheeIcon from "../../../../assets/icones/trophee.png";
 import medaille from "../../../../assets/icones/social/medailleClassement.png";
 
+import { loadUser } from "../../../../services/RegisterStorage";
+import { fetchUsers } from "../../../../services/user.api";
+
 import {getCarriere} from "../../../../constants/rank";
 import {formatNombreCourt, formatNombreEspace} from "../../../../utils/format";
 
@@ -66,10 +69,10 @@ const Place = ({user_DATA}) => {
     return (
         <View style={styles.placeContainer}>
             <Image
-                source={user_DATA?.Photo_url || DEFAULT_PICTURE}
+                source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE}
                 style={styles.placePicture}
             />
-            <Text style={styles.placeNomText}>{user_DATA?.Nom || "USER_NOM"}</Text>
+            <Text style={styles.placeNomText}>{user_DATA?.name || "USER_NOM"}</Text>
             <View style={styles.placeTropheesContainer}>
                 <Text style={styles.placeTropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
                 <Image source={tropheeIcon} style={styles.podiumTropheeIcon}/>
@@ -86,8 +89,8 @@ const UserCarte = ({user_DATA, userActuel = false, separateur = true}) => {
         <View style={styles.userTopContainer}>
             <Text style={styles.userTopText}>{formatNombreCourt(user_DATA.Classement || -1)}</Text>
             <View style={styles.userInfoContainer}>
-                <Image source={user_DATA?.Photo_url || DEFAULT_PICTURE} style={styles.userTopPicture}/>
-                <Text style={styles.userTopName}>{user_DATA?.Nom || "USER_NOM"} {userActuel && "(Vous)"}</Text>{/* TODO Mettre (Vous quand c'est le user Actuel)*/}
+                <Image source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} style={styles.userTopPicture}/>
+                <Text style={styles.userTopName}>{user_DATA?.name || "USER_NOM"} {userActuel && "(Vous)"}</Text>{/* TODO Mettre (Vous quand c'est le user Actuel)*/}
             </View>
             <View style={styles.userTropheesContainer}>
                 <Text style={styles.userTropheesText}>{formatNombreCourt(user_DATA?.Trophees || -1)}</Text>
@@ -190,24 +193,15 @@ export default function Classement(){
     ];
 
     const [ongletActifId, setOngletActifId] = React.useState("leaderboard");
+    const [users_DATA, setUsers_DATA] = React.useState([]);
 
     const config = CONFIG_TABNAVBAR[ongletActifId];
 
-    const user_DATA = {
-        Id : 35,
-        Nom : "",
-        Pseudo : "",
-        Photo_url : "",
-        Trophees : Math.floor(Math.random() * 100000),
-    };//TODO récupérer les vrai données (les données de l'utilisateur connecté)
+    const user_DATA = loadUser();
 
-    const users_DATA = Array.from({ length: 300 }, (_, index) => ({
-        Id: index + 1,
-        Nom: `USER_NOM`,
-        Pseudo: `USER_PSEUDO`,
-        Photo_url: "",
-        Trophees: Math.floor(Math.random() * 100000),
-    }));//TODO récupérer les vrai données (les données de tout les utilisateurs de l'application)
+    React.useEffect(() => {
+        fetchUsers().then(setUsers_DATA);
+    }, [])
 
     const allUsers = [
         ...users_DATA.filter(u => u.Id !== user_DATA.Id),
