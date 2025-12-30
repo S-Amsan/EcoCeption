@@ -5,10 +5,8 @@ const API_URL =
         ? "http://10.0.2.2:8080"
         : "http://192.168.1.8:8080";
 export async function fetchUserByEmail(email) {
-    const res = await fetch(`${API_URL}/users`);
-    const users = await res.json();
-
-    const user = users.find(u => u.email === email);
+    const res = await fetch(`${API_URL}/user/${email}`);
+    const user = await res.json();
 
     if (!user) {
         throw new Error("Utilisateur introuvable");
