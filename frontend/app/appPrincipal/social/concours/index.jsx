@@ -2,15 +2,10 @@ import React from "react";
 
 import EventPage from "../_components/EventPage";
 
+import { fetchCompetitions } from "../../../../services/competitions.api"
+
 export default function Concours() {
-    const concours_DATA = {
-        Nom : "Décembre 2025",
-        Date_fin : "2025-12-30T17:59:59",
-        Points_objectif : 10000,
-        Participants : 112,
-        Qualifies : 54,
-        Cout_inscription : 1000,
-    }; //TODO récupérer les vrai données (le concours le plus récent et pas fini, Date_fin > date d'aujourd'hui) -> renvoyer null si pas de concours en cours
+    const concours_DATA = fetchCompetitions();
 
     const user_event_DATA = [{
         Nom : "Novembre 2025",
