@@ -11,7 +11,7 @@ export default function Evenements() {
         Participants : 342,
         Qualifies : 72,
         Cout_inscription : 5000,
-    }; //TODO récupérer les vrai données -> renvoyer null si pas d'
+    }; //TODO récupérer les vrai données (l'événements le plus récent et pas fini, Date_fin > date d'aujourd'hui) -> renvoyer null si pas d'événements en cours
 
     const user_event_DATA = [{
         Nom : "Hiver Durable ❄️",
@@ -22,7 +22,7 @@ export default function Evenements() {
         Participants : 342,
         Qualifies : 72,
         Cout_inscription : 5000,
-    }]; //TODO récupérer les vrai données -> renvoyer null si pas inscrit
+    }]; //TODO récupérer les vrai données (Tous les événements où l'utilisateur connecté s'est inscrit) -> renvoyer null si pas d'événements
 
     return <EventPage type={"evenements"} event_DATA={evenements_DATA} user_event_DATA={user_event_DATA}/>
 };

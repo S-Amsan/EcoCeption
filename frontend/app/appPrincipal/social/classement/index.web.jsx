@@ -168,7 +168,7 @@ const MaCarriere = ({user_DATA}) => {
                     </View>
                     <Text style={styles.tropheesPalier}>{rankSuivant ? formatNombreCourt(rankSuivant.requiredTrophies) : "∞"}</Text>
                 </View>
-                <Text style={styles.tropheesUser}>{formatNombreCourt(user_DATA.Trophees)} Trophées</Text>
+                <Text style={styles.tropheesUser}>{formatNombreEspace(user_DATA.Trophees)} Trophées</Text>
             </View>
             <View style={styles.boutonsContainer}>
                 <View style={styles.bulleInfoPrincipal}>
@@ -203,7 +203,7 @@ export default function Classement(){
         Pseudo : "",
         Photo_url : "",
         Trophees : Math.floor(Math.random() * 100000),
-    };//TODO récupérer les vrai données
+    };//TODO récupérer les vrai données (les données de l'utilisateur connecté)
 
     const users_DATA = Array.from({ length: 150000 }, (_, index) => ({
         Id: index + 1,
@@ -211,7 +211,7 @@ export default function Classement(){
         Pseudo: `USER_PSEUDO`,
         Photo_url: "",
         Trophees: Math.floor(Math.random() * 1000000),
-    }));//TODO récupérer les vrai données
+    }));//TODO récupérer les vrai données (les données de tout les utilisateurs de l'application)
 
     const allUsers = [
         ...users_DATA.filter(u => u.Id !== user_DATA.Id),

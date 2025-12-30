@@ -10,7 +10,7 @@ export default function Concours() {
         Participants : 112,
         Qualifies : 54,
         Cout_inscription : 1000,
-    }; //TODO récupérer les vrai données -> renvoyer null si pas de concours en cours
+    }; //TODO récupérer les vrai données (le concours le plus récent et pas fini, Date_fin > date d'aujourd'hui) -> renvoyer null si pas de concours en cours
 
     const user_event_DATA = [{
         Nom : "Novembre 2025",
@@ -48,7 +48,7 @@ export default function Concours() {
         Participants : 112,
         Qualifies : 54,
         Cout_inscription : 1000,
-    },];
+    }]; //TODO récupérer les vrai données (Tous les concours où l'utilisateur connecté s'est inscrit) -> renvoyer null si pas de concours
 
     return <EventPage type={"concours"} event_DATA={concours_DATA} user_event_DATA={user_event_DATA}/>
 };

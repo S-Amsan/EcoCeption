@@ -198,8 +198,8 @@ export default function Classement(){
         Nom : "",
         Pseudo : "",
         Photo_url : "",
-        Trophees : 57400,
-    };//TODO récupérer les vrai données
+        Trophees : Math.floor(Math.random() * 100000),
+    };//TODO récupérer les vrai données (les données de l'utilisateur connecté)
 
     const users_DATA = Array.from({ length: 300 }, (_, index) => ({
         Id: index + 1,
@@ -207,7 +207,7 @@ export default function Classement(){
         Pseudo: `USER_PSEUDO`,
         Photo_url: "",
         Trophees: Math.floor(Math.random() * 100000),
-    }));//TODO récupérer les vrai données
+    }));//TODO récupérer les vrai données (les données de tout les utilisateurs de l'application)
 
     const allUsers = [
         ...users_DATA.filter(u => u.Id !== user_DATA.Id),
