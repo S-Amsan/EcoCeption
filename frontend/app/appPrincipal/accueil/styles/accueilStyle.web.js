@@ -1,14 +1,11 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-
-
     content: {
         flex: 1,
         paddingHorizontal: 15,
         paddingTop: 10,
     },
-
 
     header: {
         padding: 20,
@@ -54,58 +51,118 @@ export default StyleSheet.create({
 
     /* --- Carte utilisateur (PostCard) --- */
     card: {
+        width:"80%",
         backgroundColor: "#fff",
-        padding: 15,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: "#ddd",
-        marginBottom: 15,
+        borderRadius: 16,
+        marginBottom: 16,
         shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3,
-    },
-
-    userRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 10,
-        flexWrap: "wrap",
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        elevation: 4,
     },
 
     avatar: {
-        width: 45,
-        height: 45,
-        borderRadius: 50,
-        marginRight: 10,
+        width: 90,
+        height: 90,
+        borderRadius: 21,
     },
 
-    username: {
-        fontWeight: "bold",
-        fontSize: 16,
+    nameRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        flexWrap: "wrap",
+        marginLeft:"2%"
     },
 
-    danger: {
-        color: "red",
-        fontSize: 14,
+    name: {
+        fontWeight: "700",
+        fontSize: 20,
+        margin:10,
     },
 
     time: {
-        marginLeft: "auto",
         color: "#777",
-        fontSize: 13,
+        fontSize: 14,
     },
 
-    postImage: {
-        width: "100%",
-        height: 180,
-        borderRadius: 12,
-        marginTop: 10,
+    text: {
+        marginTop: 2,
+        fontSize: 16,
+        padding:10,
+        marginLeft:"2%",
+    },
+
+    image: {
+        width: "70%",
+        height: 370,
+        borderRadius: 16,
+        marginLeft:"12%",
     },
 
     actions: {
         flexDirection: "row",
-        gap: 15,
-        marginTop: 10,
+        gap: 14,
+        marginTop: 12,
+        marginLeft:"12%",
+    },
+
+    actionBtn: {
+        width: 60,
+        height: 60,
+        borderRadius: 22,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    icon:{
+        width:40,
+        height:40,
+    },
+
+    profil:{
+        width:22,
+        height:22,
+    },
+
+    signal:{
+        width:17,
+        height:19,
+    },
+
+    postMenu: {
+        position: "absolute",
+        top: 80,
+        right: 2,
+        width: 225,
+        backgroundColor: "rgba(60,60,60,0.95)",
+        borderRadius: 18,
+        overflow: "hidden",
+        zIndex: 20,
+    },
+
+    postMenuRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: 18,
+        paddingVertical: 14,
+    },
+
+    postMenuText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "500",
+    },
+
+    postMenuDanger: {
+        color: "#ff4d4f",
+        fontSize: 16,
+        fontWeight: "500",
+    },
+
+    postMenuSeparator: {
+        height: 1,
+        backgroundColor: "rgba(255,255,255,0.2)",
+        marginHorizontal: 12,
     },
 });

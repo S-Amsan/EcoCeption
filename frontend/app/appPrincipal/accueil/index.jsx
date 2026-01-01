@@ -89,7 +89,7 @@ export default function Index() {
                     <Navbar />
                 </View>
                 {/* CONTENU DROIT */}
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1}}>
                     <Header
                         recherche={recherche}
                         setRecherche={setRecherche}
@@ -99,11 +99,11 @@ export default function Index() {
                         userProfil
                     />
                     <ScrollView>
-                    <View style={{ flex: 1, padding: 15 }}>
+                    <View style={{ flex: 1, padding: 15}}>
                         {loading ? (
                             <ActivityIndicator size="large" color="#1DDE9A" />
                         ) : (
-                            <View>
+                            <View style={{alignItems:'center'}}>
                                 {posts.map(p => (
                                     <PostCard key={p.id} post={p} styles={style} />
                                 ))}
@@ -142,14 +142,17 @@ export default function Index() {
                     user={user}
                 />
 
-                <View style={{ flex: 1, padding: 15 }}>
+                <View style={{ flex: 1, padding: 10}}>
                     {loading ? (
                         <ActivityIndicator size="large" color="#1DDE9A" />
                     ) : (
                         <ScrollView
                             onScroll={handleScroll}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingBottom: NAVBAR_HEIGHT + 20 }}
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={{
+                                paddingBottom: NAVBAR_HEIGHT + 20,
+                            }}
                         >
                             {posts.map(p => (
                                 <PostCard key={p.id} post={p} styles={style} />
