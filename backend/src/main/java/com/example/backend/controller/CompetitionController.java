@@ -25,7 +25,7 @@ public class CompetitionController {
     public List<Competition> getMyCompetitions(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        return competitionRepository.findAllByParticipants(
+        return competitionRepository.findAllByParticipantsUser(
             userDetails.getUser()
         );
     }

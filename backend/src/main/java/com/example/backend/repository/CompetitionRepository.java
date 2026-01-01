@@ -11,5 +11,10 @@ import org.springframework.stereotype.Repository;
 public interface CompetitionRepository
     extends JpaRepository<Competition, Long> {
     Competition findFirstByDeadlineAfterOrderByCreationDate(Date deadlineAfter);
-    List<Competition> findAllByParticipants(User user);
+
+    /**
+     * With the join-entity mapping (Competition.participants is a Set<CompetitionParticipant>),
+     * the derived query must traverse the association: participants.user
+     */
+    List<Competition> findAllByParticipantsUser(User user);
 }
