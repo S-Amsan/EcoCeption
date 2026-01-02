@@ -27,10 +27,10 @@ public class SecurityConfig {
                 authz
                     .requestMatchers("/auth/**")
                     .permitAll()
-                    .requestMatchers("/user/points/total")
-                    .authenticated()
                     .requestMatchers("/user/**")
                     .permitAll()
+                    .requestMatchers("/user/points/total")
+                    .authenticated()
                     .requestMatchers("/update")
                     .authenticated()
                     .requestMatchers("/post")
