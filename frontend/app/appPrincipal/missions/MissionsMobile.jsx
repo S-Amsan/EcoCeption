@@ -1,81 +1,137 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Animated, View} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+
 import Header from "../../../components/Header";
 import TabNavbarMobile from "../../../components/TabNavbarMobile";
-import ScanActionButton from "../../../components/ScanActionButton";
-import { useLocalSearchParams, useRouter } from "expo-router";
 
 import MissionsListContent from "./_components/MissionsListContent/MissionsListContent";
 import Gestes from "./_components/Gestes/Gestes";
 import Post from "./_components/PostObjet/Post";
+import ObjetDetails from "./_components/ObejetDetails/ObjetDetails";
 import AssociateSubscription from "./_components/Associate/AssociateSubscription";
+import ObjetRecupPhoto from "./_components/CollectObjet/CollectObjet";
 
 export default function MissionsMobile() {
-    const [ongletActifId, setOngletActifId] = useState("listes");
-    const [page, setPage] = useState("listes");
-
-    const router = useRouter();
-    const { scannedData } = useLocalSearchParams();
-
-    useEffect(() => {
-        if (scannedData) {
-            console.log("MISSION → SCAN REÇU :", scannedData);
-        }
-    }, [scannedData]);
+    /* ===== ÉTATS ===== */
+    const [page, setPage] = useState("listes"); // listes | recupObjet | associate | postObjet
+    const [ongletActifId, setOngletActifId] = useState("listes"); // listes | gestes
+    const [selectedObjet, setSelectedObjet] = useState(null);
 
     const onglets = [
         { id: "listes", label: "Régulières" },
         { id: "gestes", label: "Une fois" },
     ];
 
+    /* ===== HEADER ===== */
+    const getTitle = () => {
+        switch (page) {
+            case "postObjet":
+                return "Poster un objet";
+            case "associate":
+                return "Associer un abonnement";
+            case "recupObjet":
+                return "Récupérer un objet";
+            default:
+                return "Missions";
+        }
+    };
+        const handleBack = () => {
+            if (page === "recupPhoto") {
+                setPage("recupObjet");
+                return;
+            }
+
+            if (page === "recupObjet") {
+                setSelectedObjet(null);
+                setPage("listes");
+                setOngletActifId("listes");
+                return;
+            }
+
+            if (page === "associate") {
+                setPage("listes");
+                setOngletActifId("gestes");
+                return;
+            }
+
+            if (page === "postObjet") {
+                setPage("listes");
+                setOngletActifId("listes");
+                return;
+            }
+        };
+
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            {/* ===== HEADER ===== */}
             <Header
-                titre={
-                    page === "postObjet"
-                        ? "Poster un objet"
-                        : page === "associate"
-                            ? "Associer un abonnement"
-                            : "Missions"
-                }
-                boutonRetour
-                onBack={() => {
-                    if (page === "postObjet" || page === "associate") {
-                        setPage("listes");
-                    } else {
-                        router.back();
-                    }
-                }}
+                titre={getTitle()}
+                boutonRetour={page !== "listes"}
+                onBack={handleBack}
             />
 
-            {/* Onglets visibles UNIQUEMENT sur la page listes */}
+            {/* ===== ONGLET ===== */}
             {page === "listes" && (
                 <TabNavbarMobile
-                    ongletActifId={ongletActifId}
                     onglets={onglets}
+                    ongletActifId={ongletActifId}
                     setOngletActif={setOngletActifId}
                 />
             )}
 
-            {/* Pages internes */}
+            {/* LISTES */}
             {page === "listes" && ongletActifId === "listes" && (
-                <MissionsListContent onPostObjet={() => setPage("postObjet")} />
+                <MissionsListContent
+                    onPostObjet={() => setPage("postObjet")}
+                    onSeeObjet={(objet) => {
+                        setSelectedObjet(objet);
+                        setPage("recupObjet");
+                    }}
+                />
             )}
 
+            {/* DÉTAIL OBJET */}
+            {page === "recupObjet" && selectedObjet && (
+                <ObjetDetails
+                    objet={selectedObjet}
+                    onRecupObjet={() => setPage("recupPhoto")}
+                    onSignal={() => {
+
+                        console.log("SIGNALER OBJET");
+                    }}
+                />
+            )}
+
+
+            {/* PHOTO APRÈS RÉCUP */}
+            {page === "recupPhoto" && selectedObjet && (
+                <ObjetRecupPhoto
+                    objet={selectedObjet}
+                    onBack={handleBack}
+                    onSubmit={() => {
+                        // TODO API
+                        setSelectedObjet(null);
+                        setPage("listes");
+                        setOngletActifId("listes");
+                    }}
+                />
+            )}
+
+            {/* GESTES */}
             {page === "listes" && ongletActifId === "gestes" && (
-                <Gestes
-                    onAssociate={() => setPage("associate")}
-                />
+                <Gestes onAssociate={() => setPage("associate")} />
             )}
 
+            {/* ASSOCIATE */}
             {page === "associate" && (
-                <AssociateSubscription
-                    onBack={() => setPage("listes")}
-                />
+                <AssociateSubscription onBack={handleBack} />
             )}
 
-            {page === "postObjet" && <Post onBack={() => setPage("listes")} />}
+            {/* POST OBJET */}
+            {page === "postObjet" && (
+                <Post onBack={handleBack} />
+            )}
+
         </View>
     );
 }
-

@@ -29,6 +29,7 @@ export default function Header({
 
                                    titre,
                                    boutonRetour = false,
+                                   onBack,
                                    boutonParametres = false,
                                    boutonNotification = false,
                                    userProfil = false,
@@ -255,11 +256,32 @@ export default function Header({
         {/* ---- GAUCHE ----- */}
         {/* BOUTON RETOUR */}
         {boutonRetour && (
-            <TouchableOpacity style={styles.boutonRetourContainer} onPress={() => navigation.goBack()}>
-                <Ionicons name="chevron-back" size={25} color={fondTransparent ? '#FFFFFF' : '#06DA95'} />
-                <Text style={[styles.boutonRetourText, fondTransparent && {color : "#FFFFFF"}]}>Retour</Text>
+            <TouchableOpacity
+                style={styles.boutonRetourContainer}
+                onPress={() => {
+                    if (typeof onBack === "function") {
+                        onBack();
+                    } else {
+                        navigation.goBack();
+                    }
+                }}
+            >
+                <Ionicons
+                    name="chevron-back"
+                    size={25}
+                    color={fondTransparent ? "#FFFFFF" : "#06DA95"}
+                />
+                <Text
+                    style={[
+                        styles.boutonRetourText,
+                        fondTransparent && { color: "#FFFFFF" },
+                    ]}
+                >
+                    Retour
+                </Text>
             </TouchableOpacity>
         )}
+
 
         {/* BOUTON NOTIFICATION */}
         {boutonNotification && (

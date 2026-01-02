@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { useState } from "react";
+
 import Navbar from "../../../components/Navbar";
 import Header from "../../../components/Header";
 
@@ -7,12 +8,21 @@ import MissionsListContent from "./_components/MissionsListContent/MissionsListC
 import Gestes from "./_components/Gestes/Gestes";
 import Post from "./_components/PostObjet/Post";
 import AssociateSubscription from "./_components/Associate/AssociateSubscription";
+import ObjetDetail from "./_components/ObejetDetails/ObjetDetails";
+import ObjetRecupPhoto from "./_components/CollectObjet/CollectObjet";
 
 export default function MissionsWeb() {
+    /* ===== ONGLET ===== */
     const [ongletActifId, setOngletActifId] = useState("listes");
 
+    /* ===== MODALS ===== */
     const [showPostModal, setShowPostModal] = useState(false);
     const [showAssociateModal, setShowAssociateModal] = useState(false);
+    const [showMissionDetailModal, setShowMissionDetailModal] = useState(false);
+    const [showRecupObjetModal, setShowRecupObjetModal] = useState(false);
+
+    /* ===== OBJET SÉLECTIONNÉ ===== */
+    const [selectedObjet, setSelectedObjet] = useState(null);
 
     const onglets = [
         { id: "listes", label: "Régulières" },
@@ -21,12 +31,12 @@ export default function MissionsWeb() {
 
     return (
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f6f6f6" }}>
-            {/* NAVBAR */}
+            {/* ===== NAVBAR ===== */}
             <View style={{ width: "15%" }}>
                 <Navbar />
             </View>
 
-            {/* CONTENU */}
+            {/* ===== CONTENU ===== */}
             <View style={{ flex: 1 }}>
                 <Header
                     onglets={onglets}
@@ -37,13 +47,24 @@ export default function MissionsWeb() {
                 <View style={{ flex: 1, padding: 24 }}>
                     {ongletActifId === "listes" && (
                         <MissionsListContent
-                            onPostObjet={() => setShowPostModal(true)}
+                            onPostObjet={() => {
+                                closeAllModals();
+                                setShowPostModal(true);
+                            }}
+                            onSeeObjet={(objet) => {
+                                closeAllModals();
+                                setSelectedObjet(objet);
+                                setShowMissionDetailModal(true);
+                            }}
                         />
                     )}
 
                     {ongletActifId === "gestes" && (
                         <Gestes
-                            onAssociate={() => setShowAssociateModal(true)}
+                            onAssociate={() => {
+                                closeAllModals();
+                                setShowAssociateModal(true);
+                            }}
                         />
                     )}
                 </View>
@@ -51,33 +72,54 @@ export default function MissionsWeb() {
 
             {/* ===== MODAL POST OBJET ===== */}
             {showPostModal && (
-                        <Post onBack={() => setShowPostModal(false)} />
+                <Post
+                    onBack={() => setShowPostModal(false)}
+                />
             )}
 
             {/* ===== MODAL ASSOCIATE ===== */}
             {showAssociateModal && (
-                <AssociateSubscription onBack={() => setShowAssociateModal(false)}/>
+                <AssociateSubscription
+                    onBack={() => setShowAssociateModal(false)}
+                />
+            )}
+
+            {/* ===== MODAL DÉTAIL OBJET ===== */}
+            {showMissionDetailModal && selectedObjet && (
+                <ObjetDetail
+                    objet={selectedObjet}
+                    onBack={() => {
+                        setShowMissionDetailModal(false);
+                        setSelectedObjet(null);
+                    }}
+                    onRecupObjet={() => {
+                        setShowMissionDetailModal(false);
+                        setShowRecupObjetModal(true);
+                    }}
+                />
+            )}
+
+            {/* ===== MODAL RÉCUP OBJET ===== */}
+            {showRecupObjetModal && selectedObjet && (
+                <ObjetRecupPhoto
+                    objet={selectedObjet}
+                    onBack={() => {
+                        setShowRecupObjetModal(false);
+                        setShowMissionDetailModal(true);
+                    }}
+                    onSubmit={() => {
+                        setShowRecupObjetModal(false);
+                        setSelectedObjet(null);
+                    }}
+                />
             )}
         </View>
     );
+
+    function closeAllModals() {
+        setShowPostModal(false);
+        setShowAssociateModal(false);
+        setShowMissionDetailModal(false);
+        setShowRecupObjetModal(false);
+    }
 }
-
-const overlayStyle = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-};
-
-const modalStyle = {
-    width: 500,
-    maxHeight: "90vh",
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    overflow: "hidden",
-};

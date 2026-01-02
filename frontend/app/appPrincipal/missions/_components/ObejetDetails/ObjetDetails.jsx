@@ -1,0 +1,89 @@
+import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import styles from "./styles/styles";
+import { isWeb } from "../../../../../utils/platform";
+
+export default function MissionDetail({ objet, onRecupObjet, onSignal, onBack }) {
+
+    const Content = (
+        <ScrollView contentContainerStyle={styles.container}>
+            {/* RÉCOMPENSE */}
+            <View style={styles.rewardBox}>
+                <Text style={styles.rewardTitle}>
+                    Donnez une seconde vie à cet objet !
+                </Text>
+                <Text style={styles.rewardSub}>
+                    Récompense : +{objet.reward} points
+                </Text>
+            </View>
+
+            {/* TITRE */}
+            <Text style={styles.title}>{objet.title}</Text>
+            <Text style={styles.address}>📍 {objet.address}</Text>
+
+            {/* IMAGE */}
+            <Image source={{ uri: objet.image }} style={styles.image} />
+
+            {/* META */}
+            <Text style={styles.meta}>
+                Posté par <Text style={styles.author}>{objet.author}</Text>, le {objet.date}
+            </Text>
+
+            {/* DESCRIPTION */}
+            <Text style={styles.sectionTitle}>
+                Informations supplémentaires :
+            </Text>
+
+            <View style={styles.descriptionBox}>
+                <Text style={styles.descriptionText}>
+                    {objet.description}
+                </Text>
+            </View>
+
+            {/* ACTION */}
+            <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={onRecupObjet}
+            >
+                <Text style={styles.primaryButtonText}>
+                    Je l’ai récupéré !
+                </Text>
+            </TouchableOpacity>
+
+            {/* SIGNALER */}
+            <View style={styles.reportWrapper}>
+                <TouchableOpacity onPress={onSignal}>
+                    <Text style={styles.reportText}>
+                        L’objet n’est plus là ?{" "}
+                        <Text style={styles.reportLink}>Signaler</Text>
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+    );
+
+    if (isWeb) {
+        return (
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    <TouchableOpacity
+                        style={styles.modalClose}
+                        onPress={onBack}
+                    >
+                        <Text style={styles.modalCloseText}>✕</Text>
+                    </TouchableOpacity>
+
+                    <ScrollView contentContainerStyle={styles.modalScroll}>
+                        {Content}
+                    </ScrollView>
+                </View>
+            </View>
+        );
+    }
+
+
+    return (
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            {Content}
+        </View>
+    );
+}

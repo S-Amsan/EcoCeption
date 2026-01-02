@@ -12,7 +12,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import Navbar from "../../../../../components/Navbar";
 import ScanActionButton from "../../../../../components/ScanActionButton";
 
-export default function MissionsPage({ onPostObjet }) {
+export default function MissionsPage({ onPostObjet, onSeeObjet }) {
 
     const router = useRouter();
 
@@ -160,11 +160,15 @@ export default function MissionsPage({ onPostObjet }) {
                                 <View style={styles.right}>
                                     <Text style={styles.distance}>{item.distance}</Text>
 
-                                    <TouchableOpacity style={styles.button}>
+                                    <TouchableOpacity
+                                        style={styles.button}
+                                        onPress={() => onSeeObjet(item)}
+                                    >
                                         <Text style={styles.buttonText}>
                                             Voir l’objet
                                         </Text>
                                     </TouchableOpacity>
+
                                 </View>
                             </View>
                         ))}
@@ -210,7 +214,7 @@ export default function MissionsPage({ onPostObjet }) {
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                    paddingBottom: NAVBAR_HEIGHT + 20, // espace pour la navbar
+                    paddingBottom: NAVBAR_HEIGHT + 20,
                 }}
             >
                 {/* HEADER INFO */}
@@ -263,15 +267,18 @@ export default function MissionsPage({ onPostObjet }) {
 
                         <View style={styles.right}>
                             <Text style={styles.distance}>{item.distance}</Text>
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.buttonText}>Voir l’objet</Text>
-                            </TouchableOpacity>
-                        </View>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => onSeeObjet(item)}
+                                >
+                            <Text style={styles.buttonText}>Voir l’objet</Text>
+                        </TouchableOpacity>
+
+                    </View>
                     </View>
                 ))}
             </ScrollView>
 
-            {/* NAVBAR ANIMÉE (AU-DESSUS DU SCROLL) */}
             <Animated.View
                 style={{
                     position: "absolute",

@@ -18,7 +18,7 @@ export default function Gestes({ onAssociate }) {
             id: "ratp",
             name: "RATP",
             title: "Associer votre abonnement RATP à Ecoception",
-            status: "pending", // start | pending | validated
+            status: "pending",
             points: 50000,
             logo: require("../../../../../assets/icones/missions/ratp.png"),
         },
@@ -165,7 +165,7 @@ export default function Gestes({ onAssociate }) {
             <ScrollView
                 contentContainerStyle={[
                     styles.container,
-                    { paddingBottom: NAVBAR_HEIGHT + 20 }, // espace navbar
+                    { paddingBottom: NAVBAR_HEIGHT + 20 },
                 ]}
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
@@ -181,7 +181,7 @@ export default function Gestes({ onAssociate }) {
                             onMouseLeave={() => isWeb && setHoveredId(null)}
                             style={[
                                 styles.card,
-                                isHovered && styles.cardHover,
+                                isHovered,
                             ]}
                         >
                             {/* ===== LEFT (TEXTE) ===== */}
