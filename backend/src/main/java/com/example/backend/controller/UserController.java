@@ -1,8 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.User;
+import com.example.backend.model.UserStats;
 import com.example.backend.model.http.req.AccountUpdateRequest;
+import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
+import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -22,6 +25,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserStatsRepository userStatsRepository;
+
     @GetMapping("/user/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -36,6 +42,20 @@ public class UserController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/user/stats")
+    public ResponseEntity<UserStatsResponse> getMyStats(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        Optional<UserStats> maybeStats = userStatsRepository.findByUserId(
+            userId
+        );
+
+        return ResponseEntity.ok(
+            new UserStatsResponse(maybeStats.orElse(null))
+        );
     }
 
     @PostMapping("/update")

@@ -29,6 +29,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/user/**")
                     .permitAll()
+                    .requestMatchers("/user/stats/**")
+                    .authenticated()
                     .requestMatchers("/update")
                     .authenticated()
                     .requestMatchers("/post")
