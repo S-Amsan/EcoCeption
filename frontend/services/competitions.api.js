@@ -44,7 +44,9 @@ export async function fetchCompetitions() {
 */
 export async function fetchLatestCompetition() {
     const res = await fetch(`${API_URL}/competition/latest`);
-    const competition = await res.json();
+    const text = await res.text();
+    if (!text) return null;
+    const competition = JSON.parse(text);
     return competition;
 }
 

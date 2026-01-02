@@ -1,4 +1,5 @@
 import {Platform} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL =
     Platform.OS === "android" ? "http://192.168.1.146:8080" : "http://localhost:8080";
@@ -37,4 +38,23 @@ export async function fetchUsers() {
     const users = await res.json();
 
     return users;
+}
+
+export async function fetchCompetitionUserPoints() {
+    const token = await AsyncStorage.getItem('@auth_token');
+    const res = await fetch(`${API_URL}/user/points/total`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const text = await res.text();
+
+    if (!text) {
+        return null;
+    }
+
+    const points = parseInt(text, 10);
+
+    return Number.isNaN(points) ? null : points;
 }
