@@ -4,22 +4,27 @@ import {
     Text,
     Image,
     StyleSheet,
-    useWindowDimensions,
+    useWindowDimensions, Pressable,
 } from "react-native";
+import {usePathname, useRouter} from "expo-router";
 
 export default function ProfilCard({ photo, name, username }) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const pageProfil = pathname === "/appPrincipal/social/votreProfil";
+
     const { width } = useWindowDimensions();
     const styles = getStyles(width);
 
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={() => !pageProfil && router.push(`/appPrincipal/social/votreProfil`)}>
             <Image source={{ uri: photo }} style={styles.photo} />
 
             <View style={styles.textContainer}>
                 <Text style={styles.name}>{name}</Text>
                 <Text style={styles.username}>@{username}</Text>
             </View>
-        </View>
+        </Pressable>
     );
 }
 

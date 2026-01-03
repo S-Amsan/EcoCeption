@@ -1,9 +1,9 @@
-import {View, Text, TouchableOpacity, TextInput, Image, Platform} from "react-native";
+import {View, Text, TouchableOpacity, TextInput, Image} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 
 import styles from "./styles/stylesHeader";
 import React, {useState} from "react";
-import {useNavigation, usePathname, useRouter} from "expo-router";
+import {useNavigation, useRouter} from "expo-router";
 
 import point from "../assets/icones/point.png";
 import trophee from "../assets/icones/trophee.png";
@@ -20,27 +20,26 @@ import {isWeb} from "../utils/platform";
 import { fetchUsers, fetchUserStats } from "../services/user.api";
 
 export default function Header({
-                                   recherche,
-                                   setRecherche,
-                                   filtres,
-                                   setFiltres,
+       recherche,
+       setRecherche,
+       filtres,
+       setFiltres,
 
-                                   onglets,
-                                   ongletActifId,
-                                   setOngletActif,
+       onglets,
+       ongletActifId,
+       setOngletActif,
 
-                                   titre,
-                                   boutonRetour = false,
-                                   onBack,
-                                   boutonParametres = false,
-                                   boutonNotification = false,
-                                   userProfil = false,
-                                   userDetails = false,
-                                   fondTransparent = false,
-                                   user
-                               }) {
+       titre,
+       boutonRetour = false,
+       onBack,
+       boutonParametres = false,
+       boutonNotification = false,
+       userProfil = false,
+       userDetails = false,
+       fondTransparent = false,
+       user
+}) {
 
-    const pathname = usePathname();
     const router = useRouter();
     const navigation = useNavigation();
 

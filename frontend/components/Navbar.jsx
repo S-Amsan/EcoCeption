@@ -72,7 +72,7 @@ export default function Navbar() {
                 setUser(user);
 
                 if (!user) {
-                    user = loadUserFromStorage();
+                    setUser(loadUserFromStorage());
                 }
             } catch (e) {
                 console.error("Erreur chargement user :", e);
