@@ -37,6 +37,8 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers("/post")
                     .authenticated()
+                    .requestMatchers("/friends/**")
+                    .authenticated()
                     .requestMatchers("/donation/**")
                     .permitAll()
                     .requestMatchers("/competition/**")
