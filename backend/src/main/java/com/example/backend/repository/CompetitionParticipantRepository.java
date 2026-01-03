@@ -15,13 +15,20 @@ public interface CompetitionParticipantRepository
     List<CompetitionParticipant> findAllByCompetition(Competition competition);
 
     List<CompetitionParticipant> findAllByUser(User user);
+    List<CompetitionParticipant> findAllByCompetitionAndUser(
+        Competition competition,
+        User user
+    );
 
     List<CompetitionParticipant> findAllByCompetitionAndPointsGreaterThanEqual(
         Competition competition,
         Integer points
     );
 
-    List<CompetitionParticipant> findAllByCompetitionAndPointsGreaterThanEqual(Competition competition, int pointsIsGreaterThan);
+    List<CompetitionParticipant> findAllByCompetitionAndPointsGreaterThanEqual(
+        Competition competition,
+        int pointsIsGreaterThan
+    );
 
     Optional<CompetitionParticipant> findByCompetitionAndUser(
         Competition competition,

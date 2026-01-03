@@ -7,6 +7,7 @@ import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.CompetitionParticipantRepository;
+import com.example.backend.repository.CompetitionRepository;
 import com.example.backend.repository.NotificationRepository;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.service.UserService;
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     private CompetitionParticipantRepository competitionParticipantRepository;
+
+    @Autowired
+    private CompetitionRepository competitionRepository;
 
     @GetMapping("/user/all")
     public List<User> getAllUsers() {
@@ -89,13 +93,24 @@ public class UserController {
         return ResponseEntity.ok("Account didn't need to be updated");
     }
 
-    @GetMapping("/user/points/total")
+    @GetMapping("/user/points/{competitionId}")
     public ResponseEntity<Integer> getTotalCompetitionPoints(
-        @AuthenticationPrincipal MyUserDetails userDetails
+        @AuthenticationPrincipal MyUserDetails userDetails,
+        @PathVariable Long competitionId
     ) {
-        var participants = competitionParticipantRepository.findAllByUser(
-            userDetails.getUser()
-        );
+        var maybeCompetition = competitionRepository.findById(competitionId);
+
+        if (maybeCompetition.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var competition = maybeCompetition.get();
+
+        var participants =
+            competitionParticipantRepository.findAllByCompetitionAndUser(
+                competition,
+                userDetails.getUser()
+            );
 
         if (participants.isEmpty()) {
             return ResponseEntity.ok(null);
@@ -105,6 +120,7 @@ public class UserController {
             .stream()
             .mapToInt(p -> p.getPoints())
             .sum();
+
         return ResponseEntity.ok(total);
     }
 }
