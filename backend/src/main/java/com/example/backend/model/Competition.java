@@ -52,9 +52,6 @@ public class Competition {
     private int goalPoints;
 
     @Column(nullable = false)
-    private int qualified;
-
-    @Column(nullable = false)
     private int inscriptionCost;
 
     @CreationTimestamp
