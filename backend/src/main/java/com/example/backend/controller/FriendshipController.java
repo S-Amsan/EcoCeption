@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * - DELETE /friends/{friendId}            unfriend an existing friend
  */
 @RestController
+@RequestMapping("/friends")
 public class FriendshipController {
 
     @Autowired
@@ -52,7 +54,7 @@ public class FriendshipController {
         return new UserResponse(u);
     }
 
-    @PostMapping("/friends/requests")
+    @PostMapping("/requests")
     public ResponseEntity<?> sendFriendRequest(
         @AuthenticationPrincipal MyUserDetails userDetails,
         @Valid @RequestBody FriendRequestCreateRequest request
@@ -63,7 +65,7 @@ public class FriendshipController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/friends/requests/{requestId}/accept")
+    @PostMapping("/requests/{requestId}/accept")
     public ResponseEntity<?> acceptFriendRequest(
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long requestId
@@ -74,7 +76,7 @@ public class FriendshipController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/friends/requests/{requestId}/reject")
+    @PostMapping("/requests/{requestId}/reject")
     public ResponseEntity<?> rejectFriendRequest(
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long requestId
@@ -85,7 +87,7 @@ public class FriendshipController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/friends/requests/{requestId}/cancel")
+    @PostMapping("/requests/{requestId}/cancel")
     public ResponseEntity<?> cancelFriendRequest(
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long requestId
@@ -96,7 +98,7 @@ public class FriendshipController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/friends")
+    @GetMapping("/my")
     public ResponseEntity<List<UserResponse>> listFriends(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
@@ -108,7 +110,7 @@ public class FriendshipController {
         );
     }
 
-    @GetMapping("/friends/requests/incoming")
+    @GetMapping("/requests/incoming")
     public ResponseEntity<List<UserResponse>> listIncomingRequests(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
@@ -120,7 +122,7 @@ public class FriendshipController {
         );
     }
 
-    @GetMapping("/friends/requests/outgoing")
+    @GetMapping("/requests/outgoing")
     public ResponseEntity<List<UserResponse>> listOutgoingRequests(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
