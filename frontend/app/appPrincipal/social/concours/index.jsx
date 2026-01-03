@@ -14,5 +14,7 @@ export default function Concours() {
         fetchFollowingCompetitions().then(setUserEventData); // Tous les concours où l'utilisateur connecté s'est inscrit -> renvoyer null si pas de concours
     }, []);
 
+
+
     return <EventPage type={"concours"} event_DATA={concours_DATA} user_event_DATA={user_event_DATA}/>
 };
