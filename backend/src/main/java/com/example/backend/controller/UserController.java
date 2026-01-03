@@ -1,10 +1,12 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Notification;
 import com.example.backend.model.User;
 import com.example.backend.model.UserStats;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
+import com.example.backend.repository.NotificationRepository;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserStatsRepository userStatsRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @GetMapping("/user/all")
     public List<User> getAllUsers() {
@@ -55,6 +60,16 @@ public class UserController {
 
         return ResponseEntity.ok(
             new UserStatsResponse(maybeStats.orElse(null))
+        );
+    }
+
+    @GetMapping("/user/notifications")
+    public ResponseEntity<List<Notification>> getMyNotifications(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        return ResponseEntity.ok(
+            notificationRepository.findByUserIdOrderByReceivedAtDesc(userId)
         );
     }
 

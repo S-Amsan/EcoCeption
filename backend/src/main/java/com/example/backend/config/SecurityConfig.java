@@ -31,6 +31,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/user/stats/**")
                     .authenticated()
+                    .requestMatchers("/user/notifications")
+                    .authenticated()
                     .requestMatchers("/update")
                     .authenticated()
                     .requestMatchers("/post")
