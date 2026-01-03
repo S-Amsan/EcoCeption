@@ -1,5 +1,6 @@
-package com.example.backend.model;
+package com.example.backend.model.competition;
 
+import com.example.backend.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;

@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.competition;
 
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;

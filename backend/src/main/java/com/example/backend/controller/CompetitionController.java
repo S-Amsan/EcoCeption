@@ -1,11 +1,11 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.Competition;
 import com.example.backend.model.Success;
+import com.example.backend.model.competition.Competition;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.repository.CompetitionParticipantRepository;
-import com.example.backend.repository.CompetitionRepository;
 import com.example.backend.repository.SuccessRepository;
+import com.example.backend.repository.competition.CompetitionParticipantRepository;
+import com.example.backend.repository.competition.CompetitionRepository;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

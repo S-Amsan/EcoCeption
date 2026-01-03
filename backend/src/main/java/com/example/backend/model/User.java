@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.example.backend.model.competition.CompetitionParticipant;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Set;

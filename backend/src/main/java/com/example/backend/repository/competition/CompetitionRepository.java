@@ -1,7 +1,7 @@
-package com.example.backend.repository;
+package com.example.backend.repository.competition;
 
-import com.example.backend.model.Competition;
 import com.example.backend.model.User;
+import com.example.backend.model.competition.Competition;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
