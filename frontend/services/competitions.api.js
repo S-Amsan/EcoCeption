@@ -46,3 +46,31 @@ export async function fetchLatestCompetition() {
     const competition = await res.json();
     return competition;
 }
+
+export async function fetchSuccess() {
+    // [
+    //   {
+    //     "id": 1,
+    //     "name": "Premier pas",
+    //     "description": "Réaliser sa toute première action ecologique validée",
+    //     "imageUrl": "http://82.66.240.161:8090/files/407e2005a16252e5c984438efea889af69ee73b88c0bc3588c903776a0e9798b.png"
+    //   },
+    //   {
+    //     "id": 2,
+    //     "name": "Série de feu",
+    //     "description": "Réaliser au moins une action pendant 7 jours consécutifs",
+    //     "imageUrl": "http://82.66.240.161:8090/files/files/7339a1ade4a5497f3cc1be5392c4d0a01687d41a239cf1b28054d1e998205373.png"
+    //   }
+    // ]
+    const res = await fetch(`${API_URL}/competition/success`);
+    const success = await res.json();
+
+    const mappedSuccess = success.map((s) => ({
+        id: s.id,
+        Nom: s.name,
+        Descripion: s.description,
+        Img_url: s.imageUrl,
+    }));
+
+    return mappedSuccess;
+}

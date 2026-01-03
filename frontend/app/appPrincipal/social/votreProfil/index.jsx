@@ -22,6 +22,7 @@ import styles from "./styles/styles";
 import {getCurrentRank} from "../../../../constants/rank";
 import {formatNombreEspace} from "../../../../utils/format";
 import {useNavigation, useRouter} from "expo-router";
+import { fetchSuccess } from "../../../../services/competitions.api";
 
 export default function Profil(){
     const navigation = useNavigation();
@@ -32,11 +33,13 @@ export default function Profil(){
         {id: "flamme",label : "Votre Série", page : "social/votreSerie"},
     ];
     const [ongletActifId, setOngletActif] = React.useState("profil");
+    const [succes_DATA, setSuccesData] = React.useState([]);
 
     useEffect(()=> {
         if(ongletActifId === "flamme"){
             router.push("./votreSerie")
         }
+        fetchSuccess().then(setSuccesData);
     },[ongletActifId])
 
     const user_DATA = {
@@ -90,16 +93,6 @@ export default function Profil(){
     // Badge TODO récupere les badges gagné par l'utilisateur connecté (Table Evenement si type = "Evenement competitif" et si Date_fin < ajd et si Points_objectif <= Points_recolte , null si aucun
     const user_Badge_DATA = [
         {Nom : "Événements Hiver Durable ❄️", Img_url : badge},
-    ]
-
-    // Succes TODO récupere tout les succes (Table Succes)
-    const succes_DATA = [
-        {id : 1, Nom : "Premier pas", Descripion : "Réaliser sa toute première action écologique validée" , Img_url : succes},
-        {id : 2, Nom : "Série de feu", Descripion : "Réaliser au moins une action pendant 7 jours consécutifs" , Img_url : succes},
-        {id : 3, Nom : "Ligues supérieures", Descripion : "Atteindre le rang Or III" , Img_url : succes},
-        {id : 4, Nom : "Chasseur de trésors", Descripion : "Récupérer un objet abandonné avec succès" , Img_url : succes},
-        {id : 5, Nom : "Recycleur expert", Descripion : "Recycler 100 objets" , Img_url : succes},
-        {id : 6, Nom : "Générosité verte", Descripion : "Effectuer un don à une association via la boutique" , Img_url : succes},
     ]
     // Succes de l'utilisateur TODO récupere les succes de l'utilisateur connecte (table User_Succes, récuperer que les id des succes qu'il a), null si aucun
     const user_succes_DATA = [
