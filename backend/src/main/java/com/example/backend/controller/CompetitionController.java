@@ -5,10 +5,10 @@ import com.example.backend.model.Success;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.CompetitionRepository;
 import com.example.backend.repository.SuccessRepository;
-
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +46,18 @@ public class CompetitionController {
     @GetMapping("/success")
     public List<Success> getAllSuccess() {
         return successRepository.findAll();
+    }
+
+    @GetMapping("/{competitionId}/participantsCount")
+    public ResponseEntity<Integer> getParticipantsCount(
+        @PathVariable Long competitionId
+    ) {
+        var maybeCompetition = competitionRepository.findById(competitionId);
+        if (maybeCompetition.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var competition = maybeCompetition.get();
+        return ResponseEntity.ok(competition.getParticipants().size());
     }
 }
