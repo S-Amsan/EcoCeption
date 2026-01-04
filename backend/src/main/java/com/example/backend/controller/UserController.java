@@ -10,6 +10,8 @@ import com.example.backend.repository.NotificationRepository;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
 import com.example.backend.repository.competition.CompetitionRepository;
+import com.example.backend.repository.event.EventParticipantRepository;
+import com.example.backend.repository.event.EventRepository;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -42,6 +44,12 @@ public class UserController {
 
     @Autowired
     private CompetitionRepository competitionRepository;
+
+    @Autowired
+    private EventParticipantRepository eventParticipantRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -95,7 +103,7 @@ public class UserController {
         return ResponseEntity.ok("Account didn't need to be updated");
     }
 
-    @GetMapping("/points/{competitionId}")
+    @GetMapping("/points/competition/{competitionId}")
     public ResponseEntity<Integer> getTotalCompetitionPoints(
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long competitionId
@@ -113,6 +121,36 @@ public class UserController {
                 competition,
                 userDetails.getUser()
             );
+
+        if (participants.isEmpty()) {
+            return ResponseEntity.ok(null);
+        }
+
+        int total = participants
+            .stream()
+            .mapToInt(p -> p.getPoints())
+            .sum();
+
+        return ResponseEntity.ok(total);
+    }
+
+    @GetMapping("/points/event/{eventId}")
+    public ResponseEntity<Integer> getTotalEventPoints(
+        @AuthenticationPrincipal MyUserDetails userDetails,
+        @PathVariable Long eventId
+    ) {
+        var maybeEvent = eventRepository.findById(eventId);
+
+        if (maybeEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var event = maybeEvent.get();
+
+        var participants = eventParticipantRepository.findAllByEventAndUser(
+            event,
+            userDetails.getUser()
+        );
 
         if (participants.isEmpty()) {
             return ResponseEntity.ok(null);
