@@ -5,17 +5,18 @@ import EventPage from "../_components/EventPage";
 import {
     fetchLatestCompetition,
     fetchFollowingCompetitions,
-    fetchCountOfParticipantsForCompetition, fetchCountOfQualifiedParticipantsForCompetition
+    fetchCountOfParticipantsForCompetition,
+    fetchCountOfQualifiedParticipantsForCompetition,
 } from "../../../../services/competitions.api"
-import {fetchCompetitionUserPoints} from "../../../../services/user.api";
+import {fetchUserPointsForCompetition} from "../../../../services/user.api";
 
 export default function Concours() {
     const [concours_DATA, setConcoursData] = React.useState(null);
     const [user_event_DATA, setUserEventData] = React.useState(null);
 
     React.useEffect(() => {
-        fetchLatestCompetition().then(setConcoursData); // le concours le plus récent et pas fini, Date_fin > date d'aujourd'hui
-        fetchFollowingCompetitions().then(setUserEventData); // Tous les concours où l'utilisateur connecté s'est inscrit -> renvoyer null si pas de concours
+        fetchLatestCompetition().then(setConcoursData);
+        fetchFollowingCompetitions().then(setUserEventData);
     }, []);
 
     React.useEffect(() => {
@@ -24,7 +25,7 @@ export default function Concours() {
         Promise.all([
             fetchCountOfParticipantsForCompetition(concours_DATA.id),
             fetchCountOfQualifiedParticipantsForCompetition(concours_DATA.id),
-            fetchCompetitionUserPoints()
+            fetchUserPointsForCompetition(concours_DATA.id)
         ]).then(([participants, qualified, collectedPoints]) => {
             setConcoursData(prev => ({
                 ...prev,
@@ -49,7 +50,7 @@ export default function Concours() {
                 const [participants, qualified, collectedPoints] = await Promise.all([
                     fetchCountOfParticipantsForCompetition(concours.id),
                     fetchCountOfQualifiedParticipantsForCompetition(concours.id),
-                    fetchCompetitionUserPoints(concours.id)
+                    fetchUserPointsForCompetition(concours.id)
                 ]);
 
                 return {

@@ -229,16 +229,16 @@ const EventPopup = ({event_DATA, setEventClique, config}) => {
     if (!event_DATA) {
         return null;
     }
-    const eventNom = event_DATA.Nom
-    const eventFin = tempsEcoule(event_DATA.Date_fin)
+    const eventNom = event_DATA.name
+    const eventFin = tempsEcoule(event_DATA.deadline)
 
-    const pointsObjectif = formatNombreEspace(event_DATA.Points_objectif);
-    const pointsRecolte = formatNombreEspace(event_DATA?.Points_recolte ?? 0);
-    const pourcentageDAvancement = Math.min((event_DATA?.Points_recolte ?? 0) / event_DATA.Points_objectif, 1);
+    const pointsObjectif = formatNombreEspace(event_DATA.goalPoints);
+    const pointsRecolte = formatNombreEspace(event_DATA?.collectedPoints ?? 0);
+    const pourcentageDAvancement = Math.min((event_DATA?.collectedPoints ?? 0) / event_DATA.goalPoints, 1);
 
-    const participants = event_DATA.Participants
-    const qualifies = event_DATA.Qualifies
-    const pointsARedistribuer = formatNombreEspace(participants * event_DATA.Cout_inscription)
+    const participants = event_DATA.participants
+    const qualifies = event_DATA.qualified
+    const pointsARedistribuer = formatNombreEspace(participants * event_DATA.inscriptionCost)
 
     return (
             <View style={styles.popupEventContainer}>
@@ -306,11 +306,6 @@ export default function EventPage({type, event_DATA,user_event_DATA}) {
     if (!config) {
         return null;
     }
-
-    console.log("===================================== concours_DATA =====================================")
-    console.log(event_DATA)
-    console.log(user_event_DATA)
-    console.log("===================================== concours_DATA =====================================")
 
     return (
         <View style={styles.container}>

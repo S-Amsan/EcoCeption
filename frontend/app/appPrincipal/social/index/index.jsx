@@ -1,6 +1,6 @@
 import {Image, Pressable, ScrollView, Text, View} from "react-native";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, {useState} from "react";
 
 import Header from "../../../../components/Header";
 import Navbar from "../../../../components/Navbar";
@@ -14,21 +14,17 @@ import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 import tropheeIcon from "../../../../assets/icones/trophee.png";
 
 import { loadUser } from "../../../../services/RegisterStorage";
-import { fetchUsers } from "../../../../services/user.api";
 
 import {formatNombreCourt,formatNombreEspace} from "../../../../utils/format";
 import {tempsRestant} from "../../../../utils/temps";
 import {isWeb} from "../../../../utils/platform";
 
 import {getRequiredTrophiesByRankName,RANG_MINIMUM_EVENEMENT} from "../../../../constants/rank"
-import {
-    fetchLatestCompetition,
-    fetchFollowingCompetitions,
-    fetchCountOfParticipantsForCompetition, fetchCountOfQualifiedParticipantsForCompetition
-} from "../../../../services/competitions.api"
-import { fetchCompetitionUserPoints } from "../../../../services/user.api";
+import {fetchLatestCompetition,} from "../../../../services/competitions.api"
+import {fetchUserPointsForCompetition, fetchUsers} from "../../../../services/user.api";
 
 import styles from "./styles/styles";
+import {fetchFollowingEvents, fetchLatestEvent} from "../../../../services/events.api";
 
 const VoirPlusWeb = () => {
     if (isWeb) {
@@ -106,9 +102,9 @@ const EventCarte = ({type, onPress, event_DATA, event_user_DATA, user_DATA}) => 
     }
 
     const pointsObjectif = formatNombreEspace(event_DATA.goalPoints);
-    const pointsRecolte = formatNombreEspace(event_user_DATA ?? 0);
+    const pointsRecolte = formatNombreEspace(event_DATA?.collectedPoints ?? 0);
     const pourcentageDAvancement = Math.min(
-        (event_user_DATA ?? 0) / event_DATA.goalPoints,
+        (event_DATA?.collectedPoints ?? 0) / event_DATA.goalPoints,
         1
     );
 
@@ -155,7 +151,7 @@ const EventCarte = ({type, onPress, event_DATA, event_user_DATA, user_DATA}) => 
 
             {accessible && (
                 <>
-                    {event_user_DATA ? (
+                    {event_DATA?.collectedPoints ? (
                         <View style={styles.avancementContainer}>
                             <Text style={styles.avancementText}>
                                 <Text style={{ color: config.couleur }}>
@@ -197,13 +193,12 @@ const EventCarte = ({type, onPress, event_DATA, event_user_DATA, user_DATA}) => 
     );
 };
 
-const ConcoursCarte = ({onPress, concours_DATA, concours_user_DATA}) => {
+const ConcoursCarte = ({onPress, concours_DATA}) => {
     return (
         <EventCarte
             type="concours"
             onPress={onPress}
             event_DATA={concours_DATA}
-            event_user_DATA={concours_user_DATA}
         />
     )
 }
@@ -319,20 +314,27 @@ const Place = ({user_DATA}) => {
 
 export default function Social(){
     const router = useRouter();
-    const [concours_DATA, setConcoursData] = React.useState(null);
-    const [user_points, setUserPoints] = React.useState(null);
+    const [concours_DATA, setConcoursData] = useState(null);
+    const [evenements_DATA, setEvenementsData] = useState(null);
 
     React.useEffect(() => {
-        fetchLatestCompetition().then(setConcoursData); // le concours le plus récent et pas fini, Date_fin > date d'aujourd'hui
-        fetchCompetitionUserPoints().then(setUserPoints); // points recolté par l'utilisateurs connecté au concours le plus recent
+        fetchLatestCompetition().then(setConcoursData);
+        fetchLatestEvent().then(setEvenementsData);
     }, []);
 
+    React.useEffect(() => {
+        if (!concours_DATA?.id) return;
 
-    const evenements_DATA = {
-        Nom : "Événements Hiver Durable ❄️",
-        Date_fin : "2026-01-15T17:59:59",
-        Points_objectif : 50000,
-    }; //TODO récupérer les vrai données -> renvoyer null si pas d'
+        fetchUserPointsForCompetition(concours_DATA.id).then((collectedPoints) => {
+            setConcoursData((prev) => ({...prev, collectedPoints}));
+        })
+    }, [concours_DATA?.id]);
+
+    // const evenements_DATA = {
+    //     Nom : "Événements Hiver Durable ❄️",
+    //     Date_fin : "2026-01-15T17:59:59",
+    //     Points_objectif : 50000,
+    // }; //TODO récupérer les vrai données -> renvoyer null si pas d'
 
     const evenements_user_DATA = {
         Points_recolte : 2324
@@ -393,7 +395,6 @@ export default function Social(){
                             <ConcoursCarte
                                 onPress={() => router.push("./concours")}
                                 concours_DATA={concours_DATA}
-                                concours_user_DATA={user_points}
                             />
 
                             <EvenementsCarte
