@@ -66,7 +66,25 @@ export async function fetchUserStats() {
 
 export async function fetchUserPointsForCompetition(competitionId) {
     const token = await AsyncStorage.getItem('@auth_token');
-    const res = await fetch(`${API_URL}/user/points/${competitionId}`, {
+    const res = await fetch(`${API_URL}/user/points/competition/${competitionId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const text = await res.text();
+
+    if (!text) {
+        return null;
+    }
+
+    const points = parseInt(text, 10);
+
+    return Number.isNaN(points) ? null : points;
+}
+
+export async function fetchUserPointsForEvent(eventId) {
+    const token = await AsyncStorage.getItem('@auth_token');
+    const res = await fetch(`${API_URL}/user/points/event/${eventId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
