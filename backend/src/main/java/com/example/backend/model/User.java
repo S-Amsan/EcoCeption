@@ -65,6 +65,12 @@ public class User {
     @EqualsAndHashCode.Exclude
     private UserStats stats;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Post> posts;
+
     public User() {}
 
     public User(String pseudo, String email) {
