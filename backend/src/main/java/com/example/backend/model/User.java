@@ -2,6 +2,7 @@ package com.example.backend.model;
 
 import com.example.backend.model.competition.CompetitionParticipant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Set;
@@ -57,6 +58,12 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CompetitionParticipant> competitions;
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private UserStats stats;
 
     public User() {}
 

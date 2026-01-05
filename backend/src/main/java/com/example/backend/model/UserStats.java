@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +31,7 @@ public class UserStats {
     @Id
     private Long userId;
 
-    /**
-     * Owning side of the OneToOne relationship using a shared primary key.
-     * A user has at most one stats row.
-     */
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId
     @JoinColumn(name = "user_id", nullable = false)
