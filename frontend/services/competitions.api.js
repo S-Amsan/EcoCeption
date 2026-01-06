@@ -1,16 +1,7 @@
 import { Platform } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-<<<<<<< Updated upstream
-import {IPv4} from "../constants/ip";
 
-const API_URL =
-    Platform.OS === "android"
-        ? `http://${IPv4}:8080`
-        : "http://localhost:8080";
-
-=======
 import { API_URL } from "../constants/API_URL";
->>>>>>> Stashed changes
 
 /**
  * Response example:
