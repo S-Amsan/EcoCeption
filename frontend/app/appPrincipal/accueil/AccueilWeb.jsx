@@ -14,8 +14,11 @@ import SignalementReasons from "./Post/signalement/_components/SignalementReason
 import SignalementSuccess from "./Post/signalement/_components/SignalementSuccess";
 
 import { Pressable } from "react-native";
+import {fetchAllPosts} from "../../../services/posts.api";
+import {fetchUserById, fetchUsers} from "../../../services/user.api";
 
 export default function AccueilWeb() {
+    const [user, setUser] = useState([]);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedPostId, setSelectedPostId] = useState(null);
@@ -34,43 +37,20 @@ export default function AccueilWeb() {
     }, [recherche, filtres]);
 
 
-    useEffect(() => {
-        const fakePosts = [
-            {
-                id: 1,
-                username: "EcoWarrior",
-                avatar:
-                    "https://media.licdn.com/dms/image/v2/D4D03AQEuxNTNZ9pcyw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1732986053908?e=2147483647&v=beta&t=KXGYmWrWy4lV6GsVKTahXunyKG4OOIU7-TS_oMW5Q-8",
-                isDangerous: false,
-                time: "il y a 2h",
-                postImage: "https://picsum.photos/600/400?random=1",
-            },
-            {
-                id: 2,
-                username: "GreenLife",
-                avatar: "https://i.pravatar.cc/150?img=32",
-                isDangerous: true,
-                time: "il y a 5h",
-                postImage: "https://picsum.photos/600/400?random=2",
-            },
-            {
-                id: 3,
-                username: "CleanCity",
-                avatar: "https://i.pravatar.cc/150?img=45",
-                isDangerous: false,
-                time: "hier",
-                postImage: "https://picsum.photos/600/400?random=3",
-            },
-        ];
+        useEffect(() => {
+            const loadPosts = async () => {
+                try {
+                    const data = await fetchAllPosts();
+                    setPosts(data);
+                } catch (error) {
+                    console.error("Erreur chargement posts :", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
 
-        const timer = setTimeout(() => {
-            setPosts(fakePosts);
-            setLoading(false);
-        }, 800);
-
-        return () => clearTimeout(timer);
-    }, []);
-
+            loadPosts();
+        }, []);
 
     return (
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
@@ -91,13 +71,14 @@ export default function AccueilWeb() {
                             <ActivityIndicator size="large" color="#1DDE9A" />
                         ) : (
                             <View style={{ alignItems: "center" }}>
-                                {posts.map((p) => (
+
+                                {posts.map((post) => (
                                     <PostCard
-                                        key={p.id}
-                                        post={p}
+                                        key={post.id}
+                                        post={post}
                                         styles={style}
                                         onSignaler={() => {
-                                            setSelectedPostId(p.id);
+                                            setSelectedPostId(post.id);
                                             setShowSignalement(true);
                                         }}
                                     />

@@ -23,7 +23,18 @@ const API_URL =
  * ```
  */
 export async function fetchUserByEmail(email) {
-    const res = await fetch(`${API_URL}/user/${email}`);
+    const res = await fetch(`${API_URL}/user/email/${email}`);
+    const user = await res.json();
+
+    if (!user) {
+        throw new Error("Utilisateur introuvable");
+    }
+
+    return user;
+}
+
+export async function fetchUserById(id) {
+    const res = await fetch(`${API_URL}/user/id/${id}`);
     const user = await res.json();
 
     if (!user) {

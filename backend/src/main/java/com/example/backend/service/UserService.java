@@ -30,8 +30,8 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     public boolean updateAccount(User user, AccountUpdateRequest request)

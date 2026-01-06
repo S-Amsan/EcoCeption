@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { isWeb } from "../../../../utils/platform";
 import styles from "../styles/accueilStyle";
+import {fetchUserById} from "../../../../services/user.api";
+import {setTheUsername} from "whatwg-url-without-unicode";
 
 export default function PostCard({ post, onSignaler }) {
     const [showMenu, setShowMenu] = useState(false);
@@ -23,24 +25,55 @@ export default function PostCard({ post, onSignaler }) {
         }
     };
 
+    const [avatar, setAvatar] = useState(null);
+    const [pseudo, setPseudo] = useState(null);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const user = await fetchUserById(post.user_id);
+                setAvatar(user.photoProfileUrl);
+                setPseudo(user.pseudo);
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        loadUser();
+    }, [post.user_id]);
     const handleLike = () => {
         // TODO: Service qui enregistre le nb de like/dislike
     };
+
+    /**
+     * Example response:
+     * ```json
+     * {
+     *   "id": 3,
+     *   "name": "Test post",
+     *   "description": "Test description",
+     *   "address": "Test address",
+     *   "imageUrl": "http://82.66.240.161:8090/files/abf24cb4cb7bb1cde11769b75196f111a38644d64d41c1dc84197708ed7ad6c0.png",
+     *   "createdAt": "2026-01-05T23:44:43.305624",
+     *   "user_id": 1
+     * }
+     * ```
+     */
 
     return (
         <View style={styles.card}>
             {/* Header */}
             <View style={styles.header}>
-                <Image source={{ uri: post.avatar }} style={styles.avatar} />
+                <Image source={{ uri: avatar}} style={styles.avatar} />
 
                 <View style={{ flex: 1 }}>
                     <View style={styles.nameRow}>
-                        <Text style={styles.name}>Maître @{post.username}</Text>
-                        <Text style={styles.time}> · {post.time}</Text>
+                        <Text style={styles.name}>@{pseudo}</Text>
+                        <Text style={styles.time}> · {post.createdAt}</Text>
                     </View>
 
                     <Text style={styles.text}>
-                        a jeté une bouteille à la poubelle !
+                        {post.description}
                     </Text>
                 </View>
 
@@ -82,7 +115,7 @@ export default function PostCard({ post, onSignaler }) {
             )}
 
             {/* Image */}
-            <Image source={{ uri: post.postImage }} style={styles.image} />
+            <Image source={{ uri: post.imageUrl }} style={styles.image} />
 
             {/* Actions */}
             <View style={styles.actions}>

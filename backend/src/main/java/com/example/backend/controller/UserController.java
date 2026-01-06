@@ -56,9 +56,20 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> maybeUser = userService.getUserByEmail(email);
+
+        if (maybeUser.isPresent()) {
+            return ResponseEntity.ok(maybeUser.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable Long id) {
+        Optional<User> maybeUser = userService.getUserById(id);
 
         if (maybeUser.isPresent()) {
             return ResponseEntity.ok(maybeUser.get());
