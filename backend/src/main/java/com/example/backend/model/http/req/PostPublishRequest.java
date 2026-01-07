@@ -13,10 +13,6 @@ public class PostPublishRequest {
     private String name;
 
     @NotNull
-    @NotBlank(message = "Address is required")
-    private String address;
-
-    @NotNull
     @NotBlank(message = "Description is required")
     private String description;
 

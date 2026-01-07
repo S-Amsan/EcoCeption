@@ -32,7 +32,6 @@ public class PostService {
         post.setUser(user);
         post.setName(request.getName());
         post.setDescription(request.getDescription());
-        post.setAddress(request.getAddress());
         post.setImageUrl(
             ImageUploadService.endpoint.toString() +
                 '/' +
