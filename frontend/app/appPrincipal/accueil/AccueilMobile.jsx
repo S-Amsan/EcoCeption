@@ -13,6 +13,7 @@ import style from "./styles/accueilStyle";
 import Navbar from "../../../components/Navbar";
 import ScanActionButton from "../../../components/ScanActionButton";
 import { loadUser as loadUserFromStorage } from "../../../services/RegisterStorage";
+import {fetchAllPosts} from "../../../services/posts.api";
 
 export default function AccueilMobile() {
     const [posts, setPosts] = useState([]);
@@ -28,42 +29,32 @@ export default function AccueilMobile() {
     const lastScrollY = useRef(0);
 
     useEffect(() => {
-        const fakePosts = [
-            {
-                id: 1,
-                username: "EcoWarrior",
-                avatar:
-                    "https://media.licdn.com/dms/image/v2/D4D03AQEuxNTNZ9pcyw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1732986053908?e=2147483647&v=beta&t=KXGYmWrWy4lV6GsVKTahXunyKG4OOIU7-TS_oMW5Q-8",
-                isDangerous: false,
-                time: "il y a 2h",
-                postImage: "https://picsum.photos/600/400?random=1",
-            },
-            {
-                id: 2,
-                username: "GreenLife",
-                avatar: "https://i.pravatar.cc/150?img=32",
-                isDangerous: true,
-                time: "il y a 5h",
-                postImage: "https://picsum.photos/600/400?random=2",
-            },
-            {
-                id: 3,
-                username: "CleanCity",
-                avatar: "https://i.pravatar.cc/150?img=45",
-                isDangerous: false,
-                time: "hier",
-                postImage: "https://picsum.photos/600/400?random=3",
-            },
-        ];
+        const loadPosts = async () => {
+            try {
+                const data = await fetchAllPosts();
+                setPosts(data);
+            } catch (error) {
+                console.error("Erreur chargement posts :", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        const timer = setTimeout(() => {
-            setPosts(fakePosts);
-            setLoading(false);
-        }, 800);
-
-        return () => clearTimeout(timer);
+        loadPosts();
     }, []);
 
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const storedUser = await loadUserFromStorage();
+                setUser(storedUser);
+            } catch (error) {
+                console.error("Erreur chargement utilisateur :", error);
+            }
+        };
+
+        loadUser();
+    }, []);
 
     const handleScroll = (event) => {
         const y = event.nativeEvent.contentOffset.y;
