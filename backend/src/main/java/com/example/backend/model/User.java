@@ -36,6 +36,9 @@ public class User {
     @Column(name = "photo_profile_url")
     private String photoProfileUrl;
 
+    @Column
+    private String profileBannerUrl = null;
+
     @CreationTimestamp
     @Column(name = "date_creation", updatable = false)
     private Instant dateCreation;
