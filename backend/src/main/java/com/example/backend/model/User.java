@@ -70,6 +70,9 @@ public class User {
     @EqualsAndHashCode.Exclude
     private UserStats stats = new UserStats(this);
 
+    @Column
+    private Integer votes = 0;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @ToString.Exclude

@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -45,6 +46,9 @@ public class UserStats {
 
     @Column(nullable = false)
     private int flames = 0;
+
+    @Column(nullable = true)
+    private LocalDateTime lastActionDate;
 
     public UserStats() {}
 
