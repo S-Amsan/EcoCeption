@@ -64,3 +64,25 @@ export async function postPost(post) {
 
     return await response.json();
 }
+
+export async function likePost(postId) {
+    const token = await AsyncStorage.getItem('@auth_token');
+
+    await fetch(`${API_URL}/post/${postId}/like`, {
+        method: "POST",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+}
+
+export async function dislikePost(postId) {
+    const token = await AsyncStorage.getItem('@auth_token');
+
+    await fetch(`${API_URL}/post/${postId}/dislike`, {
+        method: "POST",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+}
