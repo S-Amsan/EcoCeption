@@ -1,319 +1,83 @@
-import React, {useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
     ScrollView,
     Image,
-    TouchableOpacity, Animated,
+    TouchableOpacity,
+    Animated,
 } from "react-native";
+import { useRouter } from "expo-router";
+
 import styles from "./styles/styles";
 import { isWeb } from "../../../../../utils/platform";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import Navbar from "../../../../../components/Navbar";
 import ScanActionButton from "../../../../../components/ScanActionButton";
 
-export default function MissionsPage({ onPostObjet, onSeeObjet }) {
+import { getAllObjects } from "../../../../../services/objects.api";
+import { fetchUserById } from "../../../../../services/user.api";
+import { formatRelativeTime } from "../../../../../utils/format";
 
-    const router = useRouter();
+/* ===========================
+   CARD OBJET
+=========================== */
+function ObjectCard({ item, onSeeObjet }) {
+    const [avatar, setAvatar] = useState(null);
+    const [pseudo, setPseudo] = useState(null);
 
-    const items = [  // TODO: Remplacé par un service qui récupe les posts
-        {
-            id: 1,
-            title: "Barbecue",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "5 km",
-            author: "@Maitre",
-            time: "2 min",
-            image: require("../../../../../assets/missions/scan.png"),
-            description:"Venez me récuperer"
-        },
-        {
-            id: 2,
-            title: "Équipements maison",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "13 km",
-            author: "@Maitre",
-            time: "2 min",
-            image: require("../../../../../assets/missions/objet.png"),
-        },
-        {
-            id: 3,
-            title: "Canapé",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "18 km",
-            author: "@Maitre",
-            time: "hier",
-            image: require("../../../../../assets/missions/scan.png"),
-        },
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const user = await fetchUserById(item.user_id);
+                setAvatar(user.photoProfileUrl);
+                setPseudo(user.pseudo);
+            } catch (e) {
+                console.error("Erreur chargement user", e);
+            }
+        };
 
-        {
-            id: 4,
-            title: "Équipements maison",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "13 km",
-            author: "@Maitre",
-            time: "2 min",
-            image: require("../../../../../assets/missions/objet.png"),
-        },
-        {
-            id: 5,
-            title: "Canapé",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "18 km",
-            author: "@Maitre",
-            time: "hier",
-            image: require("../../../../../assets/missions/scan.png"),
-        },
-        {
-            id: 6,
-            title: "Équipements maison",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "13 km",
-            author: "@Maitre",
-            time: "2 min",
-            image: require("../../../../../assets/missions/objet.png"),
-        },
-        {
-            id: 7,
-            title: "Canapé",
-            address: "96 Av. de La Liberté Tunis",
-            distance: "18 km",
-            author: "@Maitre",
-            time: "hier",
-            image: require("../../../../../assets/missions/scan.png"),
-        },
-    ];
+        loadUser();
+    }, [item.user_id]);
 
-    const navbarTranslateY = useRef(new Animated.Value(0)).current;
-    const scanBtnTranslateX = useRef(new Animated.Value(0)).current;
-    const SCAN_BTN_HIDE_X = 120; // largeur + marge
-    const lastScrollY = useRef(0);
-    const NAVBAR_HEIGHT = 90;
-
-    const handleScroll = (event) => {
-        const currentY = event.nativeEvent.contentOffset.y;
-
-        if (currentY > lastScrollY.current + 5) {
-            Animated.parallel([
-                Animated.timing(navbarTranslateY, {
-                    toValue: NAVBAR_HEIGHT,
-                    duration: 200,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(scanBtnTranslateX, {
-                    toValue: SCAN_BTN_HIDE_X,
-                    duration: 200,
-                    useNativeDriver: true,
-                }),
-            ]).start();
-        } else if (currentY < lastScrollY.current - 5) {
-            Animated.parallel([
-                Animated.timing(navbarTranslateY, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(scanBtnTranslateX, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true,
-                }),
-            ]).start();
-        }
-
-        lastScrollY.current = currentY;
-    };
-
-    if (isWeb) {
-        return (
-            <View style={styles.page}>
-                <View style={styles.left}>
-                    <View style={styles.header}>
-                        <Text style={styles.headerTitle}>
-                            Objets à récupérer autour de vous
-                        </Text>
-                    </View>
-
-                    <ScrollView showsVerticalScrollIndicator style={{backgroundColor:"#fff"}}>
-                        <View>
-                        {items.map(item => (
-                            <View key={item.id} style={styles.card}>
-                                <Image source={item.image} style={styles.image}/>
-
-                                <View style={styles.content}>
-                                    <View style={styles.content1}>
-                                    <Text style={styles.title}>{item.title}</Text>
-                                    <Text style={styles.address}>📍 {item.address}</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.meta}>
-                                            {item.author} • {item.time}
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.describe}>
-                                            {item.description}
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View style={styles.right}>
-                                    <Text style={styles.distance}>{item.distance}</Text>
-
-                                    <TouchableOpacity
-                                        style={styles.button}
-                                        onPress={() => onSeeObjet(item)}
-                                    >
-                                        <Text style={styles.buttonText}>
-                                            Voir l’objet
-                                        </Text>
-                                    </TouchableOpacity>
-
-                                </View>
-                            </View>
-                        ))}
-                        </View>
-                    </ScrollView>
-                </View>
-
-                    <View style={styles.rightPanel}>
-                        <View style={styles.info}>
-                            <Text>
-                                Comment sa marche ?
-                            </Text>
-                            </View>
-                        <View style={styles.Container}>
-                            <InfoCard
-                                title="Scanner un QR code et poster"
-                                description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
-                                button="Commencer"
-                                image={require("../../../../../assets/missions/scan.png")}
-                                onPress={() => {
-                                    console.log("CLICK SCAN");
-                                    router.push("/appPrincipal/codebar");
-                                }}
-                            />
-
-                            <InfoCard
-                                title="Objets abandonnés"
-                                description="Poster des objets abandonnés pour leur donner une seconde vie."
-                                button="Commencer"
-                                image={require("../../../../../assets/missions/objet.png")}
-                                onPress={onPostObjet}
-                            />
-                    </View>
-                    </View>
-            </View>
-        );
-    }
     return (
-        <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            {/* CONTENU SCROLLABLE */}
-            <ScrollView
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingBottom: NAVBAR_HEIGHT + 20,
-                }}
-            >
-                {/* HEADER INFO */}
-                <InfoHeader
-                    title="Parrainer un ami +1000/filleul"
-                    image={require("../../../../../assets/missions/parrainage.png")}
-                />
+        <View style={styles.card}>
+            <Image source={{ uri: item.photoUrl }} style={styles.image} />
 
-                {/* INFO CARDS */}
-                <View style={styles.infoBox}>
-                    <InfoCard
-                        title="Scanner un QR code et poster"
-                        description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
-                        button="Commencer"
-                        image={require("../../../../../assets/missions/scan.png")}
-                        onPress={() => router.push("/appPrincipal/codebar")}
-                    />
+            <View style={styles.content}>
+                <Text style={styles.title}>{item.title}</Text>
 
-                    <InfoCard
-                        title="Objets abandonnés"
-                        description="Poster des objets abandonnés pour leur donner une seconde vie."
-                        button="Commencer"
-                        image={require("../../../../../assets/missions/objet.png")}
-                        onPress={onPostObjet}
-                    />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    {avatar && <Image source={{ uri: avatar }} style={styles.avatar} />}
+                    {pseudo && <Text style={styles.name}>@{pseudo}</Text>}
                 </View>
 
-                {/* LIST HEADER */}
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>
-                        Objets à récupérer autour de vous
-                    </Text>
-                </View>
+                <Text style={styles.address}>📍 {item.address}</Text>
 
-                {/* LIST */}
-                {items.map(item => (
-                    <View key={item.id} style={styles.card}>
-                        <Image source={item.image} style={styles.image} />
+                <Text style={styles.meta}>
+                    {formatRelativeTime(item.creationDate)}
+                </Text>
 
-                        <View style={styles.content}>
-                            <Text style={styles.title}>{item.title}</Text>
-                            <Text style={styles.address}>📍 {item.address}</Text>
-                            <Text style={styles.meta}>
-                                {item.author} • {item.time}
-                            </Text>
-                            {item.description && (
-                                <Text style={styles.describe}>{item.description}</Text>
-                            )}
-                        </View>
+                {item.description && (
+                    <Text style={styles.describe}>{item.description}</Text>
+                )}
+            </View>
 
-                        <View style={styles.right}>
-                            <Text style={styles.distance}>{item.distance}</Text>
-                            <TouchableOpacity
-                                style={styles.button}
-                                onPress={() => onSeeObjet(item)}
-                                >
-                            <Text style={styles.buttonText}>Voir l’objet</Text>
-                        </TouchableOpacity>
-
-                    </View>
-                    </View>
-                ))}
-            </ScrollView>
-
-            <Animated.View
-                style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    transform: [{ translateY: navbarTranslateY }],
-                    zIndex: 100,
-                }}
-            >
-                <Navbar />
-            </Animated.View>
-
-            <Animated.View
-                pointerEvents="box-none"
-                style={{
-                    position: "absolute",
-                    bottom: 10,
-                    right: 16,
-                    width: 72,
-                    height: 72,
-                    transform: [{ translateX: scanBtnTranslateX }],
-                    zIndex: 99,
-                }}
-            >
-                <ScanActionButton
-                    onPress={() => router.push("/appPrincipal/codebar")}
-                />
-            </Animated.View>
+            <View style={styles.right}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => onSeeObjet(item)}
+                >
+                    <Text style={styles.buttonText}>Voir l’objet</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
 
-
-    function InfoCard({ title, description, button, image, onPress }) {
+/* ===========================
+   INFO CARD
+=========================== */
+function InfoCard({ title, description, button, image, onPress }) {
     return (
         <View style={styles.infoCard}>
             <View style={styles.infoContent}>
@@ -335,22 +99,161 @@ export default function MissionsPage({ onPostObjet, onSeeObjet }) {
     );
 }
 
+/* ===========================
+   PAGE MISSIONS
+=========================== */
+export default function MissionsPage({ onPostObjet, onSeeObjet }) {
+    const router = useRouter();
+    const [items, setItems] = useState([]);
 
-function InfoHeader({ title, description,image}) {
-    return (
-        <View style={styles.infoHeader}>
-            <View style={styles.spship}>
-            <View style={{justifyContent:'center'}}>
-                <Text style={styles.headerTitle}>{title}</Text>
+    useEffect(() => {
+        const loadObjects = async () => {
+            try {
+                const data = await getAllObjects();
+                setItems(Array.isArray(data) ? data : []);
+            } catch (e) {
+                console.error("Erreur chargement objets", e);
+            }
+        };
+
+        loadObjects();
+    }, []);
+
+    /* ===== ANIMATIONS MOBILE ===== */
+    const navbarTranslateY = useRef(new Animated.Value(0)).current;
+    const scanBtnTranslateX = useRef(new Animated.Value(0)).current;
+    const lastScrollY = useRef(0);
+    const NAVBAR_HEIGHT = 90;
+
+    const handleScroll = (event) => {
+        const y = event.nativeEvent.contentOffset.y;
+
+        Animated.parallel([
+            Animated.timing(navbarTranslateY, {
+                toValue: y > lastScrollY.current ? NAVBAR_HEIGHT : 0,
+                duration: 200,
+                useNativeDriver: true,
+            }),
+            Animated.timing(scanBtnTranslateX, {
+                toValue: y > lastScrollY.current ? 120 : 0,
+                duration: 200,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
+        lastScrollY.current = y;
+    };
+
+    /* ===== WEB ===== */
+    if (isWeb) {
+        return (
+            <View style={styles.page}>
+                <View style={styles.left}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>
+                            Objets à récupérer autour de vous
+                        </Text>
+                    </View>
+
+                    <ScrollView>
+                        {items.map(item => (
+                            <ObjectCard
+                                key={item.id}
+                                item={item}
+                                onSeeObjet={onSeeObjet}
+                            />
+                        ))}
+                    </ScrollView>
+                </View>
+
+                {/* 👉 INFO CARDS WEB */}
+                <View style={styles.rightPanel}>
+                    <InfoCard
+                        title="Scanner un QR code et poster"
+                        description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
+                        button="Commencer"
+                        image={require("../../../../../assets/missions/scan.png")}
+                        onPress={() => router.push("/appPrincipal/codebar")}
+                    />
+
+                    <InfoCard
+                        title="Objets abandonnés"
+                        description="Poster des objets abandonnés pour leur donner une seconde vie."
+                        button="Commencer"
+                        image={require("../../../../../assets/missions/objet.png")}
+                        onPress={onPostObjet}
+                    />
+                </View>
             </View>
-            <View>
-            <Image
-                source={image}
-                style={styles.HeaderImage}
-                resizeMode="contain"
-            />
-        </View>
-        </View>
+        );
+    }
+
+    /* ===== MOBILE ===== */
+    return (
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                contentContainerStyle={{ paddingBottom: NAVBAR_HEIGHT + 20 }}
+            >
+                {/* 👉 INFO CARDS MOBILE */}
+                <View style={styles.infoBox}>
+                    <InfoCard
+                        title="Scanner un QR code et poster"
+                        description="Scanner le QR code d’un partenaire puis prenez le produit en photo."
+                        button="Commencer"
+                        image={require("../../../../../assets/missions/scan.png")}
+                        onPress={() => router.push("/appPrincipal/codebar")}
+                    />
+
+                    <InfoCard
+                        title="Objets abandonnés"
+                        description="Poster des objets abandonnés pour leur donner une seconde vie."
+                        button="Commencer"
+                        image={require("../../../../../assets/missions/objet.png")}
+                        onPress={onPostObjet}
+                    />
+                </View>
+
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>
+                        Objets à récupérer autour de vous
+                    </Text>
+                </View>
+
+                {items.map(item => (
+                    <ObjectCard
+                        key={item.id}
+                        item={item}
+                        onSeeObjet={onSeeObjet}
+                    />
+                ))}
+            </ScrollView>
+
+            <Animated.View
+                style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    transform: [{ translateY: navbarTranslateY }],
+                }}
+            >
+                <Navbar />
+            </Animated.View>
+
+            <Animated.View
+                style={{
+                    position: "absolute",
+                    bottom: 10,
+                    right: 16,
+                    transform: [{ translateX: scanBtnTranslateX }],
+                }}
+            >
+                <ScanActionButton
+                    onPress={() => router.push("/appPrincipal/codebar")}
+                />
+            </Animated.View>
         </View>
     );
 }

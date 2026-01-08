@@ -29,7 +29,7 @@ export default function MissionsMobile() {
         switch (page) {
             case "postObjet":
                 return "Poster un objet";
-            case "postAcion":
+            case "post":
                 return "Publier votre action";
             case "associate":
                 return "Associer un abonnement";
@@ -63,6 +63,13 @@ export default function MissionsMobile() {
                 setOngletActifId("listes");
                 return;
             }
+
+            if (page === "post") {
+                setPage("listes");
+                setOngletActifId("listes");
+                return;
+            }
+
         };
 
     useEffect(() => {

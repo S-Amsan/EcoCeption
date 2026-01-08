@@ -17,29 +17,36 @@ import { API_URL } from "../constants/API_URL";
  * }
  * ```
 */
-export async function postObject(title, description, address, photoUri) {
-    const token = await AsyncStorage.getItem('@auth_token');
+export async function postObject({ title, description, address, imageUrl }) {
+    const token = await AsyncStorage.getItem("@auth_token");
     const formData = new FormData();
 
     formData.append("title", title);
     formData.append("description", description);
     formData.append("address", address);
-    const fileRes = await fetch(photoUri);
-    const bytes = await fileRes.arrayBuffer();
-    const blob = new Blob([bytes]);
-    formData.append("image", blob);
+
+    formData.append("image", {
+        uri: imageUrl,
+        name: "photo.jpg",
+        type: "image/jpeg",
+    });
 
     const response = await fetch(`${API_URL}/object/post`, {
         method: "POST",
         body: formData,
         headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-        }
+            Authorization: `Bearer ${token}`,
+        },
     });
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text);
+    }
 
     return response.json();
 }
+
 
 /**
  * Example response:
@@ -59,6 +66,18 @@ export async function postObject(title, description, address, photoUri) {
  * ```
 */
 export async function getAllObjects() {
-    const response = await fetch(`${API_URL}/object/getAll`);
-    return response.json();
+    const response = await fetch(`${API_URL}/object/all`);
+
+    if (!response.ok) {
+        const text = await response.text();
+        console.error("API ERROR:", response.status, text);
+        throw new Error("Erreur API getAllObjects");
+    }
+
+    const text = await response.text();
+    if (!text) return [];
+
+    return JSON.parse(text);
 }
+
+

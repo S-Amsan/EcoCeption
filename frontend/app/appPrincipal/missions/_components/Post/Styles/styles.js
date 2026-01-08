@@ -46,7 +46,13 @@ export default StyleSheet.create({
         textAlignVertical: "top",
     },
 
-    photoBox: {
+    preview: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 12,
+    },
+
+    uploadBox: {
         height: 160,
         backgroundColor: "#F5F5F5",
         borderRadius: 12,
@@ -80,33 +86,50 @@ export default StyleSheet.create({
         fontWeight: "700",
     },
 
-    modalOverlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-    },
-
-    modalContent: {
-        width: 480,
-        maxHeight: "90vh",
-        backgroundColor: "#fff",
-        borderRadius: 16,
-        overflow: "hidden",
-    },
-
-    modalClose: {
+    menuOverlay: {
         position: "absolute",
-        top: 12,
-        right: 12,
-        zIndex: 10,
+        inset: 0,
+        backgroundColor: "rgba(0,0,0,0.4)",
+        justifyContent: "flex-end",
+        zIndex: 999,
+    },
+
+    menuContainer: {
+        backgroundColor: "#f3f3f3",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingBottom: 24,
+    },
+
+    menuRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 20,
+        paddingHorizontal: 24,
+    },
+
+    menuIcon: {
+        width: 28,
+        height: 28,
+        resizeMode: "contain",
+        marginRight: 16,
+    },
+
+    menuText: {
+        fontSize: 16,
+        fontWeight: "500",
+    },
+
+    menuSeparator: {
+        height: 1,
+        backgroundColor: "#ddd",
+        marginLeft: 72,
     },
 
 });
+
+
+
+
 
 

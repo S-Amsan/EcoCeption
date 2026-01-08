@@ -6,6 +6,7 @@ import { isWeb } from "../../../../utils/platform";
 import styles from "../styles/accueilStyle";
 import {fetchUserById} from "../../../../services/user.api";
 import {setTheUsername} from "whatwg-url-without-unicode";
+import {formatRelativeTime} from "../../../../utils/format";
 
 export default function PostCard({ post, onSignaler }) {
     const [showMenu, setShowMenu] = useState(false);
@@ -69,7 +70,7 @@ export default function PostCard({ post, onSignaler }) {
                 <View style={{ flex: 1 }}>
                     <View style={styles.nameRow}>
                         <Text style={styles.name}>@{pseudo}</Text>
-                        <Text style={styles.time}> · {post.createdAt}</Text>
+                        <Text style={styles.time}> {" · "}{formatRelativeTime(post.createdAt)}</Text>
                     </View>
 
                     <Text style={styles.text}>

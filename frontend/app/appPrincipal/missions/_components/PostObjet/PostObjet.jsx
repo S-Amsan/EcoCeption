@@ -5,86 +5,105 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    Alert,
+    Image,
+    Pressable,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 import { isWeb } from "../../../../../utils/platform";
+import { postObject } from "../../../../../services/objects.api";
 import styles from "./Styles/styles";
 
 export default function PostObjet({ onBack }) {
     const [title, setTitle] = useState("");
     const [address, setAddress] = useState("");
     const [description, setDescription] = useState("");
+    const [photo, setPhoto] = useState(null);
+    const [showUploadMenu, setShowUploadMenu] = useState(false);
 
-    const handleSubmit = () => {
-        // TODO: Service posté obejt
-        console.log({ title, address, description });
-        onBack();
+    /* ======================
+       📷 CAMERA
+    ====================== */
+    const takePhoto = async () => {
+        setShowUploadMenu(false);
+
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+            Alert.alert("Permission requise", "Accès caméra refusé");
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+            quality: 0.8,
+            allowsEditing: true,
+        });
+
+        if (!result.canceled) {
+            setPhoto(result.assets[0].uri);
+        }
     };
 
-    if (isWeb) {
-        return (
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
-                    <ScrollView
-                        contentContainerStyle={styles.container}
-                        showsVerticalScrollIndicator={false}
-                    >
-                        <TouchableOpacity
-                            style={styles.modalClose}
-                            onPress={onBack}
-                        >
-                            <Text>✕</Text>
-                        </TouchableOpacity>
+    /* ======================
+       🖼️ GALERIE
+    ====================== */
+    const pickFromGallery = async () => {
+        setShowUploadMenu(false);
 
-                        {renderForm({
-                            title,
-                            setTitle,
-                            address,
-                            setAddress,
-                            description,
-                            setDescription,
-                            handleSubmit,
-                        })}
-                    </ScrollView>
-                </View>
-            </View>
-        );
-    }
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    return (
-        <ScrollView
-            contentContainerStyle={styles.container}
-            showsVerticalScrollIndicator={false}
-        >
-            {renderForm({
+        if (status !== "granted") {
+            Alert.alert("Permission requise", "Accès galerie refusé");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            quality: 0.8,
+            allowsEditing: true,
+        });
+
+        if (!result.canceled) {
+            setPhoto(result.assets[0].uri);
+        }
+    };
+
+    /* ======================
+       🚀 SUBMIT
+    ====================== */
+    const handleSubmit = async () => {
+        if (!photo) {
+            Alert.alert("Photo requise", "Veuillez ajouter une photo");
+            return;
+        }
+
+        try {
+            await postObject({
                 title,
-                setTitle,
                 address,
-                setAddress,
                 description,
-                setDescription,
-                handleSubmit,
-            })}
-        </ScrollView>
-    );
-}
+                imageUrl: photo,
+            });
 
-function renderForm({
-                        title,
-                        setTitle,
-                        address,
-                        setAddress,
-                        description,
-                        setDescription,
-                        handleSubmit,
-                    }) {
-    return (
+            onBack();
+        } catch (e) {
+            console.error(e);
+            Alert.alert("Erreur", "Impossible de poster l’objet");
+        }
+    };
+
+    /* ======================
+       📄 CONTENU COMMUN
+    ====================== */
+    const Content = (
         <>
             <View style={styles.rewardBox}>
                 <Text style={styles.rewardTitle}>
                     Donnez une seconde vie à cet objet !
                 </Text>
-                <Text style={styles.rewardSub}>Récompense : +500 points</Text>
+                <Text style={styles.rewardSub}>
+                    Récompense : +500 points
+                </Text>
             </View>
 
             <Text style={styles.label}>Titre</Text>
@@ -113,8 +132,15 @@ function renderForm({
             />
 
             <Text style={styles.label}>Prenez une photo</Text>
-            <TouchableOpacity style={styles.photoBox}>
-                <Text style={styles.photoIcon}>📷</Text>
+            <TouchableOpacity
+                style={styles.photoBox}
+                onPress={() => setShowUploadMenu(true)}
+            >
+                {photo ? (
+                    <Image source={{ uri: photo }} style={styles.preview} />
+                ) : (
+                    <Text style={styles.photoIcon}>📷</Text>
+                )}
             </TouchableOpacity>
 
             <Text style={styles.reminder}>
@@ -128,5 +154,88 @@ function renderForm({
                 <Text style={styles.submitText}>Poster</Text>
             </TouchableOpacity>
         </>
+    );
+
+    /* ======================
+       🌐 WEB (MODAL)
+    ====================== */
+    if (isWeb) {
+        return (
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    <TouchableOpacity
+                        style={styles.modalClose}
+                        onPress={onBack}
+                    >
+                        <Text>✕</Text>
+                    </TouchableOpacity>
+
+                    <ScrollView
+                        contentContainerStyle={styles.container}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {Content}
+                    </ScrollView>
+                </View>
+
+                {showUploadMenu && (
+                    <Pressable
+                        style={styles.menuOverlay}
+                        onPress={() => setShowUploadMenu(false)}
+                    >
+                        <Pressable style={styles.menuContainer}>
+                            <TouchableOpacity
+                                style={styles.menuRow}
+                                onPress={takePhoto}
+                            >
+                                <Text>Prendre une photo</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.menuRow}
+                                onPress={pickFromGallery}
+                            >
+                                <Text>Importer une photo</Text>
+                            </TouchableOpacity>
+                        </Pressable>
+                    </Pressable>
+                )}
+            </View>
+        );
+    }
+
+    /* ======================
+       📱 MOBILE
+    ====================== */
+    return (
+        <ScrollView
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
+        >
+            {Content}
+
+            {showUploadMenu && (
+                <Pressable
+                    style={styles.menuOverlay}
+                    onPress={() => setShowUploadMenu(false)}
+                >
+                    <Pressable style={styles.menuContainer}>
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={takePhoto}
+                        >
+                            <Text>Prendre une photo</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={pickFromGallery}
+                        >
+                            <Text>Importer une photo</Text>
+                        </TouchableOpacity>
+                    </Pressable>
+                </Pressable>
+            )}
+        </ScrollView>
     );
 }

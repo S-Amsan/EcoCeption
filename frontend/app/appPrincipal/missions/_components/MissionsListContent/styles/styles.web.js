@@ -61,6 +61,13 @@ export default StyleSheet.create({
         borderRadius: 8,
     },
 
+    avatar: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: "#eee",
+    },
+
 
     title: {
         fontSize: 15,

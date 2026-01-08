@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
+
 
 @Data
 @Entity
@@ -47,7 +49,7 @@ public class Objekt {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     public Objekt() {}
 }

@@ -16,6 +16,14 @@ export default StyleSheet.create({
         margin: 15,
     },
 
+    avatar: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: "#eee",
+    },
+
+
     infoHeader: {
         backgroundColor: "#0ED49B",
         borderRadius: 12,
