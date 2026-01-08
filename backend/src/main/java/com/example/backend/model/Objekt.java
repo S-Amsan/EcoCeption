@@ -37,9 +37,14 @@ public class Objekt {
     @EqualsAndHashCode.Exclude
     private User publishedBy;
 
-    @JsonProperty("user_id")
-    public Long getUserId() {
+    @JsonProperty("publisher_user_id")
+    public Long getPublisherUserId() {
         return publishedBy != null ? publishedBy.getId() : null;
+    }
+
+    @JsonProperty("picked_up_user_id")
+    public Long getPickedUpUserId() {
+        return pickedUpBy != null ? pickedUpBy.getId() : null;
     }
 
     @Column(nullable = true)
