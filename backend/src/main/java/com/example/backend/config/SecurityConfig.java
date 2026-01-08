@@ -39,6 +39,8 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers("/user/notifications")
                     .authenticated()
+                    .requestMatchers("/user/actions")
+                    .authenticated()
                     .requestMatchers("/user/points/**")
                     .authenticated()
                     .requestMatchers("/user/update")

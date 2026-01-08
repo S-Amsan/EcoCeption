@@ -42,9 +42,14 @@ public class Action {
         return user != null ? user.getId() : null;
     }
 
-    @JsonProperty("action_type_id")
-    public Long getActionTypeId() {
-        return actionType != null ? actionType.getId() : null;
+    @JsonProperty("description")
+    public String getDescription() {
+        return actionType.getDescription();
+    }
+
+    @JsonProperty("image_url")
+    public String getImageUrl() {
+        return actionType.getImageUrl();
     }
 
     public Action() {}

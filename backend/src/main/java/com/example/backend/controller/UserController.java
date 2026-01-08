@@ -3,12 +3,14 @@ package com.example.backend.controller;
 import com.example.backend.model.Notification;
 import com.example.backend.model.User;
 import com.example.backend.model.UserStats;
+import com.example.backend.model.action.Action;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.NotificationRepository;
 import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.UserStatsRepository;
+import com.example.backend.repository.action.ActionRepository;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
 import com.example.backend.repository.competition.CompetitionRepository;
 import com.example.backend.repository.event.EventParticipantRepository;
@@ -54,6 +56,9 @@ public class UserController {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ActionRepository actionRepository;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -188,5 +193,12 @@ public class UserController {
             .sum();
 
         return ResponseEntity.ok(total);
+    }
+
+    @GetMapping("/actions")
+    public List<Action> getUserActions(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return actionRepository.findAllByUser(userDetails.getUser());
     }
 }
