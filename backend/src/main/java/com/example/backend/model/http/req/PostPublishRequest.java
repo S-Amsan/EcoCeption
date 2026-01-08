@@ -1,5 +1,6 @@
 package com.example.backend.model.http.req;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -15,6 +16,9 @@ public class PostPublishRequest {
     @NotNull
     @NotBlank(message = "Description is required")
     private String description;
+
+    @Nullable
+    private Long objectId;
 
     @NotNull
     private MultipartFile image;

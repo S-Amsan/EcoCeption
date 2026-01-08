@@ -1,8 +1,10 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Objekt;
 import com.example.backend.model.Post;
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.PostPublishRequest;
+import com.example.backend.repository.ObjektRepository;
 import com.example.backend.repository.PostRepository;
 import java.io.IOException;
 import java.util.Set;
@@ -22,6 +24,9 @@ public class PostService {
 
     @Autowired
     private ActionService actionService;
+
+    @Autowired
+    private ObjektRepository objektRepository;
 
     public Post publish(PostPublishRequest request, User user)
         throws IOException {
@@ -43,6 +48,12 @@ public class PostService {
                 '/' +
                 response.getFilename()
         );
+
+        Long objectId = request.getObjectId();
+        if (objectId != null) {
+            Objekt object = objektRepository.findById(objectId).orElseThrow();
+            post.setObject(object);
+        }
 
         return postRepository.save(post);
     }

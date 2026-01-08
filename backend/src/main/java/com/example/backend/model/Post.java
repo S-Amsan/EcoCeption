@@ -65,6 +65,15 @@ public class Post {
     @Column(nullable = true)
     private Boolean validated = null;
 
+    @JsonIgnore
+    @Column(nullable = true)
+    private Objekt object;
+
+    @JsonProperty("object_id")
+    public Long getObjectId() {
+        return object != null ? object.getId() : null;
+    }
+
     public Post() {}
 
     public void like(User u) {
