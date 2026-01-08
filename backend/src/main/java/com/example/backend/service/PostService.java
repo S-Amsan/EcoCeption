@@ -5,6 +5,7 @@ import com.example.backend.model.User;
 import com.example.backend.model.http.req.PostPublishRequest;
 import com.example.backend.repository.PostRepository;
 import java.io.IOException;
+import java.util.Set;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -93,5 +94,31 @@ public class PostService {
 
     public ResponseEntity<Void> dislike(Long postId, User user) {
         return updateLikesDislikes(postId, user, post -> post.dislike(user));
+    }
+
+    public ResponseEntity<Boolean> isLikedBy(Long postId, User user) {
+        var maybePost = postRepository.findById(postId);
+
+        if (maybePost.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var post = maybePost.get();
+        return ResponseEntity.ok(hasReacted(user, post.getLikes()));
+    }
+
+    public ResponseEntity<Boolean> isDislikedBy(Long postId, User user) {
+        var maybePost = postRepository.findById(postId);
+
+        if (maybePost.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var post = maybePost.get();
+        return ResponseEntity.ok(hasReacted(user, post.getDislikes()));
+    }
+
+    private boolean hasReacted(User user, Set<User> reactions) {
+        return reactions.contains(user);
     }
 }

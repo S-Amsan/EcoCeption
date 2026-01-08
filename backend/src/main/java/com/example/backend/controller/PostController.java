@@ -48,11 +48,27 @@ public class PostController {
         return postService.like(postId, user.getUser());
     }
 
+    @GetMapping("/post/{postId}/liked")
+    public ResponseEntity<Boolean> isPostLiked(
+        @PathVariable Long postId,
+        @AuthenticationPrincipal MyUserDetails user
+    ) {
+        return postService.isLikedBy(postId, user.getUser());
+    }
+
     @PostMapping("/post/{postId}/dislike")
     public ResponseEntity<Void> dislikePost(
         @PathVariable Long postId,
         @AuthenticationPrincipal MyUserDetails user
     ) {
         return postService.dislike(postId, user.getUser());
+    }
+
+    @GetMapping("/post/{postId}/disliked")
+    public ResponseEntity<Boolean> isPostDisliked(
+        @PathVariable Long postId,
+        @AuthenticationPrincipal MyUserDetails user
+    ) {
+        return postService.isDislikedBy(postId, user.getUser());
     }
 }
