@@ -35,15 +35,15 @@ public class Objekt {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private User user;
+    private User publishedBy;
 
     @JsonProperty("user_id")
     public Long getUserId() {
-        return user != null ? user.getId() : null;
+        return publishedBy != null ? publishedBy.getId() : null;
     }
 
-    @Column(nullable = false)
-    private boolean pickedUp;
+    @Column(nullable = true)
+    private User pickedUpBy;
 
     @CreationTimestamp
     @Column(nullable = false)

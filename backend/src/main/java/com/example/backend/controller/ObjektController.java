@@ -45,7 +45,7 @@ public class ObjektController {
         object.setTitle(request.getTitle());
         object.setDescription(request.getDescription());
         object.setAddress(request.getAddress());
-        object.setPickedUp(false);
+        object.setPickedUpBy(null);
         object.setPhotoUrl(
             ImageUploadService.endpoint.toString() +
                 '/' +
