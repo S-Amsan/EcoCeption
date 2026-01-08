@@ -3,25 +3,31 @@ import {
     View,
     ScrollView,
     ActivityIndicator,
+    Pressable, Text, TouchableOpacity,Image,
 } from "react-native";
 
 import Header from "../../../components/Header";
-import PostCard from "./Post/PostCard";
-import style from "./styles/accueilStyle";
 import Navbar from "../../../components/Navbar";
+
+import PostCard from "./Post/PostCard";
+import ObjectCard from "../missions/_components/ObjectCard/ObjectCard";
 
 import SignalementReasons from "./Post/signalement/_components/SignalementReasons";
 import SignalementSuccess from "./Post/signalement/_components/SignalementSuccess";
 
-import { Pressable } from "react-native";
-import {fetchAllPosts} from "../../../services/posts.api";
-import {fetchUserById, fetchUsers} from "../../../services/user.api";
+import style from "./styles/accueilStyle";
+
+import { fetchAllPosts } from "../../../services/posts.api";
+import { getAllObjects } from "../../../services/objects.api";
 
 export default function AccueilWeb() {
-    const [user, setUser] = useState([]);
     const [posts, setPosts] = useState([]);
+    const [objects, setObjects] = useState([]);
     const [loading, setLoading] = useState(true);
+
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [selectedObjet, setSelectedObjet] = useState(null);
+
     const [showSignalement, setShowSignalement] = useState(false);
     const [signalementStep, setSignalementStep] = useState("reasons");
 
@@ -31,65 +37,111 @@ export default function AccueilWeb() {
         { id: "lieu", options: ["France", "Autre"], select: "France" },
     ]);
 
+    const [showObjectModal, setShowObjectModal] = useState(false);
+
+
+    /* ===========================
+       LOAD POSTS + OBJECTS
+    =========================== */
     useEffect(() => {
-        console.log("Recherche :", recherche);
-        console.log("Filtres :", filtres);
-    }, [recherche, filtres]);
+        const loadFeed = async () => {
+            try {
+                const [postsData, objectsData] = await Promise.all([
+                    fetchAllPosts(),
+                    getAllObjects(),
+                ]);
 
+                setPosts(Array.isArray(postsData) ? postsData : []);
+                setObjects(Array.isArray(objectsData) ? objectsData : []);
+            } catch (e) {
+                console.error("Erreur chargement feed", e);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        useEffect(() => {
-            const loadPosts = async () => {
-                try {
-                    const data = await fetchAllPosts();
-                    setPosts(data);
-                } catch (error) {
-                    console.error("Erreur chargement posts :", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
+        loadFeed();
+    }, []);
 
-            loadPosts();
-        }, []);
+    /* ===========================
+       FEED UNIFIÉ
+    =========================== */
+    const feed = [
+        ...posts.map(post => ({
+            type: "post",
+            id: `post-${post.id}`,
+            date: new Date(post.createdAt),
+            data: post,
+        })),
+        ...objects.map(object => ({
+            type: "object",
+            id: `object-${object.id}`,
+            date: new Date(object.creationDate),
+            data: object,
+        })),
+    ].sort((a, b) => b.date - a.date);
 
     return (
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
+            {/* ===== NAVBAR ===== */}
             <View style={{ width: "15%" }}>
                 <Navbar />
             </View>
 
+            {/* ===== MAIN CONTENT ===== */}
             <View style={{ flex: 1 }}>
-                <Header  recherche={recherche}
-                         setRecherche={setRecherche}
-                         filtres={filtres}
-                         setFiltres={setFiltres}
-                         userDetails userProfil />
+                <Header
+                    recherche={recherche}
+                    setRecherche={setRecherche}
+                    filtres={filtres}
+                    setFiltres={setFiltres}
+                    userDetails
+                    userProfil
+                />
 
                 <ScrollView>
-                    <View style={{ padding: 15 }}>
+                    <View style={{ padding: 15, alignItems: "center" }}>
                         {loading ? (
                             <ActivityIndicator size="large" color="#1DDE9A" />
                         ) : (
-                            <View style={{ alignItems: "center" }}>
+                            feed.map(item => {
+                                switch (item.type) {
+                                    case "post":
+                                        return (
+                                            <PostCard
+                                                key={item.id}
+                                                post={item.data}
+                                                styles={style}
+                                                onSignaler={() => {
+                                                    setSelectedPostId(item.data.id);
+                                                    setShowSignalement(true);
+                                                }}
+                                            />
+                                        );
 
-                                {posts.map((post) => (
-                                    <PostCard
-                                        key={post.id}
-                                        post={post}
-                                        styles={style}
-                                        onSignaler={() => {
-                                            setSelectedPostId(post.id);
-                                            setShowSignalement(true);
-                                        }}
-                                    />
-                                ))}
-                            </View>
+                                    case "object":
+                                        return (
+                                            <ObjectCard
+                                                key={item.id}
+                                                item={item.data}
+                                                onSeeObjet={(objet) => {
+                                                    setSelectedObjet(objet);
+                                                    setShowObjectModal(true);
+                                                }}
+                                            />
+
+                                        );
+
+                                    default:
+                                        return null;
+                                }
+                            })
                         )}
                     </View>
                 </ScrollView>
             </View>
 
-            {/* ===== MODAL SIGNALEMENT WEB ===== */}
+            {/* ===== MODAL SIGNALEMENT ===== */}
             {showSignalement && (
                 <Pressable
                     style={style.modalOverlay}
@@ -118,7 +170,58 @@ export default function AccueilWeb() {
                     </Pressable>
                 </Pressable>
             )}
+
+            {/* ===== MODAL OBJET ===== */}
+            {showObjectModal && selectedObjet && (
+                <Pressable
+                    style={style.modalOverlay}
+                    onPress={() => {
+                        setShowObjectModal(false);
+                        setSelectedObjet(null);
+                    }}
+                >
+                    <Pressable style={style.modalContent} onPress={() => {}}>
+                        <View style={{ padding: 20 }}>
+                            {/* eslint-disable-next-line react/jsx-no-undef */}
+                            <Image
+                                source={{ uri: selectedObjet.photoUrl }}
+                                style={{ width: "100%", height: 250, borderRadius: 12 }}
+                            />
+
+                            <Text style={{ fontSize: 22, fontWeight: "bold", marginTop: 12 }}>
+                                {selectedObjet.title}
+                            </Text>
+
+                            <Text style={{ marginTop: 6 }}>
+                                📍 {selectedObjet.address}
+                            </Text>
+
+                            <Text style={{ marginTop: 6, color: "#777" }}>
+                                {selectedObjet.description}
+                            </Text>
+
+                            <TouchableOpacity
+                                style={{
+                                    marginTop: 20,
+                                    backgroundColor: "#1DDE9A",
+                                    padding: 14,
+                                    borderRadius: 10,
+                                    alignItems: "center",
+                                }}
+                                onPress={() => {
+                                    setShowObjectModal(false);
+                                    setSelectedObjet(null);
+                                }}
+                            >
+                                <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                                    Fermer
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Pressable>
+                </Pressable>
+            )}
+
         </View>
     );
-
 }

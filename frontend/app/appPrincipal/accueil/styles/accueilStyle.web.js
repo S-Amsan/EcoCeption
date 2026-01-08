@@ -182,4 +182,13 @@ export default StyleSheet.create({
         borderRadius: 12,
         overflow: "hidden",
     },
+
+
+
+    modalClose: {
+        position: "absolute",
+        top: 12,
+        right: 12,
+        zIndex: 10,
+    },
 });
