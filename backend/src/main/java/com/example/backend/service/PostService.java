@@ -5,6 +5,7 @@ import com.example.backend.model.User;
 import com.example.backend.model.http.req.PostPublishRequest;
 import com.example.backend.repository.PostRepository;
 import java.io.IOException;
+import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,19 @@ public class PostService {
         }
     }
 
-    public ResponseEntity<Void> like(Long postId, User user) {
+    private void maybeValidatePost(Post post) {
+        if (post.getLikes().size() == 5) {
+            post.setValidated(true);
+        } else if (post.getDislikes().size() == 5) {
+            post.setValidated(false);
+        }
+    }
+
+    private ResponseEntity<Void> updateLikesDislikes(
+        Long postId,
+        User user,
+        Consumer<Post> f
+    ) {
         var maybePost = postRepository.findById(postId);
 
         if (maybePost.isEmpty()) {
@@ -65,26 +78,20 @@ public class PostService {
 
         var post = maybePost.get();
         incrementVotesIfNeededAndUpdateAction(post, user);
-        post.like(user);
+        f.accept(post);
+
+        maybeValidatePost(post);
 
         postRepository.save(post);
 
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<Void> like(Long postId, User user) {
+        return updateLikesDislikes(postId, user, post -> post.like(user));
+    }
+
     public ResponseEntity<Void> dislike(Long postId, User user) {
-        var maybePost = postRepository.findById(postId);
-
-        if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var post = maybePost.get();
-        incrementVotesIfNeededAndUpdateAction(post, user);
-        post.dislike(user);
-
-        postRepository.save(post);
-
-        return ResponseEntity.ok().build();
+        return updateLikesDislikes(postId, user, post -> post.dislike(user));
     }
 }

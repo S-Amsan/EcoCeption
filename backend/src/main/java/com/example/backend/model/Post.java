@@ -62,6 +62,9 @@ public class Post {
     )
     private Set<User> dislikes;
 
+    @Column(nullable = true)
+    private Boolean validated = null;
+
     public Post() {}
 
     public void like(User u) {
