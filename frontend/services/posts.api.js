@@ -82,8 +82,6 @@ export async function postPost(post) {
     }
 }
 
-
-
 export async function likePost(postId) {
     const token = await AsyncStorage.getItem('@auth_token');
 
@@ -104,4 +102,30 @@ export async function dislikePost(postId) {
             'Authorization': `Bearer ${token}`
         }
     });
+}
+
+export async function didILikePost(postId) {
+    const token = await AsyncStorage.getItem('@auth_token');
+
+    const response = await fetch(`${API_URL}/post/${postId}/liked`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const data = await response.text();
+    return Boolean(data);
+}
+
+export async function didIDislikePost(postId) {
+    const token = await AsyncStorage.getItem('@auth_token');
+
+    const response = await fetch(`${API_URL}/post/${postId}/disliked`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const data = await response.text();
+    return Boolean(data);
 }
