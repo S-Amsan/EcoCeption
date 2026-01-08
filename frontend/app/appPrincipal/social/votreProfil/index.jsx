@@ -1,5 +1,5 @@
 import {View, Image, Text, ScrollView, TouchableOpacity, FlatList, Pressable} from "react-native";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
@@ -20,25 +20,34 @@ import activite from "../../../../assets/icones/social/activite_exemple.png";
 import styles from "./styles/styles";
 import {getCurrentRank} from "../../../../constants/rank";
 import {formatNombreEspace} from "../../../../utils/format";
-import {useNavigation, useRouter} from "expo-router";
+import {useLocalSearchParams, useNavigation, useRouter} from "expo-router";
 import { fetchSuccess } from "../../../../services/competitions.api";
 import { getFriends } from "../../../../services/friends.api";
 import OverlaySombre from "../../../../components/OverlaySombre";
+import {loadUser} from "../../../../services/RegisterStorage";
+import {fetchUsers} from "../../../../services/user.api";
 
 const Profil = ({user_DATA, user_amis_DATA, router}) => {
     return (
         <View>
             <View style={styles.userWrapper}>
                 <View style={styles.userContainer}>
-                    <Image source={DEFAULT_PICTURE} style={styles.userPicture}/>
+                    <Image
+                        source={
+                            user_DATA?.photoProfileUrl
+                                ? { uri: user_DATA.photoProfileUrl }
+                                : DEFAULT_PICTURE
+                        }
+                        style={styles.userPicture}
+                    />
                     <Pressable style={styles.userFlammeContainer} onPress={() => router.push("./votreSerie")}>
-                        <Text style={styles.userFlammeText}>{user_DATA?.Flammes || 0}</Text>
+                        <Text style={styles.userFlammeText}>{user_DATA?.stats?.flames || 0}</Text>
                         <Image source={flamme} style={styles.flammeIcon}/>
                     </Pressable>
                 </View>
                 <View style={styles.userInfoContainer}>
-                    <Text style={styles.userPseudo}>{user_DATA?.Nom || "USER_NOM"}</Text>
-                    <Text style={styles.userNom}>@{user_DATA?.Pseudo || "USER_PSEUDO"}</Text>
+                    <Text style={styles.userPseudo}>{user_DATA?.name || "USER_NOM"}</Text>
+                    <Text style={styles.userNom}>@{user_DATA?.pseudo || "USER_PSEUDO"}</Text>
                     {isWeb &&
                         <View style={styles.userAmisContainer}>
                             <Text style={styles.userAmisNb}>{user_amis_DATA || 0}</Text>
@@ -72,42 +81,19 @@ const Profil = ({user_DATA, user_amis_DATA, router}) => {
 }
 
 const Cartes = ({user_DATA, router}) => {
-    const users_DATA = Array.from({ length: 150000 }, (_, index) => ({
-        Id: index + 1,
-        Nom: "",
-        Pseudo: "",
-        Photo_url: "",
-        Trophees: Math.floor(Math.random() * 100000),
-    }));//TODO récupérer les vrai données (de tout les utilisateur), Table User + User_Stats
 
-    const allUsers = [
-        ...users_DATA.filter(u => u.Id !== user_DATA.Id),
-        user_DATA,
-    ];
-
-    const usersSortedByRank = [...allUsers]
-        .sort((a, b) => b.Trophees - a.Trophees)
-        .map((u, i) => ({ ...u, Classement: i + 1 }));
-
-    const userClassement =
-        usersSortedByRank.findIndex(u => u.Id === user_DATA.Id) + 1;
-
-    const user_DATA_WITH_RANK = {
-        ...user_DATA,
-        Classement: userClassement,
-    };
-
-    const {rank : userRank} = getCurrentRank(user_DATA.Trophees)
+    const userTrophees = user_DATA?.stats?.trophies || 0
+    const {rank : userRank} = getCurrentRank(userTrophees)
 
     return (
-        <View style={styles.cartesContainer} >
+        <View style={styles.cartesContainer}>
             <TouchableOpacity
                 style={styles.carte}
                 onPress={() => router.push("./classement")}
             >
                 <Image source={trophee} style={styles.carteIcon}/>
                 <View>
-                    <Text style={styles.InfoText}>{formatNombreEspace(user_DATA.Trophees)}</Text>
+                    <Text style={styles.InfoText}>{formatNombreEspace(userTrophees)}</Text>
                     <Text style={styles.InfoTitre}>Trophée</Text>
                 </View>
             </TouchableOpacity>
@@ -130,7 +116,7 @@ const Cartes = ({user_DATA, router}) => {
             >
                 <Image source={hastag} style={styles.carteIcon}/>
                 <View>
-                    <Text style={styles.InfoText}>{formatNombreEspace(user_DATA_WITH_RANK.Classement)}</Text>
+                    <Text style={styles.InfoText}>{formatNombreEspace(user_DATA?.classement || -1)}</Text>
                     <Text style={styles.InfoTitre}>Classement global</Text>
                 </View>
             </TouchableOpacity>
@@ -157,11 +143,7 @@ const Realisations = ({succes_DATA}) => {
         {Nom : "Événements Hiver Durable ❄️", Img_url : badge},
     ]
     // Succes de l'utilisateur TODO récupere les succes de l'utilisateur connecte (table User_Succes, récuperer que les id des succes qu'il a), null si aucun
-    const user_succes_DATA = [
-        {id_succes : 1},
-        {id_succes : 2},
-        {id_succes : 5},
-    ]
+    const user_succes_DATA = null
 
 
     const userSucces = user_succes_DATA ? succes_DATA
@@ -311,16 +293,19 @@ const UserActivites = ({user_activite_DATA}) => {
 }
 
 export default function VotreProfil(){
-    const navigation = useNavigation();
     const router = useRouter();
 
     const onglets = [
         {id: "profil",label : "Votre profil", page : "social/votreProfil"},
         {id: "flamme",label : "Votre Série", page : "social/votreSerie"},
     ];
+
     const [ongletActifId, setOngletActif] = React.useState("profil");
     const [succes_DATA, setSuccesData] = React.useState([]);
-    const [user_amis_DATA, setUserAmisData] = React.useState(0);
+    const [user_amis_DATA, setUserAmisData] = React.useState(null);
+    const [user_DATA, setUserDATA] = useState(null);
+    const [users_DATA, setUsersDATA] = React.useState(null);
+
 
     useEffect(()=> {
         if(ongletActifId === "flamme"){
@@ -328,22 +313,37 @@ export default function VotreProfil(){
         }
         fetchSuccess().then(setSuccesData);
         getFriends().then((friends) => setUserAmisData(friends.length));
+
+        loadUser().then(setUserDATA)
+        fetchUsers().then(setUsersDATA);
+
     },[ongletActifId])
 
-    const user_DATA = {
-        Id : 35,
-        Nom : null,
-        Pseudo : null,
-        Photo_url : null,
-        Trophees : Math.floor(Math.random() * 100000),
-        Flammes : Math.floor(Math.random() * 100),
-    };//TODO récupérer les vrai données (de l'utilisateur), Table User + User_Stats
+    React.useEffect(() => {
+        if (!users_DATA || !user_DATA) return;
 
-    if (!user_DATA) {
-        navigation.goBack();
-        return null;
-    }
+        const normalizedUsers = users_DATA.map(user => ({
+            ...user,
+            stats: user.stats || {
+                trophies: 0,
+                flames: 0,
+                points: 0,
+                userId: user.id
+            }
+        }));
 
+        const usersSortedByRank = [...normalizedUsers]
+            .sort((a, b) => b.stats.trophies - a.stats.trophies)
+            .map((u, i) => ({ ...u, classement: i + 1 }));
+
+        const userClassement = usersSortedByRank.findIndex(u => u.Id === user_DATA.Id) + 1;
+
+        setUserDATA((prev) => {
+            if (!prev) return prev;
+            return { ...prev, classement: userClassement };
+        });
+
+    }, [users_DATA,user_DATA?.id])
 
     // les stats de l'utilisateur TODO récupere les statistiques de l'utilisateur connecte
     const user_statistique_DATA = {
@@ -358,6 +358,8 @@ export default function VotreProfil(){
         {Description : "A recyclé une bouteille plastique", Img_url : activite},
         {Description : "A recyclé une bouteille plastique", Img_url : activite},
     ]
+
+    if (!user_DATA) return null;
 
     return(
 
@@ -376,7 +378,14 @@ export default function VotreProfil(){
                             <Header onglets={onglets} ongletActifId={ongletActifId} setOngletActif={setOngletActif}/>
 
                             <View style={{flex : 1}}>
-                                <Image source={DEFAULT_BANNER} style={styles.banner} />
+                                <Image
+                                    source={
+                                        user_DATA?.profileBannerUrl
+                                            ? { uri: user_DATA.profileBannerUrl }
+                                            : DEFAULT_BANNER
+                                    }
+                                    style={styles.banner}
+                                />
                                 <View style={{paddingLeft : "7.5%", paddingRight : "2.5%",flex : 1}}>
                                     <Profil user_DATA={user_DATA} user_amis_DATA={user_amis_DATA} router={router}/>
                                     <View style={{flex : 1, flexDirection: "row", marginTop : 200,}}>

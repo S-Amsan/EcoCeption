@@ -13,6 +13,8 @@ export default StyleSheet.create({
     },
     flammeAmisContainer : {
         width: "50%",
+        justifyContent: "center",
+        alignItems: "center",
     },
     flammesCompteurContainer : {
         marginTop : 20,
@@ -97,5 +99,63 @@ export default StyleSheet.create({
         color : "#5D5D5D",
         textAlign: "center",
         fontWeight : "bold",
+    },
+    classementAmisContainer : {
+        borderRadius : 20,
+        boxShadow : "0px 4px 10px rgba(0, 0, 0, 0.25)",
+        height : "80%",
+        width : "60%",
+        paddingVertical : 15,
+        paddingHorizontal : 20,
+    },
+    classementTitre : {
+        fontSize : 35,
+        fontWeight : "500",
+    },
+    carteList : {
+        marginTop : 30,
+    },
+    cartesContainer : {
+        gap : 15,
+        marginHorizontal : 30,
+    },
+    carteContainer : {
+        width : "100%",
+        flexDirection : "row",
+        gap : 20,
+        alignItems : "center",
+        padding : 5,
+    },
+    carteUser : {
+        borderRadius : 20,
+        borderWidth : 3,
+        borderColor : "#FE7008",
+        backgroundColor : "#f8eddf",
+    },
+    carteImage : {
+        width : 60,
+        height : 60,
+        borderRadius : 60,
+        borderWidth : 3,
+        borderColor : "#FD7007",
+    },
+    carteNom : {
+        fontSize : 15,
+        fontWeight : "bold",
+    },
+    carteFlamme : {
+        position : "absolute",
+        right : 20,
+        flexDirection : "row",
+        gap : 5,
+    },
+    carteFlammeImage : {
+        width: 22,
+        height: 22
+    },
+    carteFlammeText : {
+        fontSize : 17,
+        fontWeight : "bold",
+        color : "#FF421D"
     },
 });

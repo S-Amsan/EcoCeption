@@ -1,4 +1,4 @@
-import {View, Image, Text, TouchableOpacity, Pressable, ImageBackground} from "react-native";
+import {View, Image, Text, TouchableOpacity, Pressable, ImageBackground, FlatList} from "react-native";
 import React, {useEffect, useState} from "react";
 
 import Navbar from "../../../../components/Navbar";
@@ -10,6 +10,7 @@ import styles from "./styles/styles";
 import {useRouter} from "expo-router";
 
 import flamme from "../../../../assets/icones/social/flamme.png"
+import flammeIcon from "../../../../assets/icones/flamme.png"
 import flammePerdue from "../../../../assets/icones/social/flammePerdue.png"
 import flammeFond from "../../../../assets/icones/social/flammeFond.png"
 import {NombreFlammesImage} from "../../../../utils/flamme";
@@ -17,6 +18,9 @@ import Calendrier from "../_components/Calendrier";
 import PopUp from "../../../../components/PopUp";
 import {Ionicons} from "@expo/vector-icons";
 import {loadUser} from "../../../../services/RegisterStorage";
+import {fetchUsers} from "../../../../services/user.api";
+import {getFriends} from "../../../../services/friends.api";
+import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 
 const RestaurerPopUp = ({setVisible, flammes = 0}) => {
     const [confirmation, setConfirmation] = useState(false);
@@ -58,7 +62,7 @@ const RestaurerPopUp = ({setVisible, flammes = 0}) => {
     );
 }
 
-const FlammeContenu = ({restaurerFlammes, setRestaurerFlammes, flammes, flammesPerdueRecuperable, periodeEnCours, user_DATA}) => {
+const FlammeContenu = ({restaurerFlammes, setRestaurerFlammes, flammes, flammesPerdueRecuperable, periodeEnCours, derniereAction}) => {
     return (
         <View style={styles.flammeContainer}>
             <PopUp visible={restaurerFlammes} setVisible={setRestaurerFlammes}>
@@ -69,7 +73,7 @@ const FlammeContenu = ({restaurerFlammes, setRestaurerFlammes, flammes, flammesP
                     <View style={{alignItems: "center"}}>
                         <Image source={(flammesPerdueRecuperable || !periodeEnCours) ? flammePerdue : flamme} style={styles.flammeImage}/>
                         <View style={{position: "absolute", bottom : 15 , alignItems: "center", justifyContent: "center"}}>
-                            <NombreFlammesImage n={periodeEnCours ? user_DATA.flammes : 0} versionSombre={flammesPerdueRecuperable || !periodeEnCours}/>
+                            <NombreFlammesImage n={periodeEnCours ? flammes : 0} versionSombre={flammesPerdueRecuperable || !periodeEnCours}/>
                         </View>
                     </View>
                     {flammesPerdueRecuperable &&
@@ -79,17 +83,56 @@ const FlammeContenu = ({restaurerFlammes, setRestaurerFlammes, flammes, flammesP
                     }
                 </View>
                 <View style={styles.calendrierContainer}>
-                    <Calendrier flammes={flammes} dernierAction={user_DATA.date_derniere_action} periodeEnCours={periodeEnCours}/>
+                    <Calendrier flammes={flammes} dernierAction={derniereAction} periodeEnCours={periodeEnCours}/>
                 </View>
             </View>
         </View>
     )
 }
 
-const FlammeAmisContenu = () => {
+const FlammeAmisContenu = ({user_amis_DATA, user_DATA}) => {
+    if (!user_amis_DATA || !user_DATA) return null;
+
+    const trieParFlamesDesc = [...user_amis_DATA].sort((a, b) => {
+        const flamesA = a?.stats?.flames ?? 0;
+        const flamesB = b?.stats?.flames ?? 0;
+        return flamesB - flamesA;
+    });
+
     return (
         <View style={styles.flammeAmisContainer}>
+            <View style={styles.classementAmisContainer}>
+                <Text  style={styles.classementTitre}>Classement Amis</Text>
+                <FlatList
+                    data={trieParFlamesDesc}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item }) => (<Carte user_DATA={item} userActuel={item?.id === user_DATA?.id}/>)}
+                    contentContainerStyle={styles.cartesContainer}
+                    style={styles.carteList}
+                />
+            </View>
+        </View>
+    )
+}
 
+const Carte = ({ user_DATA, userActuel=false}) => {
+    if (!user_DATA) return null;
+
+    return (
+        <View style={[styles.carteContainer, userActuel && styles.carteUser]}>
+            <Image
+                source={
+                    user_DATA?.photoProfileUrl
+                        ? { uri: user_DATA.photoProfileUrl }
+                        : DEFAULT_PICTURE
+                }
+                style={styles.carteImage}
+            />
+            <Text style={styles.carteNom}>{user_DATA?.name} {userActuel && "(Vous)"}</Text>
+            <View style={styles.carteFlamme}>
+                <Text style={styles.carteFlammeText}>{user_DATA?.stats?.flames || 0}</Text>
+                <Image source={flammeIcon} style={styles.carteFlammeImage}/>
+            </View>
         </View>
     )
 }
@@ -109,24 +152,39 @@ export default function VotreSerie(){
     },[ongletActifId])
 
     const [user_DATA, setUserDATA] = useState(null);
+    const [derniereAction, setDerniereAction] = useState(null);
+    const [flammes, setFlammes] = useState(null)
+    const [user_amis_DATA, setUserAmisData] = React.useState(null);
 
     React.useEffect(() => {
         loadUser().then(setUserDATA)
+        if (isWeb){
+            fetchUsers().then(setUserAmisData);
+            //getFriends().then((friends) => setUserAmisData(friends));
+        }
     }, []);
 
 
-    const user_Stats = user_DATA?.stats || {}
+    React.useEffect(() => {
 
-    const dernierAction = user_Stats?.date_derniere_action || null
-    const flammes = user_Stats?.flames || 0
+        setFlammes(user_DATA?.stats?.flames || 0)
+
+        const lastActionDate = user_DATA?.stats?.lastActionDate;
+        if (!lastActionDate) return;
+
+        setDerniereAction(new Date(lastActionDate).getTime());
+
+    }, [user_DATA?.stats]);
+
 
     const periodeEnCours = (() => {
-        if (!dernierAction) return false;
+        if (!derniereAction) return false;
 
         const JOUR = 24 * 60 * 60 * 1000;
 
+
         const diffJours = Math.floor(
-            (Date.now() - dernierAction) / JOUR
+            (Date.now() - derniereAction) / JOUR
         );
         if (flammes <= 1 && diffJours <= 1) return true;
 
@@ -135,13 +193,13 @@ export default function VotreSerie(){
     })();
 
     const flammesPerdueRecuperable = (() => { // Les flammes sont récupérable si il n'a rater que 1 jour, donc si la derniere action date d'il y'a - de 3 jours
-        if (!user_Stats.date_derniere_action) return false;
+        if (!derniereAction) return false;
         if (!periodeEnCours) return false;
 
         const JOUR = 24 * 60 * 60 * 1000;
 
         const diffJours = Math.floor(
-            (Date.now() - user_Stats.date_derniere_action) / JOUR
+            (Date.now() - derniereAction) / JOUR
         );
 
         // TRUE uniquement si dernière action = avant-hier
@@ -173,23 +231,23 @@ export default function VotreSerie(){
                         isWeb ?
                             <View style={{flexDirection: "row", flex: 1}}>
                                 <FlammeContenu
-                                    restaurerFlammes={restaurerFlammes}
-                                    setRestaurerFlammes={setRestaurerFlammes}
+                                    periodeEnCours={periodeEnCours}
+                                    derniereAction={derniereAction}
                                     flammes={flammes}
                                     flammesPerdueRecuperable={flammesPerdueRecuperable}
-                                    periodeEnCours={periodeEnCours}
-                                    user_DATA={user_Stats}
+                                    restaurerFlammes={restaurerFlammes}
+                                    setRestaurerFlammes={setRestaurerFlammes}
                                 />
-                                <FlammeAmisContenu/>
+                                <FlammeAmisContenu user_amis_DATA={user_amis_DATA} user_DATA={user_DATA}/>
                             </View>
                         :
                         <FlammeContenu
-                            restaurerFlammes={restaurerFlammes}
-                            setRestaurerFlammes={setRestaurerFlammes}
+                            periodeEnCours={periodeEnCours}
+                            derniereAction={derniereAction}
                             flammes={flammes}
                             flammesPerdueRecuperable={flammesPerdueRecuperable}
-                            periodeEnCours={periodeEnCours}
-                            user_DATA={user_Stats}
+                            restaurerFlammes={restaurerFlammes}
+                            setRestaurerFlammes={setRestaurerFlammes}
                         />
                     }
                 </View>

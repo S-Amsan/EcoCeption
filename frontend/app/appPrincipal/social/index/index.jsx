@@ -29,7 +29,7 @@ import {
 } from "../../../../services/user.api";
 
 import styles from "./styles/styles";
-import {fetchFollowingEvents, fetchLatestEvent} from "../../../../services/events.api";
+import {fetchLatestEvent} from "../../../../services/events.api";
 
 const VoirPlusWeb = () => {
     if (isWeb) {
@@ -56,7 +56,14 @@ const ProfilCarte = ({onPress, user_DATA}) => {
     return (
         <Pressable style={styles.userCarteContainer} onPress={onPress}>
             <View style={styles.userInfoContainer}>
-                <Image source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} style={styles.userCartePhoto}/>
+                <Image
+                    source={
+                        user_DATA?.photoProfileUrl
+                            ? { uri: user_DATA.photoProfileUrl }
+                            : DEFAULT_PICTURE
+                    }
+                    style={styles.userCartePhoto}
+                />
                 <View style={styles.userNameContainer}>
                     <Text style={styles.userCarteNom}>{user_DATA?.name || "USER_NOM"}</Text>
                     <Text style={styles.userCartePseudo}>@{user_DATA?.pseudo || "USER_PSEUDO"}</Text>
@@ -312,7 +319,11 @@ const Place = ({user_DATA}) => {
     return (
         <View style={styles.placeContainer}>
             <Image
-                source={user_DATA?.photoProfileUrl || DEFAULT_PICTURE} // Si pas de photo alors celle par default
+                source={
+                    user_DATA?.photoProfileUrl
+                        ? { uri: user_DATA.photoProfileUrl }
+                        : DEFAULT_PICTURE
+                }
                 style={[styles.placePicture,style.picture]}
             />
             <View style={[styles.place, style.place]}>
@@ -402,7 +413,7 @@ export default function Social(){
                     <Navbar/>
             }
             <View style={{ flex: 1}}>
-                <Header boutonNotification={true} userDetails={true} userProfil={true}/>
+                <Header boutonNotification={true} userDetails={true} userProfil={true} user={user_DATA}/>
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {!isWeb &&

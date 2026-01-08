@@ -17,7 +17,7 @@ import DEFAULT_PICTURE from "../assets/icones/default_picture.jpg";
 import {formatNombreCourt} from "../utils/format";
 import {isWeb} from "../utils/platform";
 
-import { fetchUsers, fetchUserStats } from "../services/user.api";
+import { fetchUserStats } from "../services/user.api";
 
 export default function Header({
        recherche, setRecherche,  //Barre de recherche (web)
