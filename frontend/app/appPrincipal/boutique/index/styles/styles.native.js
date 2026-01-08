@@ -18,10 +18,8 @@ export default StyleSheet.create({
     },
     page: {
         backgroundColor: "#FFFFFF",
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        padding: 16,
-        marginTop: 10,
+        paddingLeft: 16,
+        paddingRight: 16,
         marginLeft: 0,
         marginRight: 0,
     },

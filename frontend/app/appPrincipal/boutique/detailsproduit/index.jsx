@@ -7,7 +7,7 @@ import { usePanier } from "../../../../context/PanierContext.js";
 
 import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
-import HeaderBoutique from "../../../../components/boutique/headerBoutique";
+import HeaderBoutique from "../../../../components/boutique/headerBoutique/headerBoutique";
 
 import point from "../../../../assets/icones/point.png";
 import partage from "../../../../assets/icones/boutique/partage.png";
