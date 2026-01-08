@@ -36,41 +36,44 @@ export default function ObjectCard({ item, onSeeObjet }) {
 
             {/* CONTENU */}
             <View style={styles.content}>
-                <View style={styles.content1}>
+                {/* TITRE + ADRESSE */}
+                <View style={styles.topRow}>
                     <Text style={styles.title}>{item.title}</Text>
                     <Text style={styles.address}>📍 {item.address}</Text>
                 </View>
 
-                {/* USER */}
-                <View style={styles.content1}>
+                {/* USER + DATE */}
+                <View style={styles.userRow}>
                     {avatar && (
                         <Image source={{ uri: avatar }} style={styles.avatar} />
                     )}
-                    <View style={styles.content}>
-                        <View style={styles.content1}>
+
+                    <View>
                         {pseudo && (
                             <Text style={styles.name}>@{pseudo}</Text>
                         )}
                         <Text style={styles.meta}>
-                            {"•"} {formatRelativeTime(item.creationDate)}
+                            • {formatRelativeTime(item.creationDate)}
                         </Text>
-                        </View>
-
-                    {item.description && (
-                        <Text style={styles.describe}>{item.description}</Text>
-                    )}
                     </View>
-
                 </View>
-                <View style={{alignItems:"flex-end"}}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => onSeeObjet?.(item)}
-                >
-                    <Text style={styles.buttonText}>Voir l’objet</Text>
-                </TouchableOpacity>
+
+                {/* DESCRIPTION */}
+                {item.description && (
+                    <Text style={styles.describe}>{item.description}</Text>
+                )}
+
+                {/* ACTION */}
+                <View style={styles.actionRow}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => onSeeObjet?.(item)}
+                    >
+                        <Text style={styles.buttonText}>Voir l’objet</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
+
         </View>
     );
 }

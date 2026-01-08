@@ -1,115 +1,136 @@
-import { StyleSheet } from "react-native";
-import { Platform } from "react-native";
-
+import { StyleSheet, Platform } from "react-native";
 
 export default StyleSheet.create({
-
+    /* ===== PAGE ===== */
     page: {
         flex: 1,
         flexDirection: "row",
+        backgroundColor: "#f5f5f5",
     },
 
     left: {
         padding: 30,
-        alignItems:'center',
+        alignItems: "center",
+        width: "100%",
     },
 
+    /* ===== HEADER ===== */
     header: {
         backgroundColor: "#45E2B2",
-        padding: 16,
-        borderRadius: 5,
-        marginBottom: 16,
-        width:920,
-        height:110,
-        justifyContent:'center',
+        padding: 20,
+        borderRadius: 10,
+        marginBottom: 20,
+        width: 920,
+        justifyContent: "center",
     },
 
     headerTitle: {
         textAlign: "center",
         color: "#fff",
-        fontSize: 16,
-        fontWeight: "600",
+        fontSize: 20,
+        fontWeight: "700",
     },
 
+    /* ===== CARD ===== */
     card: {
         flexDirection: "row",
         backgroundColor: "#fff",
-        borderRadius: 16,
-        padding: 12,
-        width:"80%",
-        elevation: 4,
-        marginBottom: 16,
+        borderRadius: 18,
+        padding: 20,
+        width: "80%",
+        marginBottom: 20,
+
         shadowColor: "#000",
         shadowOpacity: 0.08,
-        shadowRadius: 10,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4,
     },
 
-    content: {
-        width:"65%",
-        flexDirection:'column',
-        padding:12,
-    },
-
-    content1: {
-        flexDirection:'row',
-        width:"100%",
-    },
-
+    /* ===== IMAGE OBJET ===== */
     image: {
-        width: "35%",
-        height: "100%",
-        borderRadius: 16,
+        width: "30%",
+        height: 220,
+        borderRadius: 14,
+        backgroundColor: "#eee",
     },
 
-    avatar: {
-        width: 80,
-        height: 80,
-        borderRadius: 21,
+    /* ===== CONTENT ===== */
+    content: {
+        flex: 1,
+        padding: 16,
     },
 
-    name:{
-        fontSize: 20,
-        marginLeft:10,
+    topRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginBottom: 12,
+    },
+
+    userRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 12,
+    },
+
+    actionRow: {
+        marginTop: 16,
+        alignItems: "flex-end",
+    },
+
+
+    userInfo: {
+        marginLeft: 10,
     },
 
     title: {
-        fontSize: 32,
+        fontSize: 26,
+        fontWeight: "600",
+        color: "#111",
     },
 
     address: {
+        fontSize: 14,
         color: "#666",
-        fontSize: 16,
-        padding:15
+        marginVertical:10,
+    },
+
+    avatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+
+    name: {
+        fontSize: 20,
+        fontWeight: "500",
     },
 
     meta: {
-        marginVertical:4,
-        color: "#999",
         fontSize: 14,
-        marginLeft:16,
+        color: "#999",
+        marginTop: 2,
     },
 
-    describe:{
-        fontSize:16,
-        marginVertical:20,
-        marginLeft:35,
+    describe: {
+        marginTop: 16,
+        fontSize: 16,
+        color: "#333",
+        lineHeight: 22,
     },
-
     button: {
         backgroundColor: "#3EDFA4",
-        paddingHorizontal: 14,
-        paddingVertical: 6,
-        borderRadius: 8,
-        width:250,
-        height:40,
-        justifyContent:'center',
+        paddingHorizontal: 24,
+        paddingVertical: 10,
+        borderRadius: 12,
+        minWidth: 250,
     },
 
     buttonText: {
         color: "#fff",
         fontWeight: "600",
-        fontSize: 14,
-        textAlign:'center'
+        textAlign: "center",
     },
 
 });
