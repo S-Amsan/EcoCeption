@@ -55,11 +55,4 @@ public class UserStats {
     public UserStats(User user) {
         this.user = user;
     }
-
-    public UserStats(User user, int points, int trophies, int flames) {
-        this.user = user;
-        this.points = points;
-        this.trophies = trophies;
-        this.flames = flames;
-    }
 }

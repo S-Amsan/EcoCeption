@@ -7,6 +7,7 @@ import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.NotificationRepository;
+import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
 import com.example.backend.repository.competition.CompetitionRepository;
@@ -51,6 +52,9 @@ public class UserController {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
     @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -82,14 +86,25 @@ public class UserController {
     public ResponseEntity<UserStatsResponse> getMyStats(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        Long userId = userDetails.getUser().getId();
+        User user = userDetails.getUser();
         Optional<UserStats> maybeStats = userStatsRepository.findByUserId(
-            userId
+            user.getId()
         );
 
-        return ResponseEntity.ok(
-            new UserStatsResponse(maybeStats.orElse(null))
-        );
+        if (maybeStats.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UserStats stats = maybeStats.get();
+
+        UserStatsResponse response = UserStatsResponse.builder()
+            .points(stats.getPoints())
+            .trophies(stats.getTrophies())
+            .flames(stats.getFlames())
+            .ecoActions(postRepository.countByUserAndValidatedTrue(user))
+            .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/notifications")
