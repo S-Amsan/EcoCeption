@@ -56,14 +56,21 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    private void incrementVotesIfNeededAndUpdateAction(Post post, User user) {
+    private void onPostReaction(Post post, User user, ReactionType type) {
         if (
             !post.getLikes().contains(user) &&
             !post.getDislikes().contains(user)
         ) {
-            user.setVotes(user.getVotes() + 1);
+            switch (type) {
+                case LIKE:
+                    post.getLikes().add(user);
+                    break;
+                case DISLIKE:
+                    post.getDislikes().add(user);
+                    break;
+            }
 
-            actionService.onPostLike(user);
+            actionService.onPostReaction(post);
         }
     }
 
@@ -75,10 +82,11 @@ public class PostService {
         }
     }
 
-    private ResponseEntity<Void> updateLikesDislikes(
+    private ResponseEntity<Void> updatePostReactions(
         Long postId,
         User user,
-        Consumer<Post> f
+        Consumer<Post> f,
+        ReactionType type
     ) {
         var maybePost = postRepository.findById(postId);
 
@@ -87,7 +95,7 @@ public class PostService {
         }
 
         var post = maybePost.get();
-        incrementVotesIfNeededAndUpdateAction(post, user);
+        onPostReaction(post, user, type);
         f.accept(post);
 
         maybeValidatePost(post);
@@ -98,11 +106,21 @@ public class PostService {
     }
 
     public ResponseEntity<Void> like(Long postId, User user) {
-        return updateLikesDislikes(postId, user, post -> post.like(user));
+        return updatePostReactions(
+            postId,
+            user,
+            post -> post.like(user),
+            ReactionType.LIKE
+        );
     }
 
     public ResponseEntity<Void> dislike(Long postId, User user) {
-        return updateLikesDislikes(postId, user, post -> post.dislike(user));
+        return updatePostReactions(
+            postId,
+            user,
+            post -> post.dislike(user),
+            ReactionType.DISLIKE
+        );
     }
 
     public ResponseEntity<Boolean> isLikedBy(Long postId, User user) {
@@ -129,5 +147,10 @@ public class PostService {
 
     private boolean hasReacted(User user, Set<User> reactions) {
         return reactions.contains(user);
+    }
+
+    private enum ReactionType {
+        LIKE,
+        DISLIKE,
     }
 }

@@ -48,4 +48,8 @@ public class RewardService {
         stats.setTrophies(stats.getTrophies() + diff);
         statsRepository.save(stats);
     }
+
+    public void on5Likes(User user) {
+        incrementUserPoints(user, 250);
+    }
 }

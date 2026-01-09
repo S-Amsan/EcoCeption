@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Post;
 import com.example.backend.model.User;
 import com.example.backend.model.UserStats;
 import com.example.backend.model.action.Action;
@@ -25,18 +26,18 @@ public class ActionService {
     @Autowired
     private RewardService rewardService;
 
-    public void onPostLike(User user) {
-        if (user.getVotes() == 5) {
-            user.setVotes(0);
+    public void onPostReaction(Post post) {
+        if (post.getLikes().size() == 5) {
             ActionType actionType = actionTypeRepository
                 .findById(ActionTypes.VOTE_5_POSTS.getId())
                 .get();
 
-            updateActions(user, actionType);
+            rewardService.on5Likes(post.getUser());
+            giveActionTo(post.getUser(), actionType);
         }
     }
 
-    private void updateActions(User user, ActionType actionType) {
+    private void giveActionTo(User user, ActionType actionType) {
         Action action = new Action();
 
         action.setUser(user);

@@ -58,9 +58,6 @@ public class User {
     @EqualsAndHashCode.Exclude
     private Set<CompetitionParticipant> competitions;
 
-    @Column
-    private Integer votes = 0;
-
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @ToString.Exclude
