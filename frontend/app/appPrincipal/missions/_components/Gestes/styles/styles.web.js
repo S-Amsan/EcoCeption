@@ -107,6 +107,7 @@ export default StyleSheet.create({
         fontWeight: "700",
     },
 
+
     webButtonPending: {
         backgroundColor: "#4DA6FF",
         cursor: "not-allowed",

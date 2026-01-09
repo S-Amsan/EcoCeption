@@ -34,63 +34,75 @@ export default StyleSheet.create({
     card: {
         flexDirection: "row",
         backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 12,
-        alignItems: "center",
+        borderRadius: 8,
+        marginHorizontal: 12,
+        marginBottom: 16,
+
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 3 },
+        elevation: 3,
         width:920,
-
     },
 
-    content: {
+    body: {
         flex: 1,
-        flexDirection:'column',
-        marginLeft: 12,
-
+        marginLeft: 15,
     },
 
-    content1: {
-        flex: 1,
-        flexDirection:'row',
-        marginVertical:10,
+    topRow: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
+    title: {
+        fontSize: 30,
+        fontWeight: "700",
+        color: "#111",
+        paddingRight:6,
     },
 
     image: {
-        width: 180,
+        width: 200,
         height: 130,
         borderRadius: 8,
     },
 
     avatar: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
+        width: 45,
+        height: 45,
+        borderRadius: 25,
         backgroundColor: "#eee",
     },
 
+    distance: {
+        fontSize: 14,
+        color: "#999",
+        fontWeight: "500",
 
-    title: {
-        fontSize: 15,
-        fontWeight: "600",
     },
 
     address: {
-        color: "#666",
-        marginLeft:12,
-        fontSize: 13,
+        fontSize: 16,
+        color: "#333",
+        marginTop: 10,
 
     },
 
-    meta: {
-        color: "#999",
-        fontSize: 12,
-
+    userRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 4,
+        gap: 6 ,
     },
 
-    describe:{
-        fontSize:12,
-        marginVertical:10,
+    userText: {
+        fontSize: 16,
+        fontWeight: "500",
+        color: "#111",
     },
+
 
     right: {
         alignItems: "flex-end",
@@ -99,14 +111,9 @@ export default StyleSheet.create({
         padding:20,
     },
 
-    distance: {
-        color: "#666",
-        fontSize: 12,
-    },
-
     button: {
         backgroundColor: "#3EDFA4",
-        marginVertical:20,
+        marginVertical:30,
         paddingHorizontal: 14,
         paddingVertical: 6,
         borderRadius: 8,

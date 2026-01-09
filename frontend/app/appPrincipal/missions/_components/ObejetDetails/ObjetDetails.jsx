@@ -45,7 +45,7 @@ export default function MissionDetail({ objet, onRecupObjet, onSignal, onBack })
 
             {/* META */}
             <Text style={styles.meta}>
-                Posté par <Text style={styles.author}>{pseudo}</Text>, le {formatRelativeTime(objet.creationDate)}
+                Posté par <Text style={styles.author}>{pseudo}</Text>, {formatRelativeTime(objet.creationDate)}
             </Text>
 
             {/* DESCRIPTION */}

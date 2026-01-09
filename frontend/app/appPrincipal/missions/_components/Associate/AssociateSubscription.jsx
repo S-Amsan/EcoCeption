@@ -211,21 +211,25 @@ export default function AssociateSubscription({ onBack, card }) {
                     onPress={() => setShowUploadMenu(false)}
                 >
                     <Pressable style={styles.menuContainer} onPress={() => {}}>
+
+                        {/* 📷 Camera */}
                         <TouchableOpacity
                             style={styles.menuRow}
                             onPress={async () => {
                                 setShowUploadMenu(false);
                                 await takePhoto();
                             }}
-
                         >
-                            <Image style={styles.menuIcon}
-                                   source={require("../../../../../assets/icones/missions/camera.png")}/>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require("../../../../../assets/icones/missions/camera.png")}
+                            />
                             <Text style={styles.menuText}>Prendre une photo</Text>
                         </TouchableOpacity>
 
                         <View style={styles.menuSeparator} />
 
+                        {/* 🖼️ Galerie */}
                         <TouchableOpacity
                             style={styles.menuRow}
                             onPress={async () => {
@@ -233,13 +237,34 @@ export default function AssociateSubscription({ onBack, card }) {
                                 await pickImageFromGallery();
                             }}
                         >
-                            <Image style={styles.menuIcon}
-                                   source={require("../../../../../assets/icones/missions/picture.png")}/>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require("../../../../../assets/icones/missions/picture.png")}
+                            />
                             <Text style={styles.menuText}>Importer une photo</Text>
                         </TouchableOpacity>
+
+                        <View style={styles.menuSeparator} />
+
+                        {/* 📄 Document PDF */}
+                        <TouchableOpacity
+                            style={styles.menuRow}
+                            onPress={async () => {
+                                setShowUploadMenu(false);
+                                await pickDocument();
+                            }}
+                        >
+                            <Image
+                                style={styles.menuIcon}
+                                source={require("../../../../../assets/icones/missions/document.png")}
+                            />
+                            <Text style={styles.menuText}>Importer un document</Text>
+                        </TouchableOpacity>
+
                     </Pressable>
                 </Pressable>
             )}
+
 
         </ScrollView>
 

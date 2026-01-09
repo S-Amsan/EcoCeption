@@ -85,10 +85,12 @@ export default function MissionsMobile() {
             }
 
             if (page === "associate") {
+                setSelectedCard(null);
                 setPage("listes");
                 setOngletActifId("gestes");
                 return;
             }
+
 
             if (page === "postObjet") {
                 setPage("listes");
@@ -109,6 +111,8 @@ export default function MissionsMobile() {
             setPage("post");
         }
     }, [pageFromScan]);
+
+    const [selectedCard, setSelectedCard] = useState(null);
 
 
     return (
@@ -169,13 +173,23 @@ export default function MissionsMobile() {
 
             {/* GESTES */}
             {page === "listes" && ongletActifId === "gestes" && (
-                <Gestes onAssociate={() => setPage("associate")} />
+                <Gestes
+                    onAssociate={(card) => {
+                        setSelectedCard(card);
+                        setPage("associate");
+                    }}
+                />
+
             )}
 
             {/* ASSOCIATE */}
-            {page === "associate" && (
-                <AssociateSubscription onBack={handleBack} />
+            {page === "associate" && selectedCard && (
+                <AssociateSubscription
+                    card={selectedCard}
+                    onBack={handleBack}
+                />
             )}
+
 
             {/* POST OBJET */}
             {page === "postObjet" && (

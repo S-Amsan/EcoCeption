@@ -50,29 +50,35 @@ export default StyleSheet.create({
 
     /* ================= BUTTON ================= */
 
-    button: {
-        alignSelf: "flex-start",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 12,
+    ActionButton: {
+        backgroundColor: "#06DA95",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        minHeight: 32,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
-    buttonStart: {
-        backgroundColor: "#06DA95",
+    webActionText: {
+        color: "#FFFFFF",
+        fontSize: 14,
+        fontWeight: "700",
     },
 
     buttonPending: {
         backgroundColor: "#4DA6FF",
+        cursor: "not-allowed",
     },
 
     buttonValidated: {
         backgroundColor: "#1DBF73",
+        cursor: "default",
     },
 
-    buttonText: {
-        color: "#FFFFFF",
-        fontSize: 15,
-        fontWeight: "700",
+    buttonRejected: {
+        backgroundColor: "#E74C3C",
+        cursor: "not-allowed",
     },
 
     /* ================= IMAGE ZONE ================= */

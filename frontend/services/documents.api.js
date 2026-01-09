@@ -9,7 +9,7 @@ export async function uploadDocument(cardId, file) {
     formData.append("cardId", String(cardId));
 
     if (Platform.OS === "web") {
-        formData.append("file", file); // File natif
+        formData.append("file", file);
     } else {
         formData.append("file", {
             uri: file.uri,
@@ -17,7 +17,6 @@ export async function uploadDocument(cardId, file) {
             type: file.type ?? "image/jpeg",
         });
     }
-
     const response = await fetch(`${API_URL}/document/upload`, {
         method: "POST",
         headers: {
@@ -31,7 +30,6 @@ export async function uploadDocument(cardId, file) {
         throw new Error(err || "Upload failed");
     }
 
-    // ✅ SAFE PARSING
     const text = await response.text();
     return text ? JSON.parse(text) : null;
 }

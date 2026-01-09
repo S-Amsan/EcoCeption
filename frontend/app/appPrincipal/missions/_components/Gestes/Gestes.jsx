@@ -204,7 +204,9 @@ export default function Gestes({ onAssociate }) {
                 scrollEventThrottle={16}
                 showsVerticalScrollIndicator={false}
             >
+
                 {partenaires.map((p) => {
+                    const docState = p.document?.state ?? "NONE";
                     const isHovered = hoveredId === p.id;
 
                     return (
@@ -219,22 +221,28 @@ export default function Gestes({ onAssociate }) {
                         >
                             {/* ===== LEFT (TEXTE) ===== */}
                             <View style={styles.left}>
-                                <Text style={styles.name}>{p.name}</Text>
-                                <Text style={styles.title}>{p.title}</Text>
+                                <Text style={styles.name}>{p.title}</Text>
+                                <Text style={styles.title}>{p.description}</Text>
 
                                 <Pressable
-                                    onPress={() => p.status === "start" && onAssociate?.(p)}
+                                    disabled={docState === "VALIDATED"}
                                     style={[
-                                        styles.button,
-                                        p.status === "start" && styles.buttonStart,
-                                        p.status === "pending" && styles.buttonPending,
-                                        p.status === "validated" && styles.buttonValidated,
+                                        styles.ActionButton,
+                                        docState === "WAITING" && styles.buttonPending,
+                                        docState === "VALIDATED" && styles.buttonValidated,
+                                        docState === "REJECTED" && styles.buttonRejected,
                                     ]}
+                                    onPress={() => {
+                                        if (!p.document) {
+                                            onAssociate?.(p);
+                                        }
+                                    }}
                                 >
-                                    <Text style={styles.buttonText}>
-                                        {p.status === "start" && "Commencer"}
-                                        {p.status === "pending" && "En attente"}
-                                        {p.status === "validated" && "✓ Validé"}
+                                    <Text style={styles.webActionText}>
+                                        {docState === "NONE" && "Importer mon justificatif"}
+                                        {docState === "WAITING" && "En attente"}
+                                        {docState === "VALIDATED" && "✓ Validé"}
+                                        {docState === "REJECTED" && "Refusé"}
                                     </Text>
                                 </Pressable>
                             </View>
@@ -243,7 +251,7 @@ export default function Gestes({ onAssociate }) {
                             <View style={styles.imageWrapper}>
                                 <View style={styles.pointsBadge}>
                                     <Text style={styles.pointsText}>
-                                        +{p.points.toLocaleString()}
+                                        +{p.trophies.toLocaleString()}
                                     </Text>
                                     <Image
                                         source={require("../../../../../assets/icones/point.png")}
@@ -251,7 +259,7 @@ export default function Gestes({ onAssociate }) {
                                     />
                                 </View>
 
-                                <Image source={p.logo} style={styles.logo} />
+                                <Image source={{ uri: p.photoUrl }} style={styles.logo} />
                             </View>
                         </View>
                     );

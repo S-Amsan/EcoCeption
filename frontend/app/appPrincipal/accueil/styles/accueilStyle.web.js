@@ -176,14 +176,12 @@ export default StyleSheet.create({
     },
 
     modalContent: {
-        width: 420,
+        width: 850,
         maxHeight: "90%",
         backgroundColor: "#fff",
         borderRadius: 12,
         overflow: "hidden",
     },
-
-
 
     modalClose: {
         position: "absolute",

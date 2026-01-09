@@ -19,6 +19,7 @@ import style from "./styles/accueilStyle";
 
 import { fetchAllPosts } from "../../../services/posts.api";
 import { getAllObjects } from "../../../services/objects.api";
+import {fetchUserById} from "../../../services/user.api";
 
 export default function AccueilWeb() {
     const [posts, setPosts] = useState([]);
@@ -62,6 +63,28 @@ export default function AccueilWeb() {
 
         loadFeed();
     }, []);
+
+    function PublisherInfo({ userId }) {
+        const [pseudo, setPseudo] = useState(null);
+        const [avatar, setAvatar] = useState(null);
+
+        useEffect(() => {
+            if (!userId) return;
+
+            fetchUserById(userId)
+                .then(user => {
+                    setPseudo(user.pseudo);
+                    setAvatar(user.photoProfileUrl);
+                })
+                .catch(console.error);
+        }, [userId]);
+
+        return (
+            <Text style={{ fontSize: 18, marginTop: 6 }}>
+                Posté par : {pseudo ?? "…"}
+            </Text>
+        );
+    }
 
     /* ===========================
        FEED UNIFIÉ
@@ -184,19 +207,21 @@ export default function AccueilWeb() {
                         <View style={{ padding: 20 }}>
                             <Image
                                 source={{ uri: selectedObjet.photoUrl }}
-                                style={{ width: "100%", height: 250, borderRadius: 12 }}
+                                style={{ width: "100%", height: 550, borderRadius: 12 }}
                             />
 
-                            <Text style={{ fontSize: 22, fontWeight: "bold", marginTop: 12 }}>
-                                {selectedObjet.title}
+                            <Text style={{ fontSize: 26, fontWeight: "bold", marginTop: 12 }}>
+                                Objet : {selectedObjet.title}
                             </Text>
 
-                            <Text style={{ marginTop: 6 }}>
-                                📍 {selectedObjet.address}
+                            <PublisherInfo userId={selectedObjet.publisher_user_id} />
+
+                            <Text style={{ fontSize: 18,marginTop: 6 }}>
+                                Adresse : {selectedObjet.address}
                             </Text>
 
-                            <Text style={{ marginTop: 6, color: "#777" }}>
-                                {selectedObjet.description}
+                            <Text style={{ fontSize: 18,marginTop: 6}}>
+                                Description : {selectedObjet.description}
                             </Text>
 
                             <TouchableOpacity
@@ -206,6 +231,7 @@ export default function AccueilWeb() {
                                     padding: 14,
                                     borderRadius: 10,
                                     alignItems: "center",
+                                    marginBottom:15,
                                 }}
                                 onPress={() => {
                                     setShowObjectModal(false);

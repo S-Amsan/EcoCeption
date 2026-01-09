@@ -89,20 +89,15 @@ export default function ObjectCard({ item, buttonLabel, onSeeObjet }) {
 
                 {/* CONTENU CENTRAL */}
                 <View style={styles.body}>
-
                     {/* TITRE + DISTANCE */}
                     <View style={styles.topRow}>
                         <Text style={styles.title}>
                             {item.title}
                         </Text>
-
-                        <Text style={styles.address}>
-                            📍 {item.address}
-                        </Text>
-
                         <Text style={styles.distance}>
                             • {formatRelativeTime(item.creationDate)}
                         </Text>
+
                     </View>
 
                     {/* USER */}
@@ -116,10 +111,12 @@ export default function ObjectCard({ item, buttonLabel, onSeeObjet }) {
                     </View>
 
                     {/* ADRESSE */}
-
+                    <Text style={styles.address}>
+                        📍 {item.address}
+                    </Text>
                 </View>
 
-
+                {/* COLONNE DROITE */}
                 <View style={styles.right}>
                     <TouchableOpacity
                         style={styles.button}
@@ -128,7 +125,6 @@ export default function ObjectCard({ item, buttonLabel, onSeeObjet }) {
                         <Text style={styles.buttonText}>{buttonLabel}</Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
         )
     }
