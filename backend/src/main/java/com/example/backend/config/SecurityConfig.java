@@ -37,6 +37,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/user/stats/**")
                     .permitAll()
+                    .requestMatchers("/user/stats/my")
+                    .authenticated()
                     .requestMatchers("/user/notifications")
                     .authenticated()
                     .requestMatchers("/user/actions")

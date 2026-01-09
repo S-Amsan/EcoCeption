@@ -74,6 +74,21 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/stats/my")
+    public ResponseEntity<UserStatsResponse> getMyStats(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        var maybeResponse = userStatsService.getUserStats(
+            userDetails.getUser().getId()
+        );
+
+        if (maybeResponse.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(maybeResponse.get());
+    }
+
     @GetMapping("/stats/{userId}")
     public ResponseEntity<UserStatsResponse> getStats(
         @PathVariable Long userId
