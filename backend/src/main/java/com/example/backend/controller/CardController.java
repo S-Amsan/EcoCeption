@@ -1,12 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.Card;
-import com.example.backend.repository.CardRepository;
 import com.example.backend.service.CardService;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/cards")
