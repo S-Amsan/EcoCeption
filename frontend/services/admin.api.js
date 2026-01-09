@@ -56,3 +56,31 @@ export async function unbanUser(userId) {
     const data = await response.json();
     return data;
 }
+
+export async function validateDocument(documentId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/document/${documentId}/validate`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export async function invalidateDocument(documentId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/document/${documentId}/invalidate`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
