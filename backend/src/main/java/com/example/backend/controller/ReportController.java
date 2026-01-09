@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.Report;
-import com.example.backend.repository.ReportRepository;
+import com.example.backend.service.ReportService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
 
     @Autowired
-    private ReportRepository reportRepository;
+    private ReportService reportService;
 
     @GetMapping("/all")
     public List<Report> getAllReports() {
-        return reportRepository.findAll();
+        return reportService.getAllReports();
     }
 }
