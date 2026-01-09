@@ -3,12 +3,14 @@ package com.example.backend.service;
 import com.example.backend.model.Card;
 import com.example.backend.model.User;
 import com.example.backend.model.document.Document;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.backend.model.document.DocumentState;
 import com.example.backend.repository.CardRepository;
 import com.example.backend.repository.DocumentRepository;
 import java.io.IOException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DocumentService {
@@ -24,7 +26,6 @@ public class DocumentService {
 
     public Document upload(Long cardId, MultipartFile file, User user)
         throws IOException {
-
         var response = fileUploadService.upload(file);
 
         if (response.getError() != null) {
@@ -40,6 +41,18 @@ public class DocumentService {
             FileUploadService.endpoint + "/" + response.getFilename()
         );
 
+        return documentRepository.save(document);
+    }
+
+    public Optional<Document> getDocumentById(Long documentId) {
+        return documentRepository.findById(documentId);
+    }
+
+    public Document changeValidationStatusOf(
+        Document document,
+        DocumentState state
+    ) {
+        document.setState(state);
         return documentRepository.save(document);
     }
 }

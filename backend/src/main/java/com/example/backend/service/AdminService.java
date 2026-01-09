@@ -3,6 +3,8 @@ package com.example.backend.service;
 import com.example.backend.model.Post;
 import com.example.backend.model.Report;
 import com.example.backend.model.User;
+import com.example.backend.model.document.Document;
+import com.example.backend.model.document.DocumentState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ public class AdminService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DocumentService documentService;
 
     public Report checkReport(Long reportId) {
         var maybeReport = reportService.getReportById(reportId);
@@ -54,5 +59,26 @@ public class AdminService {
 
     public User unbanUser(Long userId) {
         return changeUserBanStatus(userId, false);
+    }
+
+    private Document changeDocumentState(Long documentId, DocumentState state) {
+        var maybeDocument = documentService.getDocumentById(documentId);
+
+        if (maybeDocument.isEmpty()) {
+            throw new IllegalArgumentException("Document not found");
+        }
+
+        return documentService.changeValidationStatusOf(
+            maybeDocument.get(),
+            state
+        );
+    }
+
+    public Document validateDocument(Long documentId) {
+        return changeDocumentState(documentId, DocumentState.VALIDATED);
+    }
+
+    public Document invalidateDocument(Long documentId) {
+        return changeDocumentState(documentId, DocumentState.REJECTED);
     }
 }

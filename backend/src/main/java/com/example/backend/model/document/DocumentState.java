@@ -1,6 +1,6 @@
 package com.example.backend.model.document;
 
-enum DocumentState {
+public enum DocumentState {
     WAITING,
     VALIDATED,
     REJECTED,

@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.model.Post;
 import com.example.backend.model.Report;
 import com.example.backend.model.User;
+import com.example.backend.model.document.Document;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.service.AdminService;
 import java.util.function.Supplier;
@@ -66,6 +67,28 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.unbanUser(userId),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/document/{documentId}/validate")
+    public ResponseEntity<Document> validateDocument(
+        @PathVariable Long documentId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.validateDocument(documentId),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/document/{documentId}/invalidate")
+    public ResponseEntity<Document> invalidateDocument(
+        @PathVariable Long documentId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.invalidateDocument(documentId),
             userDetails.getUser()
         );
     }
