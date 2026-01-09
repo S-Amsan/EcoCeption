@@ -49,6 +49,17 @@ export async function fetchUsers() {
     return users;
 }
 
+export async function fetchMyStats() {
+    const token = await AsyncStorage.getItem('@auth_token');
+    const res = await fetch(`${API_URL}/user/stats/my`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const stats = await res.json();
+    return stats;
+}
+
 export async function fetchUserStats(userId) {
     const res = await fetch(`${API_URL}/user/stats/${userId}`);
 
