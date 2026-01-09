@@ -5,6 +5,8 @@ import {
     Animated,
     Dimensions,
     Pressable,
+    Image,
+    ScrollView,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { useNotification } from "./NotificationContext";
@@ -13,7 +15,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const DRAWER_WIDTH = 300;
 
 export default function NotificationDrawer() {
-    const { isOpen, closeNotifications } = useNotification();
+    const { isOpen, closeNotifications, notifications } = useNotification();
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
     const [visible, setVisible] = useState(false);
 
@@ -38,23 +40,32 @@ export default function NotificationDrawer() {
 
     return (
         <View style={styles.overlay}>
-            {/* Fond grisé PLEIN ÉCRAN */}
-            <Pressable
-                style={styles.background}
-                onPress={closeNotifications}
-            />
+            <Pressable style={styles.background} onPress={closeNotifications} />
 
-            {/* Drawer AU-DESSUS */}
-            <Animated.View
-                style={[
-                    styles.drawer,
-                    { transform: [{ translateX }] },
-                ]}
-            >
+            <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
                 <Text style={styles.title}>Notifications</Text>
-                <Text>- Notification 1</Text>
-                <Text>- Notification 2</Text>
-                <Text>- Notification 3</Text>
+
+                <ScrollView>
+                    {notifications.length === 0 && (
+                        <Text>Aucune notification</Text>
+                    )}
+
+                    {notifications.map((notif, index) => (
+                        <View key={index} style={styles.notification}>
+                            {notif.Img_url && (
+                                <Image
+                                    source={{ uri: notif.Img_url }}
+                                    style={styles.image}
+                                />
+                            )}
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.notifTitle}>{notif.Titre}</Text>
+                                <Text style={styles.notifDesc}>{notif.Description}</Text>
+                                <Text style={styles.notifDate}>{notif.Date_Reception}</Text>
+                            </View>
+                        </View>
+                    ))}
+                </ScrollView>
             </Animated.View>
         </View>
     );
@@ -87,5 +98,29 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         marginBottom: 10,
+    },
+    notification: {
+        flexDirection: "row",
+        marginBottom: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee",
+        paddingBottom: 10,
+    },
+    image: {
+        width: 50,
+        height: 50,
+        marginRight: 10,
+        borderRadius: 5,
+    },
+    notifTitle: {
+        fontWeight: "bold",
+    },
+    notifDesc: {
+        color: "#555",
+    },
+    notifDate: {
+        color: "#999",
+        fontSize: 12,
+        marginTop: 3,
     },
 });
