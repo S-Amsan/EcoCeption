@@ -6,13 +6,14 @@ import {
     Dimensions,
     Pressable,
     Image,
-    ScrollView,
+    ScrollView, useWindowDimensions,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { useNotification } from "./NotificationContext";
+import {width} from "../../../utils/dimensions";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const DRAWER_WIDTH = 300;
+const DRAWER_WIDTH = SCREEN_WIDTH*0.25;
 
 export default function NotificationDrawer() {
     const { isOpen, closeNotifications, notifications } = useNotification();
@@ -39,7 +40,8 @@ export default function NotificationDrawer() {
     if (!visible) return null;
 
     return (
-        <View style={styles.overlay}>
+
+    <View style={styles.overlay}>
             <Pressable style={styles.background} onPress={closeNotifications} />
 
             <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
@@ -71,7 +73,11 @@ export default function NotificationDrawer() {
     );
 }
 
+
+const isSmall = width < 1100;
+const isMedium = width >= 1100 && width < 1600;
 const styles = StyleSheet.create({
+
     overlay: {
         position: "absolute",
         top: 0,
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
     },
     drawer: {
         position: "absolute",
-        left: 0,
+        left: isSmall ? 80 : isMedium ? 200 : 260,
         top: 0,
         bottom: 0,
         width: DRAWER_WIDTH,
