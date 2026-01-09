@@ -21,30 +21,33 @@ export default function MissionsMobile() {
     const [selectedObjet, setSelectedObjet] = useState(null);
     const { page: pageFromScan, product, code } = useLocalSearchParams();
 
-    const { mode, objetId } = useLocalSearchParams();
+    const { mode, id } = useLocalSearchParams();
+
 
     useEffect(() => {
-        if (mode === "recup" && objetId) {
+        if (mode === "recup" && id) {
             setPage("recupObjet");
         }
-    }, [mode, objetId]);
+    }, [mode, id]);
+
 
     useEffect(() => {
-        if (!objetId) return;
-
-        const id = Number(objetId);
         if (!id) return;
+
+        const numericId = Number(id);
+        if (!numericId) return;
 
         const load = async () => {
             const objects = await getAllObjects();
-            const found = objects.find(o => o.id === id);
+            const found = objects.find(o => o.id === numericId);
             if (!found) return;
 
             setSelectedObjet(found);
         };
 
         load();
-    }, [objetId]);
+    }, [id]);
+
 
 
     const onglets = [

@@ -6,7 +6,13 @@ import { isWeb } from "../../../../utils/platform";
 import styles from "../styles/accueilStyle";
 import {fetchUserById} from "../../../../services/user.api";
 import {formatRelativeTime} from "../../../../utils/format";
-import { likePost, dislikePost } from "../../../../services/posts.api";
+import {
+    likePost,
+    dislikePost,
+    didILikePost,
+    didIDislikePost
+} from "../../../../services/posts.api";
+
 
 
 export default function PostCard({ post, onSignaler }) {
@@ -14,6 +20,29 @@ export default function PostCard({ post, onSignaler }) {
     const router = useRouter();
     const [loadingLike, setLoadingLike] = useState(false);
     const [reaction, setReaction] = useState(null);
+
+    useEffect(() => {
+        const loadReaction = async () => {
+            try {
+                const liked = await didILikePost(post.id);
+
+                if (liked === true) {
+                    setReaction("like");
+                    return;
+                }
+
+                const disliked = await didIDislikePost(post.id);
+                if (disliked === true) {
+                    setReaction("dislike");
+                }
+            } catch (e) {
+                console.error("Erreur chargement réaction", e);
+            }
+        };
+
+        loadReaction();
+    }, [post.id]);
+
 
 
     const handleSignaler = () => {
@@ -46,27 +75,35 @@ export default function PostCard({ post, onSignaler }) {
 
         loadUser();
     }, [post.user_id]);
+
     const handleLike = async () => {
-        if (reaction === "like") return;
+        if (reaction === "like" || loadingLike) return;
 
         try {
+            setLoadingLike(true);
             await likePost(post.id);
             setReaction("like");
         } catch (e) {
             console.error("Erreur like", e);
+        } finally {
+            setLoadingLike(false);
         }
     };
 
     const handleDislike = async () => {
-        if (reaction === "dislike") return;
+        if (reaction === "dislike" || loadingLike) return;
 
         try {
+            setLoadingLike(true);
             await dislikePost(post.id);
             setReaction("dislike");
         } catch (e) {
             console.error("Erreur dislike", e);
+        } finally {
+            setLoadingLike(false);
         }
     };
+
 
 
     /**

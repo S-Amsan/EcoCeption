@@ -113,8 +113,7 @@ export async function didILikePost(postId) {
         }
     });
 
-    const data = await response.text();
-    return Boolean(data);
+    return await response.json();
 }
 
 export async function didIDislikePost(postId) {
@@ -126,6 +125,6 @@ export async function didIDislikePost(postId) {
         }
     });
 
-    const data = await response.text();
-    return Boolean(data);
+    return await response.json();
 }
+

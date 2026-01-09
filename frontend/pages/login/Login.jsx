@@ -26,8 +26,6 @@ export default function Login(){
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async () => {
-        console.log("CLICK LOGIN");
-
         if (!email || !password) {
             return Toast.show({
                 type: "error",
@@ -36,18 +34,21 @@ export default function Login(){
         }
 
         try {
-            await login(email.trim(), password).then(() => {
-                router.replace("/appPrincipal/accueil");
-            });
+            await login(email.trim(), password);
+            router.replace("/appPrincipal/accueil");
         } catch (e) {
             console.log("LOGIN ERROR", e);
+
+            const msg = (e?.message || "Erreur de connexion").trim();
+
             Toast.show({
                 type: "error",
-                text1: "Erreur de connexion",
-                text2: "Email ou mot de passe incorrect"
+                text1: "Connexion impossible",
+                text2: msg
             });
         }
     };
+
 
     const handleSignUp = () => {
         navigation.navigate('SignUp');

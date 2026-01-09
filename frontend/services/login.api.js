@@ -7,7 +7,6 @@ import { API_URL } from "../constants/API_URL";
 
 export async function login(email, password) {
     const formData = new FormData();
-
     formData.append("email", email);
     formData.append("password", password);
 
@@ -17,24 +16,29 @@ export async function login(email, password) {
     });
 
     if (!res.ok) {
-        throw new Error("Login failed");
+        let message = "Erreur de connexion";
+
+        try {
+            const error = await res.json();
+            if (error?.message) {
+                message = error.message.replace("Authentication error: ", "");
+            }
+        } catch (_) {
+        }
+
+        throw new Error(message);
     }
 
-    // Read response body and get token
+
     const responseData = await res.json();
     const token = responseData.token;
 
-    // Save token to async storage
     await AsyncStorage.setItem("@auth_token", token);
-
-    // 🔹 On sauvegarde l’email pour la session
     await AsyncStorage.setItem("@auth_email", email);
 
-    // 🔹 On récupère le user complet
     const user = await fetchUserByEmail(email);
-
-    // 🔹 On stocke le user
     await saveUser(user);
 
     return user;
 }
+

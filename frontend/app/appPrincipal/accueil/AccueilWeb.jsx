@@ -129,7 +129,6 @@ export default function AccueilWeb() {
                                                     setShowObjectModal(true);
                                                 }}
                                             />
-
                                         );
 
                                     default:
@@ -182,7 +181,6 @@ export default function AccueilWeb() {
                 >
                     <Pressable style={style.modalContent} onPress={() => {}}>
                         <View style={{ padding: 20 }}>
-                            {/* eslint-disable-next-line react/jsx-no-undef */}
                             <Image
                                 source={{ uri: selectedObjet.photoUrl }}
                                 style={{ width: "100%", height: 250, borderRadius: 12 }}

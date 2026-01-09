@@ -74,11 +74,15 @@ export async function getAllObjects() {
         throw new Error("Erreur API getAllObjects");
     }
 
-    const text = await response.text();
-    if (!text) return [];
-
-    return JSON.parse(text);
+    try {
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (e) {
+        console.error("JSON parse error getAllObjects", e);
+        return [];
+    }
 }
+
 
 export async function pickupObject(object_id) {
     const token = await AsyncStorage.getItem("@auth_token");

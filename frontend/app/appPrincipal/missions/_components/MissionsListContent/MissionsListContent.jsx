@@ -26,18 +26,20 @@ function ObjectCard({ item, onSeeObjet }) {
     const [pseudo, setPseudo] = useState(null);
 
     useEffect(() => {
+        if (!item?.publisher_user_id) return;
+
         const loadUser = async () => {
             try {
-                const user = await fetchUserById(item.user_id);
+                const user = await fetchUserById(item.publisher_user_id);
                 setAvatar(user.photoProfileUrl);
                 setPseudo(user.pseudo);
             } catch (e) {
-                console.error("Erreur chargement user", e);
+                console.error(e);
             }
         };
 
         loadUser();
-    }, [item.user_id]);
+    }, [item?.publisher_user_id]);
 
     return (
         <View style={styles.card}>
