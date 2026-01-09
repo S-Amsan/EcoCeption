@@ -6,6 +6,7 @@ import com.example.backend.model.event.EventParticipant;
 import com.example.backend.repository.event.EventParticipantRepository;
 import com.example.backend.repository.event.EventRepository;
 import java.util.Date;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class EventService {
     private void updateCurrentEventStats(User user, int diff) {
         Event currentEvent = getCurrentEvent();
 
-        if (currentEvent != null) {
+        if (currentEvent == null) {
             return;
         }
 
@@ -50,5 +51,31 @@ public class EventService {
         return eventRepository.findFirstByDeadlineAfterOrderByCreationDate(
             new Date()
         );
+    }
+
+    public Optional<Integer> getTotalEventPoints(User user, Long eventId) {
+        var maybeEvent = eventRepository.findById(eventId);
+
+        if (maybeEvent.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var event = maybeEvent.get();
+
+        var participants = eventParticipantRepository.findAllByEventAndUser(
+            event,
+            user
+        );
+
+        if (participants.isEmpty()) {
+            return Optional.ofNullable(null);
+        }
+
+        int total = participants
+            .stream()
+            .mapToInt(p -> p.getPoints())
+            .sum();
+
+        return Optional.of(total);
     }
 }

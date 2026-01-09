@@ -8,6 +8,7 @@ import com.example.backend.model.action.ActionType;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.repository.action.ActionRepository;
 import com.example.backend.repository.action.ActionTypeRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,10 @@ public class ActionService {
 
     @Autowired
     private RewardService rewardService;
+
+    public List<Action> getActionsForUser(User user) {
+        return actionRepository.findAllByUser(user);
+    }
 
     public void onPostReaction(Post post) {
         if (post.getLikes().size() == 5) {

@@ -6,7 +6,12 @@ import com.example.backend.model.action.Action;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
+import com.example.backend.service.ActionService;
+import com.example.backend.service.CompetitionService;
+import com.example.backend.service.EventService;
 import com.example.backend.service.UserService;
+import com.example.backend.service.notification.NotificationService;
+import com.example.backend.service.stats.UserStatsService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +31,21 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserStatsService userStatsService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private ActionService actionService;
+
+    @Autowired
+    private CompetitionService competitionService;
+
+    @Autowired
+    private EventService eventService;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -58,7 +78,7 @@ public class UserController {
     public ResponseEntity<UserStatsResponse> getStats(
         @PathVariable Long userId
     ) {
-        var maybeResponse = userService.getUserStats(userId);
+        var maybeResponse = userStatsService.getUserStats(userId);
 
         if (maybeResponse.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -72,7 +92,9 @@ public class UserController {
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
         return ResponseEntity.ok(
-            userService.getNotificationsForUser(userDetails.getUser().getId())
+            notificationService.getNotificationsForUser(
+                userDetails.getUser().getId()
+            )
         );
     }
 
@@ -93,7 +115,7 @@ public class UserController {
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long competitionId
     ) {
-        var maybeTotal = userService.getTotalCompetitionPoints(
+        var maybeTotal = competitionService.getTotalCompetitionPoints(
             userDetails.getUser(),
             competitionId
         );
@@ -110,7 +132,7 @@ public class UserController {
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long eventId
     ) {
-        var maybeTotal = userService.getTotalEventPoints(
+        var maybeTotal = eventService.getTotalEventPoints(
             userDetails.getUser(),
             eventId
         );
@@ -126,6 +148,6 @@ public class UserController {
     public List<Action> getUserActions(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        return userService.getActionsForUser(userDetails.getUser());
+        return actionService.getActionsForUser(userDetails.getUser());
     }
 }
