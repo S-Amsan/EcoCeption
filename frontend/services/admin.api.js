@@ -115,3 +115,17 @@ export async function publishCard(title, description, photo, trophies) {
     const data = await response.json();
     return data;
 }
+
+export async function deleteCard(cardId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/card/${cardId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
