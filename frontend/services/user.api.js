@@ -49,28 +49,11 @@ export async function fetchUsers() {
     return users;
 }
 
-export async function fetchUserStats() {
-    const token = await AsyncStorage.getItem('@auth_token');
-
-    // Response example:
-    // {
-    //   "points": 35,
-    //   "trophies": 69,
-    //   "flames": 34
-    // }
-    const res = await fetch(`${API_URL}/user/stats`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+export async function fetchUserStats(userId) {
+    const res = await fetch(`${API_URL}/user/stats/${userId}`);
 
     const stats = await res.json();
-
-    return [
-        {type: "points", valeur: stats.points},
-        {type: "trophees", valeur: stats.trophies},
-        {type: "flammes", valeur: stats.flames},
-    ];
+    return stats;
 }
 
 export async function fetchUserPointsForCompetition(competitionId) {
