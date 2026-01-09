@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     long countByUserAndValidatedTrue(User user);
-    long countByUserValidatedTrueAndObjectIsNotNull(User user);
+    long countByUserAndValidatedTrueAndObjectIsNotNull(User user);
 }
