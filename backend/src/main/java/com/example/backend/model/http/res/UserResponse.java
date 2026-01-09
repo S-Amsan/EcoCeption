@@ -22,7 +22,6 @@ public class UserResponse {
         this.pseudo = user.getPseudo();
         this.phone = user.getPhone();
         this.photoProfile = user.getPhotoProfileUrl();
-        this.actif = user.isActif();
         this.name = user.getName();
     }
 }

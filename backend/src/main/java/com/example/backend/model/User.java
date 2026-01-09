@@ -47,9 +47,6 @@ public class User {
     private Instant dateModification;
 
     @Column
-    private boolean actif = true;
-
-    @Column
     private Integer age;
 
     @Column
