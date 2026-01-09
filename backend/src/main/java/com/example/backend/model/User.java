@@ -32,25 +32,28 @@ public class User {
     @Column(unique = true, nullable = true, length = 20)
     private String phone;
 
-    @Column(name = "photo_profile_url")
-    private String photoProfileUrl;
+    @Column(name = "photo_profile_url", nullable = true)
+    private String photoProfileUrl = null;
 
-    @Column
+    @Column(nullable = true)
     private String profileBannerUrl = null;
 
     @CreationTimestamp
-    @Column(name = "date_creation", updatable = false)
+    @Column(name = "date_creation", updatable = false, nullable = false)
     private Instant dateCreation;
 
     @UpdateTimestamp
-    @Column(name = "date_modification")
+    @Column(name = "date_modification", nullable = true)
     private Instant dateModification;
 
-    @Column
+    @Column(nullable = true)
     private Integer age;
 
-    @Column
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private boolean isAdmin;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
