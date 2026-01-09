@@ -45,6 +45,7 @@ export async function postPost(post) {
 
         formData.append("name", post.name);
         formData.append("description", post.description);
+        formData.append("objectId", post.objectId);
 
         if (Platform.OS === "web") {
             const blob = await fetch(post.imageUrl).then(r => r.blob());
