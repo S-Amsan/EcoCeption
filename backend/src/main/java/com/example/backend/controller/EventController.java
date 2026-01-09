@@ -4,7 +4,7 @@ import com.example.backend.model.event.Event;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.event.EventParticipantRepository;
 import com.example.backend.repository.event.EventRepository;
-import java.util.Date;
+import com.example.backend.service.EventService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,9 @@ public class EventController {
     @Autowired
     private EventParticipantRepository eventParticipantRepository;
 
+    @Autowired
+    private EventService eventService;
+
     @GetMapping("/all")
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -36,7 +39,7 @@ public class EventController {
 
     @GetMapping("/latest")
     public Event getLatestEvent() {
-        return eventRepository.findFirstByDeadlineAfterOrderByCreationDate(new Date());
+        return eventService.getCurrentEvent();
     }
 
     @GetMapping("/{eventId}/participantsCount")
