@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Platform} from "react-native";
 import {API_URL} from "../constants/API_URL";
 
 export async function checkReport(reportId) {
@@ -79,6 +80,36 @@ export async function invalidateDocument(documentId) {
         headers: {
             Authorization: `Bearer ${token}`
         }
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export async function publishCard(title, description, photo, trophies) {
+    const token = await AsyncStorage.getItem("@auth_token");
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("trophies", trophies);
+
+    if (Platform.OS === "web") {
+        formData.append("photo", photo); // File natif
+    } else {
+        formData.append("photo", {
+            uri: photo.uri,
+            name: photo.name ?? "document.jpg",
+            type: photo.type ?? "image/jpeg",
+        });
+    }
+
+    const response = await fetch(`${API_URL}/admin/card`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
     });
 
     const data = await response.json();
