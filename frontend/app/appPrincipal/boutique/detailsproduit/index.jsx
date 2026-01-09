@@ -19,7 +19,7 @@ import {Ionicons} from "@expo/vector-icons";
 export default function DetailProduit() {
     const router = useRouter();
     const params = useLocalSearchParams();
-    const { ajouterAuPanier } = usePanier();
+    const { ajouterAuPanier, acheterOffre } = usePanier();
 
     const id = params.id ?? "";
     const titreCourt = params.titre ?? "Produit";
@@ -63,7 +63,7 @@ export default function DetailProduit() {
     ]);
 
     const handleBuyMobile = useCallback(() => {
-        ajouterAuPanier({
+        acheterOffre({
             id: String(id),
             titre: String(titreCourt),
             titreComplet: String(titreComplet),
@@ -81,7 +81,7 @@ export default function DetailProduit() {
             params: { justBought: "1" },
         });
     }, [
-        ajouterAuPanier,
+        acheterOffre,
         id,
         titreCourt,
         titreComplet,

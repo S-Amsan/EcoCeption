@@ -111,6 +111,32 @@ export function PanierProvider({ children }) {
         setAfficherTitreAjoute(false);
     }, [articles]);
 
+    const acheterOffre = useCallback((article) => {
+        const dateAchatISO = new Date().toISOString();
+        const q = Number(article.quantity) || 1;
+
+        setAchats((prevAchats) => {
+            const lignes = [];
+
+            for (let i = 0; i < q; i++) {
+                lignes.push({
+                    ...article,
+                    id: String(article.id),
+                    points: Number(article.points) || 0,
+                    quantity: 1,
+                    dateAchatISO,
+                    code: genererCodeFictif(),
+                    idLigneAchat: `${String(article.id)}-${dateAchatISO}-${i}-${Math.random()
+                        .toString(16)
+                        .slice(2)}`,
+                });
+            }
+
+            return [...lignes, ...prevAchats];
+        });
+    }, []);
+
+
     const value = useMemo(
         () => ({
             articles,
@@ -123,6 +149,7 @@ export function PanierProvider({ children }) {
             decrementerDuPanier,
             viderPanier,
             passerCommande,
+            acheterOffre,
         }),
         [
             articles,
@@ -134,6 +161,7 @@ export function PanierProvider({ children }) {
             decrementerDuPanier,
             viderPanier,
             passerCommande,
+            acheterOffre,
         ]
     );
 

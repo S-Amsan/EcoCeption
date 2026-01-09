@@ -39,7 +39,7 @@ export default function BlocProduit({ id, titre, titreComplet, description, desc
                         </View>
 
                         <View style={styles.prixWrapper}>
-                            <Text style={styles.points}>{points}</Text>
+                            <Text style={styles.points}>{points} </Text>
                             <Image source={point} style={styles.pointIcon} />
                         </View>
                     </View>
