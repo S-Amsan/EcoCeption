@@ -73,6 +73,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/report/all")
                     .permitAll()
+                    .requestMatchers("/cards/**")
+                    .permitAll()
             )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sess ->

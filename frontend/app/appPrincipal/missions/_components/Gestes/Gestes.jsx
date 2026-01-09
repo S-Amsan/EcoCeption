@@ -13,6 +13,7 @@ import ScanActionButton from "../../../../../components/ScanActionButton";
 import {useRouter} from "expo-router";
 import { fetchAllDocuments } from "../../../../../services/documents.api";
 import { useEffect } from "react";
+import {fetchAllCards} from "../../../../../services/cards.api";
 
 
 export default function Gestes({ onAssociate }) {
@@ -22,19 +23,21 @@ export default function Gestes({ onAssociate }) {
 
 
     useEffect(() => {
-        const loadDocuments = async () => {
+        const loadCards = async () => {
             try {
-                const data = await fetchAllDocuments();
+                const data = await fetchAllCards();
+                console.log("CARDS:", data);
                 setPartenaires(data);
             } catch (e) {
-                console.error("FETCH DOCUMENTS ERROR", e);
+                console.error("FETCH CARDS ERROR", e);
             } finally {
                 setLoading(false);
             }
         };
 
-        loadDocuments();
+        loadCards();
     }, []);
+
 
     const [hoveredId, setHoveredId] = useState(null);
 
@@ -89,12 +92,17 @@ export default function Gestes({ onAssociate }) {
                         {/* HEADER */}
                         <View style={styles.webHeader}>
                             <View style={styles.webHeaderLeft}>
-                                <Image source={p.logo} style={styles.webSmallLogo} />
-                                <Text style={styles.webPartnerName}>{p.name}</Text>
+                                <Image
+                                    source={{ uri: p.photo_url }}
+                                    style={styles.webSmallLogo}
+                                />
+                                <Text style={styles.title}>{p.title}</Text>
                             </View>
 
                             <View style={styles.webPointsBadge}>
-                                <Text style={styles.webPointsText}>+50 000</Text>
+                                <Text style={styles.webPointsText}>
+                                    +{p.trophies.toLocaleString()}
+                                </Text>
                                 <Image
                                     source={require("../../../../../assets/icones/point.png")}
                                     style={styles.webPointsIcon}
@@ -146,6 +154,13 @@ export default function Gestes({ onAssociate }) {
         );
     }
     if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <Text>Chargement...</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={{ flex: 1 }}>
             {/* CONTENU SCROLLABLE */}
@@ -244,6 +259,4 @@ export default function Gestes({ onAssociate }) {
             </Animated.View>
         </View>
     );
-    }
-
 }
