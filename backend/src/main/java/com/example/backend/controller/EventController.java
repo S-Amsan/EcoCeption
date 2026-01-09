@@ -33,7 +33,9 @@ public class EventController {
     }
 
     @GetMapping("/following")
-    public List<Event> getMyEvents(@AuthenticationPrincipal MyUserDetails userDetails) {
+    public List<Event> getMyEvents(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
         return eventRepository.findAllByParticipantsUser(userDetails.getUser());
     }
 
@@ -43,7 +45,9 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}/participantsCount")
-    public ResponseEntity<Integer> getParticipantsCount(@PathVariable Long eventId) {
+    public ResponseEntity<Integer> getParticipantsCount(
+        @PathVariable Long eventId
+    ) {
         var maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -65,7 +69,10 @@ public class EventController {
         var event = maybeEvent.get();
         return ResponseEntity.ok(
             eventParticipantRepository
-                .findAllByEventAndPointsGreaterThanEqual(event, event.getGoalPoints())
+                .findAllByEventAndPointsGreaterThanEqual(
+                    event,
+                    event.getGoalPoints()
+                )
                 .size()
         );
     }
