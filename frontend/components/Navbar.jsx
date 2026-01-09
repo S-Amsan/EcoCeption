@@ -139,9 +139,6 @@ export default function Navbar() {
                         />
                         <Text style={styles.title}>EcoCeption</Text>
                     </View>
-                    <Pressable onPress={openNotifications}>
-                        <Text style={{ fontSize: 20 }}>Notifications</Text>
-                    </Pressable>
 
                     <View style={styles.tabsContainer}>
                         {tabs.map(tab => {

@@ -1,5 +1,12 @@
-import { View, Text, StyleSheet, Animated, Dimensions, Pressable } from "react-native";
-import { useEffect, useRef } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Animated,
+    Dimensions,
+    Pressable,
+} from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useNotification } from "./NotificationContext";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -7,21 +14,37 @@ const DRAWER_WIDTH = 300;
 
 export default function NotificationDrawer() {
     const { isOpen, closeNotifications } = useNotification();
-    const translateX = useRef(new Animated.Value(DRAWER_WIDTH)).current;
+    const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        Animated.timing(translateX, {
-            toValue: isOpen ? 0 : DRAWER_WIDTH,
-            duration: 250,
-            useNativeDriver: true,
-        }).start();
+        if (isOpen) {
+            setVisible(true);
+            Animated.timing(translateX, {
+                toValue: 0,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            Animated.timing(translateX, {
+                toValue: -DRAWER_WIDTH,
+                duration: 250,
+                useNativeDriver: true,
+            }).start(() => setVisible(false));
+        }
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    if (!visible) return null;
 
     return (
         <View style={styles.overlay}>
-            <Pressable style={styles.background} onPress={closeNotifications} />
+            {/* Fond grisé PLEIN ÉCRAN */}
+            <Pressable
+                style={styles.background}
+                onPress={closeNotifications}
+            />
+
+            {/* Drawer AU-DESSUS */}
             <Animated.View
                 style={[
                     styles.drawer,
@@ -45,13 +68,16 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH,
         height: "100%",
         zIndex: 1000,
-        flexDirection: "row",
     },
     background: {
-        flex: 1,
+        ...StyleSheet.absoluteFillObject,
         backgroundColor: "rgba(0,0,0,0.3)",
     },
     drawer: {
+        position: "absolute",
+        left: 0,
+        top: 0,
+        bottom: 0,
         width: DRAWER_WIDTH,
         backgroundColor: "#fff",
         padding: 20,
