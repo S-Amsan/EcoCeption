@@ -116,7 +116,7 @@ export default function Navbar() {
         { id: "social", label: "Social", Icon: IconTrophy, IconActive: IconTrophyOn },
         { id: "boutique", label: "Boutique", Icon: IconBoutique, IconActive: IconBoutiqueOn },
         { id: "codebar", label: "QR Code", Icon: IconQrCode, IconActive: IconQrCodeOn },
-        { id: "notifications", label: "Noaaatifications", Icon: IconNotif, IconActive: IconNotifOn },
+        { id: "notifications", label: "Notifications", Icon: IconNotif, IconActive: IconNotifOn },
         { id: "dashboard", label: "Dashboard", Icon: IconDashboard, IconActive: IconDashboardOn },
         { id: "parametres", label: "Paramètres", Icon: IconParam, IconActive: IconParamOn },
     ];
