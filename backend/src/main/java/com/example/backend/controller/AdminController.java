@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Post;
 import com.example.backend.model.Report;
 import com.example.backend.model.User;
 import com.example.backend.model.security.MyUserDetails;
@@ -32,6 +33,17 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.checkReport(reportId),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/invalidate_post/{postId}")
+    public ResponseEntity<Post> invalidatePost(
+        @PathVariable Long postId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.invalidatePost(postId),
             userDetails.getUser()
         );
     }
