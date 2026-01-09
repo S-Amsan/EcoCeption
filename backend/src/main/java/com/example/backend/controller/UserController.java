@@ -2,20 +2,10 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Notification;
 import com.example.backend.model.User;
-import com.example.backend.model.UserStats;
 import com.example.backend.model.action.Action;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.repository.NotificationRepository;
-import com.example.backend.repository.PostRepository;
-import com.example.backend.repository.UserRepository;
-import com.example.backend.repository.UserStatsRepository;
-import com.example.backend.repository.action.ActionRepository;
-import com.example.backend.repository.competition.CompetitionParticipantRepository;
-import com.example.backend.repository.competition.CompetitionRepository;
-import com.example.backend.repository.event.EventParticipantRepository;
-import com.example.backend.repository.event.EventRepository;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -36,33 +26,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserStatsRepository userStatsRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private CompetitionParticipantRepository competitionParticipantRepository;
-
-    @Autowired
-    private CompetitionRepository competitionRepository;
-
-    @Autowired
-    private EventParticipantRepository eventParticipantRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private ActionRepository actionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -95,48 +58,21 @@ public class UserController {
     public ResponseEntity<UserStatsResponse> getStats(
         @PathVariable Long userId
     ) {
-        var maybeUser = userRepository.findById(userId);
+        var maybeResponse = userService.getUserStats(userId);
 
-        if (maybeUser.isEmpty()) {
+        if (maybeResponse.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        User user = maybeUser.get();
-
-        Optional<UserStats> maybeStats = userStatsRepository.findByUserId(
-            user.getId()
-        );
-
-        if (maybeStats.isEmpty()) {
-            maybeStats = Optional.of(
-                userStatsRepository.save(new UserStats(user))
-            );
-        }
-
-        UserStats stats = maybeStats.get();
-
-        UserStatsResponse response = UserStatsResponse.builder()
-            .points(stats.getPoints())
-            .trophies(stats.getTrophies())
-            .flames(stats.getFlames())
-            .ecoActions(postRepository.countByUserAndValidatedTrue(user))
-            .recoveredObjects(
-                postRepository.countByUserAndValidatedTrueAndObjectIsNotNull(
-                    user
-                )
-            )
-            .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(maybeResponse.get());
     }
 
     @GetMapping("/notifications")
     public ResponseEntity<List<Notification>> getMyNotifications(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        Long userId = userDetails.getUser().getId();
         return ResponseEntity.ok(
-            notificationRepository.findByUserIdOrderByReceivedAtDesc(userId)
+            userService.getNotificationsForUser(userDetails.getUser().getId())
         );
     }
 
@@ -157,30 +93,16 @@ public class UserController {
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long competitionId
     ) {
-        var maybeCompetition = competitionRepository.findById(competitionId);
+        var maybeTotal = userService.getTotalCompetitionPoints(
+            userDetails.getUser(),
+            competitionId
+        );
 
-        if (maybeCompetition.isEmpty()) {
+        if (maybeTotal.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        var competition = maybeCompetition.get();
-
-        var participants =
-            competitionParticipantRepository.findAllByCompetitionAndUser(
-                competition,
-                userDetails.getUser()
-            );
-
-        if (participants.isEmpty()) {
-            return ResponseEntity.ok(null);
-        }
-
-        int total = participants
-            .stream()
-            .mapToInt(p -> p.getPoints())
-            .sum();
-
-        return ResponseEntity.ok(total);
+        return ResponseEntity.ok(maybeTotal.get());
     }
 
     @GetMapping("/points/event/{eventId}")
@@ -188,35 +110,22 @@ public class UserController {
         @AuthenticationPrincipal MyUserDetails userDetails,
         @PathVariable Long eventId
     ) {
-        var maybeEvent = eventRepository.findById(eventId);
+        var maybeTotal = userService.getTotalEventPoints(
+            userDetails.getUser(),
+            eventId
+        );
 
-        if (maybeEvent.isEmpty()) {
+        if (maybeTotal.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        var event = maybeEvent.get();
-
-        var participants = eventParticipantRepository.findAllByEventAndUser(
-            event,
-            userDetails.getUser()
-        );
-
-        if (participants.isEmpty()) {
-            return ResponseEntity.ok(null);
-        }
-
-        int total = participants
-            .stream()
-            .mapToInt(p -> p.getPoints())
-            .sum();
-
-        return ResponseEntity.ok(total);
+        return ResponseEntity.ok(maybeTotal.get());
     }
 
     @GetMapping("/actions")
     public List<Action> getUserActions(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        return actionRepository.findAllByUser(userDetails.getUser());
+        return userService.getActionsForUser(userDetails.getUser());
     }
 }
