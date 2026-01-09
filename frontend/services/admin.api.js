@@ -14,3 +14,17 @@ export async function checkReport(reportId) {
     const data = await response.json();
     return data;
 }
+
+export async function invalidatePost(postId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/invalidate_post/${postId}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
