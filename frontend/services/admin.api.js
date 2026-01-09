@@ -28,3 +28,31 @@ export async function invalidatePost(postId) {
     const data = await response.json();
     return data;
 }
+
+export async function banUser(userId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/ban/${userId}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export async function unbanUser(userId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/unban/${userId}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
