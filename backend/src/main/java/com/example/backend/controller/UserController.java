@@ -9,6 +9,7 @@ import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.repository.NotificationRepository;
 import com.example.backend.repository.PostRepository;
+import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.UserStatsRepository;
 import com.example.backend.repository.action.ActionRepository;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
@@ -60,6 +61,9 @@ public class UserController {
     @Autowired
     private ActionRepository actionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -87,17 +91,26 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/stats")
-    public ResponseEntity<UserStatsResponse> getMyStats(
-        @AuthenticationPrincipal MyUserDetails userDetails
+    @GetMapping("/stats/{userId}")
+    public ResponseEntity<UserStatsResponse> getStats(
+        @PathVariable Long userId
     ) {
-        User user = userDetails.getUser();
+        var maybeUser = userRepository.findById(userId);
+
+        if (maybeUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = maybeUser.get();
+
         Optional<UserStats> maybeStats = userStatsRepository.findByUserId(
             user.getId()
         );
 
         if (maybeStats.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            maybeStats = Optional.of(
+                userStatsRepository.save(new UserStats(user))
+            );
         }
 
         UserStats stats = maybeStats.get();
@@ -108,7 +121,9 @@ public class UserController {
             .flames(stats.getFlames())
             .ecoActions(postRepository.countByUserAndValidatedTrue(user))
             .recoveredObjects(
-                postRepository.countByUserAndValidatedTrueAndObjectIsNotNull(user)
+                postRepository.countByUserAndValidatedTrueAndObjectIsNotNull(
+                    user
+                )
             )
             .build();
 

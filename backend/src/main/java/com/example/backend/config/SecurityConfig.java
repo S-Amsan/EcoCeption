@@ -36,7 +36,7 @@ public class SecurityConfig {
                     .requestMatchers("/user/**")
                     .permitAll()
                     .requestMatchers("/user/stats/**")
-                    .authenticated()
+                    .permitAll()
                     .requestMatchers("/user/notifications")
                     .authenticated()
                     .requestMatchers("/user/actions")
