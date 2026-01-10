@@ -1,12 +1,11 @@
 package com.example.backend.service;
 
-import com.example.backend.model.Card;
-import com.example.backend.model.Post;
-import com.example.backend.model.Report;
-import com.example.backend.model.User;
+import com.example.backend.model.*;
 import com.example.backend.model.document.Document;
 import com.example.backend.model.document.DocumentState;
 import com.example.backend.model.http.req.CardPublishRequest;
+import com.example.backend.model.partner.Partner;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,9 @@ public class AdminService {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private PartnerService partnerService;
 
     @Autowired
     private CardService cardService;
@@ -93,5 +95,9 @@ public class AdminService {
 
     public Card deleteCard(Long cardId) {
         return cardService.deleteCardById(cardId);
+    }
+
+    public List<Partner> getAllPartners() {
+        return partnerService.getAll();
     }
 }

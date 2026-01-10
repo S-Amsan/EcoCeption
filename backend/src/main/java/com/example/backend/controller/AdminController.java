@@ -3,9 +3,11 @@ package com.example.backend.controller;
 import com.example.backend.model.*;
 import com.example.backend.model.document.*;
 import com.example.backend.model.http.req.CardPublishRequest;
+import com.example.backend.model.partner.Partner;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.service.AdminService;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -111,6 +113,16 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.deleteCard(cardId),
+            userDetails.getUser()
+        );
+    }
+
+    @GetMapping("/partner/all")
+    public ResponseEntity<List<Partner>> getAllPartners(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.getAllPartners(),
             userDetails.getUser()
         );
     }
