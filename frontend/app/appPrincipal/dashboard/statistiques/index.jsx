@@ -14,10 +14,10 @@ import utilisateur from "../../../../assets/icones/dashboard/utilisateur.png"
 
 
 import styles from "./styles";
-import RewardsByCategoryChart from "./_graph/RewardsByCategoryChart";
-import WeeklyEcoActionsChart from "./_graph/WeeklyEcoActionsChart";
-import PostsDistributionChart from "./_graph/PostsDistributionChart";
-import AbandonedObjectsChart from "./_graph/AbandonedObjectsChart";
+import RecompensesParCategorieChart from "./_graph/RecompensesParCategorieChart";
+import GesteEcoHebdomadaire from "./_graph/GesteEcoHebdomadaire";
+import PostsRepartitionChart from "./_graph/PostsRepartitionChart";
+import ObjetsAbandonneesChart from "./_graph/ObjetsAbandonneesChart";
 
 export default function Statistiques() {
 
@@ -35,13 +35,21 @@ export default function Statistiques() {
     const cartesTab = [
         {titre : "COMPTES CRÉES", icon : utilisateur,couleur : "#4293E5", data : statistiques_Data.compteCree},
         {titre : "UTILISATEURS BANNIS", icon : utilisateur,couleur : "#EB5254", data : statistiques_Data.userBan},
-        {titre : "SIGNALEMENT", icon : signalement,couleur : "#FBD036", data : statistiques_Data.signalement},
+        {titre : "SIGNALEMENTS", icon : signalement,couleur : "#FBD036", data : statistiques_Data.signalement},
         {titre : "JUSTIFICATIFS EN ATTENTE", icon : document,couleur : "#79C360", data : statistiques_Data.justificatifs},
         {titre : "PARTENAIRES", icon : partenaire,couleur : "#7E58CF", data : statistiques_Data.partenaires},
         {titre : "RÉCOMPENSES", icon : recompense,couleur : "#2DBEBB", data : statistiques_Data.recompenses},
-        {titre : "POST PUBLIÉS", icon : post,couleur : "#F58F44", data : statistiques_Data.post},
-        {titre : "POST VALIDÉ", icon : post,couleur : "#EC3796", data : statistiques_Data.postValid},
+        {titre : "POSTS PUBLIÉS", icon : post,couleur : "#F58F44", data : statistiques_Data.post},
+        {titre : "POSTS VALIDÉS", icon : post,couleur : "#EC3796", data : statistiques_Data.postValid},
     ]
+
+    const graphsTab = [
+        {titre : "RÉPARTITION DES RÉCOMPENSES ACHETÉES PAR CATÉGORIE", component : RecompensesParCategorieChart},
+        {titre : "GESTES ÉCOLOGIQUES HEBDOMADAIRES", component : GesteEcoHebdomadaire},
+        {titre : "RÉPARTITION DES POSTS ", component : PostsRepartitionChart},
+        {titre : "RÉPARTITION DES OBJETS ABANDONNÉS ", component : ObjetsAbandonneesChart},
+    ]
+
 
     return (
         <View style={styles.container}>
@@ -67,11 +75,21 @@ export default function Statistiques() {
                         }
                     </View>
 
-                    <View style={{flex: 1, flexDirection: "row", flexWrap : "wrap", justifyContent: "space-evenly", alignItems: "center"}}>
-                        <RewardsByCategoryChart/>
-                        <WeeklyEcoActionsChart/>
-                        <PostsDistributionChart/>
-                        <AbandonedObjectsChart/>
+                    <View style={styles.graphsContainer}>
+                        {
+                            graphsTab.map((tab, index) => {
+                                const GRAPH = tab.component;
+                                return (
+                                    <View key={index} style={styles.graphContainer}>
+                                        <Text style={styles.graphTitre}>{tab.titre}</Text>
+                                        <View style={styles.graph}>
+                                            <GRAPH/>
+                                        </View>
+                                    </View>
+                                )
+                            })
+                        }
+
                     </View>
                 </ScrollView>
             </View>

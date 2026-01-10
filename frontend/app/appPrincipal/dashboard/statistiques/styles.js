@@ -44,4 +44,32 @@ export default StyleSheet.create({
         fontSize : 30,
         color : "#FFFFFF"
     },
+    graphsContainer : {
+        flex: 1,
+        flexDirection: "row",
+        flexWrap : "wrap",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        gap : 50,
+    },
+    graphContainer : {
+        width: "45%",
+        height : "45%",
+        borderRadius : 15,
+        justifyContent : "flex-end",
+        boxShadow : "0px 1px 4px rgba(0, 0, 0, 0.25)",
+        padding : 20,
+        gap : 40,
+    },
+    graphTitre : {
+        fontSize : 15,
+        fontWeight : "500",
+        textAlign: "left",
+    },
+    graph : {
+        flex : 1,
+        alignItems: "center",
+        justifyContent: "center",
+    }
+
 });

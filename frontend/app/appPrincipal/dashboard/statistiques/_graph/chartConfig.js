@@ -1,4 +1,10 @@
-export const screenWidth = 800;
+import { useWindowDimensions } from "react-native";
+
+export const useScreenDimensions = () => {
+    const { width } = useWindowDimensions();
+    return width * 0.85 * 0.40;
+};
+
 
 export const chartConfig = {
     backgroundGradientFrom: "#ffffff",
