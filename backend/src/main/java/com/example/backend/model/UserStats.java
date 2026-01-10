@@ -37,6 +37,9 @@ public class UserStats {
     private User user;
 
     @Column(nullable = false)
+    private int votes = 0;
+
+    @Column(nullable = false)
     private int points = 0;
 
     @Column(nullable = false)

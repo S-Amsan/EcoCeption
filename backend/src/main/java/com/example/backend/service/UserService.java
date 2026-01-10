@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.service.stats.UserStatsService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserStatsService statsService;
 
     @Autowired
     private FileUploadService fileUploadService;
@@ -114,5 +118,9 @@ public class UserService {
     public User changeBanStatusOf(User user, boolean banned) {
         user.setBanned(banned);
         return userRepository.save(user);
+    }
+
+    public void onPostReaction(User user) {
+        statsService.incrementVotesCount(user);
     }
 }

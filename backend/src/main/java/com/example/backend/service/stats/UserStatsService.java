@@ -24,7 +24,7 @@ public class UserStatsService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserStatsRepository userStatsRepository;
+    private UserStatsRepository statsRepository;
 
     @Autowired
     private PostRepository postRepository;
@@ -52,9 +52,9 @@ public class UserStatsService {
      */
     @Transactional
     public UserStatsResponse buildResponseForUser(User user) {
-        UserStats stats = userStatsRepository
+        UserStats stats = statsRepository
             .findByUserId(user.getId())
-            .orElseGet(() -> userStatsRepository.save(new UserStats(user)));
+            .orElseGet(() -> statsRepository.save(new UserStats(user)));
 
         return UserStatsResponse.builder()
             .points(stats.getPoints())
@@ -62,8 +62,19 @@ public class UserStatsService {
             .flames(stats.getFlames())
             .ecoActions(postRepository.countByUserAndValidatedTrue(user))
             .recoveredObjects(
-                postRepository.countByUserAndValidatedTrueAndObjectIsNotNull(user)
+                postRepository.countByUserAndValidatedTrueAndObjectIsNotNull(
+                    user
+                )
             )
             .build();
+    }
+
+    public void incrementVotesCount(User user) {
+        UserStats stats = statsRepository
+            .findByUserId(user.getId())
+            .orElseThrow();
+
+        stats.setVotes(stats.getVotes() + 1);
+        statsRepository.save(stats);
     }
 }

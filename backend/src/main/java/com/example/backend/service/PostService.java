@@ -33,6 +33,9 @@ public class PostService {
     private ObjektRepository objektRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ReportRepository reportRepository;
 
     public Post publish(PostPublishRequest request, User user)
@@ -77,6 +80,7 @@ public class PostService {
                     break;
             }
 
+            userService.onPostReaction(user);
             actionService.onPostReaction(post);
         }
     }
