@@ -65,6 +65,8 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers("/object/post")
                     .authenticated()
+                    .requestMatchers("/object/**")
+                    .authenticated()
                     .requestMatchers("/object/all")
                     .permitAll()
                     .requestMatchers("/object/pickup/**")

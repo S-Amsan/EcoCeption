@@ -58,6 +58,20 @@ public class ObjektController {
         return ResponseEntity.ok(objektRepository.save(object));
     }
 
+    @GetMapping("/{objectId}")
+    public ResponseEntity<Objekt> fetchObjectById(
+        @PathVariable Long objectId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        var maybeObject = objektRepository.findById(objectId);
+
+        if (maybeObject.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(maybeObject.get());
+    }
+
     @PostMapping("/pickup/{objectId}")
     public ResponseEntity<Void> pickupObject(
         @PathVariable Long objectId,
