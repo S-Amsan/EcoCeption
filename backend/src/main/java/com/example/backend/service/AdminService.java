@@ -4,6 +4,7 @@ import com.example.backend.model.*;
 import com.example.backend.model.document.Document;
 import com.example.backend.model.document.DocumentState;
 import com.example.backend.model.http.req.CardPublishRequest;
+import com.example.backend.model.http.req.PartnerAddRequest;
 import com.example.backend.model.partner.Partner;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +100,9 @@ public class AdminService {
 
     public List<Partner> getAllPartners() {
         return partnerService.getAll();
+    }
+
+    public Partner addPartner(PartnerAddRequest request) {
+        return partnerService.addPartner(request);
     }
 }

@@ -2,7 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.model.*;
 import com.example.backend.model.document.*;
-import com.example.backend.model.http.req.CardPublishRequest;
+import com.example.backend.model.http.req.*;
 import com.example.backend.model.partner.Partner;
 import com.example.backend.model.security.MyUserDetails;
 import com.example.backend.service.AdminService;
@@ -123,6 +123,17 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.getAllPartners(),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/partner/add")
+    public ResponseEntity<Partner> addPartner(
+        @Valid PartnerAddRequest request,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.addPartner(request),
             userDetails.getUser()
         );
     }
