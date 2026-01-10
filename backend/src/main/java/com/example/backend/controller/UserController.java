@@ -101,9 +101,9 @@ public class UserController {
     public List<Notification> getMyNotifications(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        return
-            notificationService.getNotificationsForUser(userDetails.getUser())
-        ;
+        return notificationService.getNotificationsForUser(
+            userDetails.getUser()
+        );
     }
 
     @PostMapping("/update")
@@ -152,10 +152,16 @@ public class UserController {
         return ResponseEntity.ok(maybeTotal.get());
     }
 
-    @GetMapping("/actions")
-    public List<Action> getUserActions(
+    @GetMapping("/actions/my")
+    public List<Action> getMyActions(
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
         return actionService.getActionsForUser(userDetails.getUser());
+    }
+
+    @GetMapping("/actions/{userId}")
+    public List<Action> getActionsForUser(@PathVariable Long userId) {
+        User user = userService.getUserById(userId).orElseThrow();
+        return actionService.getActionsForUser(user);
     }
 }
