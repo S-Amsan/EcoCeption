@@ -5,9 +5,11 @@ import com.example.backend.model.action.Action;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.model.security.MyUserDetails;
+import com.example.backend.model.success.Success;
 import com.example.backend.service.ActionService;
 import com.example.backend.service.CompetitionService;
 import com.example.backend.service.EventService;
+import com.example.backend.service.SuccessService;
 import com.example.backend.service.UserService;
 import com.example.backend.service.notification.NotificationService;
 import com.example.backend.service.stats.UserStatsService;
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     private ActionService actionService;
+
+    @Autowired
+    private SuccessService successService;
 
     @Autowired
     private CompetitionService competitionService;
@@ -163,5 +168,18 @@ public class UserController {
     public List<Action> getActionsForUser(@PathVariable Long userId) {
         User user = userService.getUserById(userId).orElseThrow();
         return actionService.getActionsForUser(user);
+    }
+
+    @GetMapping("/success/my")
+    public List<Success> getMySuccess(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return successService.getSuccessForUser(userDetails.getUser());
+    }
+
+    @GetMapping("/success/{userId}")
+    public List<Success> getSuccessForUser(@PathVariable Long userId) {
+        User user = userService.getUserById(userId).orElseThrow();
+        return successService.getSuccessForUser(user);
     }
 }

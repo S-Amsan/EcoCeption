@@ -4,6 +4,7 @@ import com.example.backend.model.User;
 import com.example.backend.model.success.*;
 import com.example.backend.repository.success.*;
 import com.example.backend.repository.success.SuccessTypeRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,9 @@ public class SuccessService {
         }
 
         private long id;
+    }
+
+    public List<Success> getSuccessForUser(User user) {
+        return successRepository.findAllByUser(user);
     }
 }
