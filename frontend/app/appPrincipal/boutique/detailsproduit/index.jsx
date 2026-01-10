@@ -20,7 +20,6 @@ export default function DetailProduit() {
     const router = useRouter();
     const params = useLocalSearchParams();
 
-
     const id = params.id ?? "";
     const titreCourt = params.titre ?? "Produit";
     const titreComplet = params.titreComplet ?? `E-carte cadeau ${titreCourt} de 10€`;
@@ -32,6 +31,20 @@ export default function DetailProduit() {
     const { ajouterAuPanier, acheterOffre } = usePanier();
     const { toggleFavori, estFavori } = usePanier();
     const favori = estFavori(id);
+
+    const articleCourant = {
+        id: String(id),
+        titre: String(titreCourt),
+        titreComplet: String(titreComplet),
+        description: String(params.description ?? ""),
+        descriptionLongue: String(description),
+        points: Number(points),
+        imageCarte: String(imageCarte),
+        banniere: String(imageBanniere),
+        type: String(type),
+        quantity: 1,
+    };
+
 
     const handleAddToCartWeb = useCallback(() => {
         ajouterAuPanier({
@@ -119,11 +132,22 @@ export default function DetailProduit() {
                                 </Pressable>
 
                                 <View style={styles.actionsDroite}>
-                                    <Pressable style={styles.boutonIcone}>
+                                    <Pressable
+                                        style={styles.boutonIcone}
+                                        onPress={() => {/* jvais faire presse papier ici */}}
+                                    >
                                         <Image source={partage} style={styles.iconeAction} />
                                     </Pressable>
-                                    <Pressable style={styles.boutonIcone}>
-                                        <Image source={coeur} style={styles.iconeAction} />
+
+                                    <Pressable
+                                        style={styles.boutonIcone}
+                                        onPress={() => toggleFavori(articleCourant)}
+                                    >
+                                        <Ionicons
+                                            name={favori ? "heart" : "heart-outline"}
+                                            size={25}
+                                            color={favori ? "red" : "black"}
+                                        />
                                     </Pressable>
                                 </View>
                             </View>
@@ -269,17 +293,10 @@ export default function DetailProduit() {
                                                 <Image source={partage} style={styles.boutonSecondaireIcon} resizeMode="contain" />
                                             </Pressable>
 
-                                            <Pressable style={styles.boutonSecondaire} onPress={() => toggleFavori({
-                                                id,
-                                                titre: titreCourt,
-                                                titreComplet,
-                                                description: params.description ?? "",
-                                                descriptionLongue: description,
-                                                points,
-                                                imageCarte,
-                                                banniere: imageBanniere,
-                                                type,
-                                            })}>
+                                            <Pressable
+                                                style={styles.boutonSecondaire}
+                                                onPress={() => toggleFavori(articleCourant)}
+                                            >
                                                 <LinearGradient
                                                     colors={["#00DB83", "#0CD8A9"]}
                                                     start={{ x: 0, y: 0 }}
@@ -287,13 +304,15 @@ export default function DetailProduit() {
                                                     style={styles.boutonGradient}
                                                     pointerEvents="none"
                                                 />
-                                                <Image
-                                                    source={coeur}
-                                                    style={[styles.boutonSecondaireIcon, favori && { tintColor: "red" }]}
-                                                    resizeMode="contain"
-                                                />
-                                            </Pressable>
 
+                                                <Ionicons
+                                                    name={favori ? "heart" : "heart-outline"}
+                                                    size={35}
+                                                    color={favori ? "red" : "white"}
+                                                    style={{ zIndex: 2, marginTop: 3 }}
+                                                />
+
+                                            </Pressable>
 
                                             <Pressable
                                                 style={[styles.boutonPrincipal, webNoSelect.noSelect]}

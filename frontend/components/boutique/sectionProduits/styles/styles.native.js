@@ -79,6 +79,7 @@ export default StyleSheet.create({
         fontSize: 16,
         color: "#666",
         marginTop: 12,
+        marginBottom: 400,
     },
 
 
