@@ -58,7 +58,7 @@ public class ObjektController {
         return ResponseEntity.ok(objektRepository.save(object));
     }
 
-    @GetMapping("/{objectId}")
+    @GetMapping("/id/{objectId}")
     public ResponseEntity<Objekt> fetchObjectById(
         @PathVariable Long objectId,
         @AuthenticationPrincipal MyUserDetails userDetails

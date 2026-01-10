@@ -65,7 +65,7 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers("/object/post")
                     .authenticated()
-                    .requestMatchers("/object/**")
+                    .requestMatchers("/object/id/**")
                     .authenticated()
                     .requestMatchers("/object/all")
                     .permitAll()

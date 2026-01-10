@@ -100,7 +100,7 @@ export async function pickupObject(object_id) {
 export async function fetchObjectById(object_id) {
     const token = await AsyncStorage.getItem("@auth_token");
 
-    const response = await fetch(`${API_URL}/object/${object_id}`, {
+    const response = await fetch(`${API_URL}/object/id/${object_id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
