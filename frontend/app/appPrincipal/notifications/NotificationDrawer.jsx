@@ -6,35 +6,60 @@ import {
     Dimensions,
     Pressable,
     Image,
-    ScrollView, useWindowDimensions,
+    ScrollView, useWindowDimensions, Platform,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { useNotification } from "./NotificationContext";
 import {width} from "../../../utils/dimensions";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const DRAWER_WIDTH = SCREEN_WIDTH*0.25;
-
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const DRAWER_WIDTH = Platform.OS === "web" ? SCREEN_WIDTH*0.25 : "100%";
+const DRAWER_HEIGHT = Platform.OS === "web" ? SCREEN_HEIGHT : 300; // hauteur du drawer mobile
 export default function NotificationDrawer() {
     const { isOpen, closeNotifications,     notifications = []} = useNotification();
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+    const translateY = useRef(new Animated.Value(DRAWER_HEIGHT)).current; // mobile part du bas
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        if (isOpen) {
-            setVisible(true);
-            Animated.timing(translateX, {
-                toValue: 0,
-                duration: 250,
-                useNativeDriver: true,
-            }).start();
-        } else {
-            Animated.timing(translateX, {
-                toValue: -DRAWER_WIDTH,
-                duration: 250,
-                useNativeDriver: true,
-            }).start(() => setVisible(false));
+        if (Platform.OS === 'web') {
+
+            if (isOpen) {
+                setVisible(true);
+                Animated.timing(translateX, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start();
+
+            }else {
+                Animated.timing(translateX, {
+                    toValue: -DRAWER_WIDTH,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start(() => setVisible(false));
+            }
+
+    }
+        else{
+            if (isOpen) {
+                setVisible(true);
+                Animated.timing(translateY, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start();
+
+            }else {
+                Animated.timing(translateY, {
+                    toValue: SCREEN_HEIGHT,
+                    duration: 250,
+                    useNativeDriver: true,
+                }).start(() => setVisible(false));
+            }
         }
+
     }, [isOpen]);
 
     if (!visible) return null;
@@ -44,7 +69,13 @@ export default function NotificationDrawer() {
     <View style={styles.overlay}>
             <Pressable style={styles.background} onPress={closeNotifications} />
 
-            <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
+            <Animated.View style={[
+                styles.drawer,
+                Platform.OS === 'web'
+                    ? { transform: [{ translateX }] }
+                    : { transform: [{ translateY }] },
+            ]}
+            >
                 <Text style={styles.title}>Notifications</Text>
 
                 <ScrollView>
@@ -92,15 +123,18 @@ const styles = StyleSheet.create({
     },
     drawer: {
         position: "absolute",
-        left: isSmall ? 80 : isMedium ? 200 : 260,
-        top: 0,
+        left: Platform.OS === "web" ? isSmall ? 80 : isMedium ? 200 : 260 : 0,
+        height: Platform.OS === "web" ? "100%" : (SCREEN_HEIGHT *0.75),
+        top: Platform.OS === "web" ? 0 : "25%",
         bottom: 0,
         width: DRAWER_WIDTH,
         backgroundColor: "#fff",
         padding: 20,
         elevation: 10,
-        borderTopRightRadius: 20,
-        borderBottomRightRadius: 20,
+        borderTopRightRadius: Platform.OS === "web" ? 20 : 20,
+        borderBottomRightRadius: Platform.OS === "web" ? 20 : 0,
+        borderTopLeftRadius : Platform.OS === "web" ? 0 : 20,
+
 
     },
     title: {
