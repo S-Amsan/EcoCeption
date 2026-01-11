@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.*;
+import com.example.backend.model.competition.Competition;
 import com.example.backend.model.document.*;
 import com.example.backend.model.http.req.*;
 import com.example.backend.model.partner.Partner;
@@ -166,6 +167,17 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.publishDonation(request),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/competition")
+    public ResponseEntity<Competition> publishCompetition(
+        @Valid CompetitionPublishRequest request,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.publishCompetition(request),
             userDetails.getUser()
         );
     }

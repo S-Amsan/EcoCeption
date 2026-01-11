@@ -1,11 +1,10 @@
 package com.example.backend.service;
 
 import com.example.backend.model.*;
+import com.example.backend.model.competition.Competition;
 import com.example.backend.model.document.Document;
 import com.example.backend.model.document.DocumentState;
-import com.example.backend.model.http.req.CardPublishRequest;
-import com.example.backend.model.http.req.DonationPublishRequest;
-import com.example.backend.model.http.req.PartnerAddRequest;
+import com.example.backend.model.http.req.*;
 import com.example.backend.model.partner.Partner;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,9 @@ public class AdminService {
 
     @Autowired
     private CardService cardService;
+
+    @Autowired
+    private CompetitionService competitionService;
 
     public Report checkReport(Long reportId) {
         var maybeReport = reportService.getReportById(reportId);
@@ -120,5 +122,9 @@ public class AdminService {
 
     public Donation publishDonation(DonationPublishRequest request) {
         return donationService.publish(request);
+    }
+
+    public Competition publishCompetition(CompetitionPublishRequest request) {
+        return competitionService.publish(request);
     }
 }

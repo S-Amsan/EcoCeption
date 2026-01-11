@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.model.competition.Competition;
 import com.example.backend.model.competition.CompetitionParticipant;
+import com.example.backend.model.http.req.CompetitionPublishRequest;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
 import com.example.backend.repository.competition.CompetitionRepository;
 import java.util.Date;
@@ -84,5 +85,16 @@ public class CompetitionService {
 
         participantData.setPoints(participantData.getPoints() + diff);
         competitionParticipantRepository.save(participantData);
+    }
+
+    public Competition publish(CompetitionPublishRequest request) {
+        Competition competition = new Competition();
+
+        competition.setName(request.getName());
+        competition.setDeadline(request.getDeadline());
+        competition.setGoalPoints(request.getGoalPoints());
+        competition.setInscriptionCost(request.getInscriptionCost());
+
+        return competitionRepository.save(competition);
     }
 }
