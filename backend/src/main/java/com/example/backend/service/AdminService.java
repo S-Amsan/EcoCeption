@@ -4,6 +4,7 @@ import com.example.backend.model.*;
 import com.example.backend.model.document.Document;
 import com.example.backend.model.document.DocumentState;
 import com.example.backend.model.http.req.CardPublishRequest;
+import com.example.backend.model.http.req.DonationPublishRequest;
 import com.example.backend.model.http.req.PartnerAddRequest;
 import com.example.backend.model.partner.Partner;
 import java.util.List;
@@ -24,6 +25,9 @@ public class AdminService {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private DonationService donationService;
 
     @Autowired
     private PartnerService partnerService;
@@ -108,5 +112,13 @@ public class AdminService {
 
     public Partner deletePartner(Long partnerId) {
         return partnerService.deletePartner(partnerId);
+    }
+
+    public List<Donation> getAllDonations() {
+        return donationService.getAll();
+    }
+
+    public Donation publishDonation(DonationPublishRequest request) {
+        return donationService.publish(request);
     }
 }

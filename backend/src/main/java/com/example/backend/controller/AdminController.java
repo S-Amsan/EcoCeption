@@ -148,4 +148,25 @@ public class AdminController {
             userDetails.getUser()
         );
     }
+
+    @GetMapping("/donation/all")
+    public ResponseEntity<List<Donation>> getAllDonations(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.getAllDonations(),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/donation")
+    public ResponseEntity<Donation> publishDonation(
+        @Valid DonationPublishRequest request,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.publishDonation(request),
+            userDetails.getUser()
+        );
+    }
 }

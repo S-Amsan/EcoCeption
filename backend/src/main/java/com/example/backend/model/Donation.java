@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.example.backend.model.partner.Partner;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,6 +39,10 @@ public class Donation {
 
     @Column(nullable = false)
     private String bannerImageUrl;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "partner_id", nullable = false)
+    private Partner partner;
 
     public Donation() {}
 }
