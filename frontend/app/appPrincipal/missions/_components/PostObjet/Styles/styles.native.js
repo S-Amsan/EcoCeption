@@ -3,7 +3,9 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         padding: 30,
+        paddingBottom:30,
         backgroundColor: "#fff",
+        flex: 1,
     },
 
     rewardBox: {
@@ -45,9 +47,6 @@ export default StyleSheet.create({
         textAlignVertical: "top",
     },
 
-    /* ======================
-       📷 PHOTO
-    ====================== */
     photoBox: {
         height: 160,
         backgroundColor: "#F5F5F5",
@@ -55,14 +54,13 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 8,
-        overflow: "hidden", // indispensable pour le borderRadius
+        overflow: "hidden",
     },
 
     preview: {
         width: "100%",
         height: "100%",
         resizeMode: "cover",
-        borderRadius: 12,
     },
 
     photoIcon: {
@@ -82,6 +80,7 @@ export default StyleSheet.create({
         paddingVertical: 16,
         borderRadius: 30,
         alignItems: "center",
+        marginBottom: 24,
     },
 
     submitText: {
@@ -90,55 +89,22 @@ export default StyleSheet.create({
         fontWeight: "700",
     },
 
-    /* ======================
-       🌐 MODAL WEB
-    ====================== */
-    modalOverlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-    },
-
-    modalContent: {
-        width: 480,
-        maxHeight: "90vh",
-        backgroundColor: "#fff",
-        borderRadius: 16,
-        overflow: "hidden",
-    },
-
-    modalClose: {
-        position: "absolute",
-        top: 12,
-        right: 12,
-        zIndex: 10,
-    },
-
-    /* ======================
-       📤 MENU UPLOAD
-    ====================== */
+    /* 📤 MENU UPLOAD */
     menuOverlay: {
-        position: "fixed",
+        position: "absolute",
         left: 0,
         right: 0,
-        bottom: 0,
         top: 0,
+        bottom: 0,
         backgroundColor: "rgba(0,0,0,0.4)",
         justifyContent: "flex-end",
-        zIndex: 2000,
     },
-
 
     menuContainer: {
         backgroundColor: "#f3f3f3",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        paddingBottom: 24,
     },
 
     menuRow: {
@@ -153,7 +119,6 @@ export default StyleSheet.create({
         height: 28,
         resizeMode: "contain",
         marginRight: 16,
-
     },
 
     menuText: {

@@ -45,9 +45,6 @@ export default StyleSheet.create({
         textAlignVertical: "top",
     },
 
-    /* ======================
-       📷 PHOTO
-    ====================== */
     photoBox: {
         height: 160,
         backgroundColor: "#F5F5F5",
@@ -55,14 +52,13 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 8,
-        overflow: "hidden", // indispensable pour le borderRadius
+        overflow: "hidden",
     },
 
     preview: {
         width: "100%",
         height: "100%",
         resizeMode: "cover",
-        borderRadius: 12,
     },
 
     photoIcon: {
@@ -90,22 +86,19 @@ export default StyleSheet.create({
         fontWeight: "700",
     },
 
-    /* ======================
-       🌐 MODAL WEB
-    ====================== */
+    /* 🌐 MODAL */
     modalOverlay: {
         position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        inset: 0,
         backgroundColor: "rgba(0,0,0,0.5)",
+        display: "flex",
         justifyContent: "center",
         alignItems: "center",
         zIndex: 1000,
     },
 
     modalContent: {
+        position: "relative",
         width: 480,
         maxHeight: "90vh",
         backgroundColor: "#fff",
@@ -120,32 +113,31 @@ export default StyleSheet.create({
         zIndex: 10,
     },
 
-    /* ======================
-       📤 MENU UPLOAD
-    ====================== */
+    /* 📤 MENU UPLOAD */
     menuOverlay: {
-        position: "fixed",
+        position: "absolute",
         left: 0,
         right: 0,
-        bottom: 0,
         top: 0,
-        backgroundColor: "rgba(0,0,0,0.4)",
+        bottom: 0,
         justifyContent: "flex-end",
-        zIndex: 2000,
+        zIndex: 20,
     },
-
 
     menuContainer: {
         backgroundColor: "#f3f3f3",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        paddingBottom: 24,
     },
 
     menuRow: {
+        display: "flex",
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 20,
         paddingHorizontal: 24,
+        cursor: "pointer",
     },
 
     menuIcon: {
@@ -153,7 +145,6 @@ export default StyleSheet.create({
         height: 28,
         resizeMode: "contain",
         marginRight: 16,
-
     },
 
     menuText: {

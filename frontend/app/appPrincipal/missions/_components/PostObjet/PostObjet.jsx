@@ -196,30 +196,49 @@ export default function PostObjet({ onBack }) {
                     >
                         {Content}
                     </ScrollView>
-                </View>
+                    {showUploadMenu && (
+                        <Pressable
+                            style={styles.menuOverlay}
+                            onPress={() => setShowUploadMenu(false)}
+                        >
+                            <Pressable style={styles.menuContainer} onPress={() => {}}>
 
-                {showUploadMenu && (
-                    <Pressable
-                        style={styles.menuOverlay}
-                        onPress={() => setShowUploadMenu(false)}
-                    >
-                        <Pressable style={styles.menuContainer}>
-                            <TouchableOpacity
-                                style={styles.menuRow}
-                                onPress={takePhoto}
-                            >
-                                <Text>Prendre une photo</Text>
-                            </TouchableOpacity>
+                                {/* 📷 Camera */}
+                                <TouchableOpacity
+                                    style={styles.menuRow}
+                                    onPress={async () => {
+                                        setShowUploadMenu(false);
+                                        await takePhoto();
+                                    }}
+                                >
+                                    <Image
+                                        style={styles.menuIcon}
+                                        source={require("../../../../../assets/icones/missions/camera.png")}
+                                    />
+                                    <Text style={styles.menuText}>Prendre une photo</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={styles.menuRow}
-                                onPress={pickFromGallery}
-                            >
-                                <Text>Importer une photo</Text>
-                            </TouchableOpacity>
+                                <View style={styles.menuSeparator} />
+
+                                {/* 🖼️ Galerie */}
+                                <TouchableOpacity
+                                    style={styles.menuRow}
+                                    onPress={async () => {
+                                        setShowUploadMenu(false);
+                                        await pickFromGallery();
+                                    }}
+                                >
+                                    <Image
+                                        style={styles.menuIcon}
+                                        source={require("../../../../../assets/icones/missions/picture.png")}
+                                    />
+                                    <Text style={styles.menuText}>Importer une photo</Text>
+                                </TouchableOpacity>
+
+                            </Pressable>
                         </Pressable>
-                    </Pressable>
-                )}
+                    )}
+                </View>
             </View>
         );
     }
@@ -228,34 +247,54 @@ export default function PostObjet({ onBack }) {
        📱 MOBILE
     ====================== */
     return (
-        <ScrollView
-            contentContainerStyle={styles.container}
-            showsVerticalScrollIndicator={false}
-        >
-            {Content}
+        <View style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={styles.container}>
+                {Content}
+            </ScrollView>
 
             {showUploadMenu && (
                 <Pressable
                     style={styles.menuOverlay}
                     onPress={() => setShowUploadMenu(false)}
                 >
-                    <Pressable style={styles.menuContainer}>
+                    <Pressable style={styles.menuContainer} onPress={() => {}}>
+
+                        {/* 📷 Camera */}
                         <TouchableOpacity
                             style={styles.menuRow}
-                            onPress={takePhoto}
+                            onPress={async () => {
+                                setShowUploadMenu(false);
+                                await takePhoto();
+                            }}
                         >
-                            <Text>Prendre une photo</Text>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require("../../../../../assets/icones/missions/camera.png")}
+                            />
+                            <Text style={styles.menuText}>Prendre une photo</Text>
                         </TouchableOpacity>
 
+                        <View style={styles.menuSeparator} />
+
+                        {/* 🖼️ Galerie */}
                         <TouchableOpacity
                             style={styles.menuRow}
-                            onPress={pickFromGallery}
+                            onPress={async () => {
+                                setShowUploadMenu(false);
+                                await pickFromGallery();
+                            }}
                         >
-                            <Text>Importer une photo</Text>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require("../../../../../assets/icones/missions/picture.png")}
+                            />
+                            <Text style={styles.menuText}>Importer une photo</Text>
                         </TouchableOpacity>
+
                     </Pressable>
                 </Pressable>
             )}
-        </ScrollView>
+        </View>
+
     );
 }
