@@ -46,6 +46,9 @@ export default StyleSheet.create({
         textAlignVertical: "top",
     },
 
+    /* ======================
+       📷 PHOTO
+    ====================== */
     photoBox: {
         height: 160,
         backgroundColor: "#F5F5F5",
@@ -53,6 +56,14 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginTop: 8,
+        overflow: "hidden", // indispensable pour le borderRadius
+    },
+
+    preview: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "cover",
+        borderRadius: 12,
     },
 
     photoIcon: {
@@ -80,6 +91,9 @@ export default StyleSheet.create({
         fontWeight: "700",
     },
 
+    /* ======================
+       🌐 MODAL WEB
+    ====================== */
     modalOverlay: {
         position: "fixed",
         top: 0,
@@ -107,6 +121,31 @@ export default StyleSheet.create({
         zIndex: 10,
     },
 
+    /* ======================
+       📤 MENU UPLOAD
+    ====================== */
+    menuOverlay: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0,0,0,0.3)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    menuContainer: {
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        width: 240,
+        overflow: "hidden",
+    },
+
+    menuRow: {
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee",
+        alignItems: "center",
+    },
 });
-
-

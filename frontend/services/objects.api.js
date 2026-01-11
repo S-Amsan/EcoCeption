@@ -1,6 +1,7 @@
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../constants/API_URL";
+import {Platform} from "react-native";
 
 /**
  * Example response:
@@ -19,24 +20,36 @@ import { API_URL } from "../constants/API_URL";
 */
 export async function postObject({ title, description, address, imageUrl }) {
     const token = await AsyncStorage.getItem("@auth_token");
-    const formData = new FormData();
 
+    const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("address", address);
 
-    formData.append("image", {
-        uri: imageUrl,
-        name: "photo.jpg",
-        type: "image/jpeg",
-    });
+    if (Platform.OS === "web") {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        formData.append("image", blob, "photo.jpg");
+    } else {
+
+        if (!imageUrl.startsWith("file://")) {
+            throw new Error("imageUrl mobile invalide");
+        }
+
+        formData.append("image", {
+            uri: imageUrl,
+            name: "photo.jpg",
+            type: "image/jpeg",
+        });
+    }
 
     const response = await fetch(`${API_URL}/object/post`, {
         method: "POST",
-        body: formData,
         headers: {
             Authorization: `Bearer ${token}`,
         },
+        body: formData,
     });
 
     if (!response.ok) {

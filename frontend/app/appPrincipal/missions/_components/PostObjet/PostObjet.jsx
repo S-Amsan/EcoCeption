@@ -19,7 +19,12 @@ export default function PostObjet({ onBack }) {
     const [title, setTitle] = useState("");
     const [address, setAddress] = useState("");
     const [description, setDescription] = useState("");
+
+    // URI utilisée pour l’upload
     const [photo, setPhoto] = useState(null);
+    // URI affichable (mobile = file://, web = blob:)
+    const [photoPreview, setPhotoPreview] = useState(null);
+
     const [showUploadMenu, setShowUploadMenu] = useState(false);
 
     /* ======================
@@ -39,9 +44,7 @@ export default function PostObjet({ onBack }) {
             allowsEditing: true,
         });
 
-        if (!result.canceled) {
-            setPhoto(result.assets[0].uri);
-        }
+        await handleImageResult(result);
     };
 
     /* ======================
@@ -63,8 +66,25 @@ export default function PostObjet({ onBack }) {
             allowsEditing: true,
         });
 
-        if (!result.canceled) {
-            setPhoto(result.assets[0].uri);
+        await handleImageResult(result);
+    };
+
+    /* ======================
+       🔁 TRAITEMENT IMAGE (WEB + MOBILE)
+    ====================== */
+    const handleImageResult = async (result) => {
+        if (result.canceled) return;
+
+        const uri = result.assets[0].uri;
+        setPhoto(uri);
+
+        if (isWeb) {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            const previewUrl = URL.createObjectURL(blob);
+            setPhotoPreview(previewUrl);
+        } else {
+            setPhotoPreview(uri);
         }
     };
 
@@ -136,8 +156,8 @@ export default function PostObjet({ onBack }) {
                 style={styles.photoBox}
                 onPress={() => setShowUploadMenu(true)}
             >
-                {photo ? (
-                    <Image source={{ uri: photo }} style={styles.preview} />
+                {photoPreview ? (
+                    <Image source={{ uri: photoPreview }} style={styles.preview} />
                 ) : (
                     <Text style={styles.photoIcon}>📷</Text>
                 )}
