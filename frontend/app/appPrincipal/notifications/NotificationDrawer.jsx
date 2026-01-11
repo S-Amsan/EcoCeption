@@ -8,6 +8,7 @@ import {
     Image,
     ScrollView, useWindowDimensions, Platform,
 } from "react-native";
+import { fetchNotifications } from "../../../services/notifications.api";
 import { useEffect, useRef, useState } from "react";
 import { useNotification } from "./NotificationContext";
 import {width} from "../../../utils/dimensions";
@@ -17,12 +18,14 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 const DRAWER_WIDTH = Platform.OS === "web" ? SCREEN_WIDTH*0.25 : "100%";
 const DRAWER_HEIGHT = Platform.OS === "web" ? SCREEN_HEIGHT : 300; // hauteur du drawer mobile
 export default function NotificationDrawer() {
-    const { isOpen, closeNotifications,     notifications = []} = useNotification();
+    const { isOpen, closeNotifications, notifications, setNotifications } = useNotification();
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
     const translateY = useRef(new Animated.Value(DRAWER_HEIGHT)).current; // mobile part du bas
     const [visible, setVisible] = useState(false);
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     useEffect(() => {
+
         if (Platform.OS === 'web') {
 
             if (isOpen) {
@@ -32,6 +35,18 @@ export default function NotificationDrawer() {
                     duration: 250,
                     useNativeDriver: true,
                 }).start();
+                setLoading(true);
+                fetchNotifications()
+                    .then((data) => {
+                        setNotifications(data || []); // update le contexte
+                    })
+                    .catch((e) => {
+                        console.error("Erreur notifications :", e);
+                        setNotifications([]); // si erreur, on vide
+                        setError(e);
+                    })
+                    .finally(() => setLoading(false));
+
 
             }else {
                 Animated.timing(translateX, {
@@ -79,25 +94,26 @@ export default function NotificationDrawer() {
                 <Text style={styles.title}>Notifications</Text>
 
                 <ScrollView>
-                    {notifications.length === 0 && (
+                    {loading && <Text>Chargement des notifications...</Text>}
+                    {!loading && notifications.length === 0 && (
                         <Text>Aucune notification</Text>
                     )}
-
-                    {notifications.map((notif, index) => (
+                    {!loading && notifications.map((notif, index) => (
                         <View key={index} style={styles.notification}>
-                            {notif.Img_url && (
+                            {notif.imageUrl && (
                                 <Image
-                                    source={{ uri: notif.Img_url }}
+                                    source={{ uri: notif.imageUrl }}
                                     style={styles.image}
                                 />
                             )}
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.notifTitle}>{notif.Titre}</Text>
-                                <Text style={styles.notifDesc}>{notif.Description}</Text>
-                                <Text style={styles.notifDate}>{notif.Date_Reception}</Text>
+                                <Text style={styles.notifTitle}>{notif.title}</Text>
+                                <Text style={styles.notifDesc}>{notif.description}</Text>
+                                <Text style={styles.notifDate}>{notif.receivedAt}</Text>
                             </View>
                         </View>
                     ))}
+                    {error && <Text style={{ color: "red" }}>Erreur de chargement</Text>}
                 </ScrollView>
             </Animated.View>
         </View>

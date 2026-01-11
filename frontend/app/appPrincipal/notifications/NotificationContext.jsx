@@ -39,6 +39,7 @@ export function NotificationProvider({ children }) {
                 openNotifications,
                 closeNotifications,
                 notifications,
+                setNotifications
             }}
         >
             {children}
