@@ -127,4 +127,8 @@ public class AdminService {
     public Competition publishCompetition(CompetitionPublishRequest request) {
         return competitionService.publish(request);
     }
+
+    public Competition deleteCompetition(Long competitionId) {
+        return competitionService.deleteCompetition(competitionId);
+    }
 }

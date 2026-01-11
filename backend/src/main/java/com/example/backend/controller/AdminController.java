@@ -181,4 +181,15 @@ public class AdminController {
             userDetails.getUser()
         );
     }
+
+    @DeleteMapping("/competition/{competitionId}")
+    public ResponseEntity<Competition> deleteCompetition(
+        @PathVariable Long competitionId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.deleteCompetition(competitionId),
+            userDetails.getUser()
+        );
+    }
 }

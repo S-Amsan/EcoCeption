@@ -97,4 +97,14 @@ public class CompetitionService {
 
         return competitionRepository.save(competition);
     }
+
+    public Competition deleteCompetition(Long competitionId) {
+        Competition competition = competitionRepository
+            .findById(competitionId)
+            .orElseThrow();
+
+        competitionRepository.delete(competition);
+
+        return competition;
+    }
 }
