@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity, TextInput, Image} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-
+import { useNotification } from "../app/appPrincipal/notifications/NotificationContext.jsx";
 import styles from "./styles/stylesHeader";
 import React, {useState} from "react";
 import {useNavigation, useRouter} from "expo-router";
@@ -37,6 +37,7 @@ export default function Header({
 
     const router = useRouter();
     const navigation = useNavigation();
+    const {openNotifications} = useNotification();
 
     // Filtre actuellement ouvert
     const [filtreActif, setFiltreActif] = useState(null);
@@ -280,8 +281,8 @@ export default function Header({
 
         {/* BOUTON NOTIFICATION */}
         {boutonNotification && (
-            <TouchableOpacity style={styles.boutonNotificationContainer} onPress={() => alert("rediriger vers Notification, changer quand la page sera crée, remplacer par : router.push(`/appPrincipal/notification`)")}>
-                <Image
+            <TouchableOpacity style={styles.boutonNotificationContainer} onPress={openNotifications}>
+            <Image
                     source={getNotificationIcon()}
                     style={{width: 30, height: 34}}
                 />
