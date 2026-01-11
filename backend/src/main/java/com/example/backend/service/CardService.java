@@ -50,7 +50,7 @@ public class CardService {
                 '/' +
                 fileUploadResponse.getFilename()
         );
-        card.setTrophies(request.getTrophies());
+        card.setPoints(request.getPoints());
         return cardRepository.save(card);
     }
 

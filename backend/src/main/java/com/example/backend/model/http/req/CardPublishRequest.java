@@ -19,5 +19,5 @@ public class CardPublishRequest {
     private MultipartFile photo;
 
     @NotNull
-    private Integer trophies;
+    private Integer points;
 }

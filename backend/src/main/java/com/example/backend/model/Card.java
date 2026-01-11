@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.example.backend.model.partner.Partner;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,7 +23,7 @@ public class Card {
     private String photoUrl;
 
     @Column(nullable = false)
-    private Integer trophies;
+    private Integer points;
 
     public Card() {}
 }
