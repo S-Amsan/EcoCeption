@@ -184,3 +184,80 @@ export async function deletePartner(partnerId) {
     const data = await response.json();
     return data;
 }
+
+export async function fetchDonations() {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/donation/all`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export async function publishDonation(
+    slug,
+    title,
+    fullTitle,
+    description,
+    fullDescription,
+    points,
+    image,
+    cardImage,
+    bannerImage,
+    partnerId
+) {
+    const token = await AsyncStorage.getItem("@auth_token");
+    const formData = new FormData();
+
+    formData.append("slug", slug);
+    formData.append("title", title);
+    formData.append("fullTitle", fullTitle);
+    formData.append("description", description);
+    formData.append("fullDescription", fullDescription);
+    formData.append("points", points);
+    formData.append("partnerId", partnerId);
+
+    if (Platform.OS === "web") {
+        formData.append("image", image);
+    } else {
+        formData.append("image", {
+            uri: image.uri,
+            name: image.name ?? "document.jpg",
+            type: image.type ?? "image/jpeg",
+        });
+    }
+
+    if (Platform.OS === "web") {
+        formData.append("cardImage", cardImage);
+    } else {
+        formData.append("cardImage", {
+            uri: cardImage.uri,
+            name: cardImage.name ?? "document.jpg",
+            type: cardImage.type ?? "image/jpeg",
+        });
+    }
+
+    if (Platform.OS === "web") {
+        formData.append("bannerImage", bannerImage);
+    } else {
+        formData.append("bannerImage", {
+            uri: bannerImage.uri,
+            name: bannerImage.name ?? "document.jpg",
+            type: bannerImage.type ?? "image/jpeg",
+        });
+    }
+
+    const response = await fetch(`${API_URL}/admin/donation`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
