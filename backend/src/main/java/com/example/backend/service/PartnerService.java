@@ -47,4 +47,14 @@ public class PartnerService {
         );
         return partnerRepository.save(partner);
     }
+
+    public Partner deletePartner(Long partnerId) {
+        return partnerRepository
+            .findById(partnerId)
+            .map(partner -> {
+                partnerRepository.delete(partner);
+                return partner;
+            })
+            .orElseThrow(() -> new RuntimeException("Partner not found"));
+    }
 }

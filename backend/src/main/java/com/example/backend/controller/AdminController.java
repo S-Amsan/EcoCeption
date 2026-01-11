@@ -137,4 +137,15 @@ public class AdminController {
             userDetails.getUser()
         );
     }
+
+    @DeleteMapping("/partner/{partnerId}")
+    public ResponseEntity<Partner> deletePartner(
+        @PathVariable Long partnerId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.deletePartner(partnerId),
+            userDetails.getUser()
+        );
+    }
 }

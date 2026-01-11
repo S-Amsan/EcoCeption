@@ -105,4 +105,8 @@ public class AdminService {
     public Partner addPartner(PartnerAddRequest request) {
         return partnerService.addPartner(request);
     }
+
+    public Partner deletePartner(Long partnerId) {
+        return partnerService.deletePartner(partnerId);
+    }
 }
