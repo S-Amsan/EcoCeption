@@ -99,6 +99,7 @@ export default function NotificationDrawer() {
                         <Text>Aucune notification</Text>
                     )}
                     {!loading && notifications.map((notif, index) => (
+
                         <View key={index} style={styles.notification}>
                             {notif.imageUrl && (
                                 <Image
@@ -110,6 +111,7 @@ export default function NotificationDrawer() {
                                 <Text style={styles.notifTitle}>{notif.title}</Text>
                                 <Text style={styles.notifDesc}>{notif.description}</Text>
                                 <Text style={styles.notifDate}>{notif.receivedAt}</Text>
+                                <Text style={styles.notifTitle}>{notif.status}</Text>
                             </View>
                         </View>
                     ))}

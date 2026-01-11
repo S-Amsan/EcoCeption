@@ -323,7 +323,9 @@ export default function Header({
         {/* ---- DROITE ----- */}
         {/* BOUTON PARAMETRES*/}
         {boutonParametres && (
-            <TouchableOpacity style={styles.boutonParametresContainer} onPress={() => alert("rediriger vers Parametres, changer quand la page sera crée, remplacer par : router.push(`/appPrincipal/parametres`)")}>
+            <TouchableOpacity style={styles.boutonParametresContainer}
+                              onPress={() => router.push("/appPrincipal/parametres")}
+            >
                 <Image
                     source={parametres}
                     style={{width: 26.5, height: 25}}
