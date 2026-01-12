@@ -1,24 +1,34 @@
 import React, { useState } from "react";
-import {View, Text, ScrollView, Pressable, Platform} from "react-native";
+import {View, Text, ScrollView, Pressable, Platform, Alert} from "react-native";
 import Header from "../../../components/Header";
 import styles from "./styles/parametresStyle";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SETTINGS_MENU = [
     { key: "account", label: "Votre compte" },
     { key: "security", label: "Sécurité et accès au compte" },
     { key: "privacy", label: "Confidentialité et sécurité" },
     { key: "notifications", label: "Notifications" },
-    { key: "accessibility", label: "Accessibilité, affichage et langues" },
+    { key: "accessibility", label: "Thèmes" },
     { key: "resources", label: "Ressources supplémentaires" },
 ];
+
+
+
+
+
 
 // Détails pour chaque section (ce qui était à droite sur le web)
 const SECTION_DETAILS = {
     account: [
-        { id: "account-info", title: "Informations du compte", desc: "Consultez les informations de votre compte comme votre numéro de téléphone et votre adresse e-mail." },
+        {   id: "account-info",
+            title: "Informations du compte",
+            desc: "Consultez les informations de votre compte comme votre numéro de téléphone et votre adresse e-mail.",
+            route: "/appPrincipal/parametres/account/info",
+        },
         { id: "account-password", title: "Changer le mot de passe", desc: "Modifiez votre mot de passe à tout moment." },
-        { id: "account-data", title: "Télécharger une archive de vos données", desc: "Obtenez un aperçu des données associées à votre compte." },
+        { id: "account-disconnection", title: "Déconnexion", desc: "Déconnectez vous." },
         { id: "account-disable", title: "Désactiver le compte", desc: "Découvrez comment désactiver temporairement ou définitivement votre compte.", danger: true },
     ],
     security: [
@@ -28,18 +38,15 @@ const SECTION_DETAILS = {
     ],
     privacy: [
         { id: "privacy-account", title: "Confidentialité du compte", desc: "Gérez qui peut voir votre contenu et interagir avec vous." },
-        { id: "privacy-blocked", title: "Comptes bloqués", desc: "Consultez et gérez la liste des comptes que vous avez bloqués." },
         { id: "privacy-visibility", title: "Visibilité du profil", desc: "Contrôlez la visibilité de votre profil et de vos informations personnelles." },
     ],
     notifications: [
         { id: "notif-pref", title: "Préférences de notifications", desc: "Choisissez comment et quand vous recevez des notifications." },
-        { id: "notif-push", title: "Notifications push", desc: "Activez ou désactivez les notifications sur votre appareil." },
-        { id: "notif-mail", title: "Notifications par e-mail", desc: "Gérez les e-mails que vous recevez concernant votre activité." },
     ],
     accessibility: [
-        { id: "accessibility", title: "Accessibilité", desc: "Ajustez l’interface pour améliorer votre expérience d’utilisation." },
-        { id: "display", title: "Affichage", desc: "Modifiez le thème, la taille du texte et l’apparence générale." },
-        { id: "language", title: "Langue", desc: "Choisissez la langue utilisée dans l’application." },
+        { id: "dark", title: "Sombre" },
+        { id: "light", title: "Clair"},
+
     ],
     resources: [
         { id: "help", title: "Centre d’aide", desc: "Consultez les réponses aux questions fréquentes." },
@@ -57,12 +64,49 @@ const getTitle = (screen) => {
 };
 export default function ParametresMobile() {
     const router = useRouter(); // ✅ OBLIGATOIRE
+
+    const logout = async () => {
+        await AsyncStorage.removeItem("@auth_token");
+        await AsyncStorage.removeItem("@auth_email");
+        await AsyncStorage.removeItem("@auth_user");
+
+        router.replace("Login"); // ou "/"
+    };
+
+
+    function disableAccount() {
+        return undefined;
+    }
+
+    const confirmDisableAccount = () => {
+        Alert.alert(
+            "Désactiver le compte",
+            "Êtes-vous sûr de vouloir désactiver votre compte ? Cette action est irréversible.",
+            [
+                {
+                    text: "Non",
+                    style: "cancel",
+                },
+                {
+                    text: "Oui, je suis sûr",
+                    style: "destructive",
+                    onPress: () => disableAccount(),
+                },
+            ]
+        );
+    };
     const [screen, setScreen] = useState("main");
 
-    const SettingItem = ({ title, desc, danger = false }) => (
+    const SettingItem = ({ id, title, desc, danger = false, onPress}) => (
         <Pressable
             style={[styles.settingItem, danger && styles.settingItemDanger]}
-        >
+            onPress={() => {
+                if (id === "account-disconnection") logout();
+                if (id === "account-disable") confirmDisableAccount();
+
+            }}
+
+            >
             <Text style={[styles.settingTitle, danger && styles.settingDanger]}>
                 {title}
             </Text>
@@ -107,9 +151,15 @@ export default function ParametresMobile() {
                     SECTION_DETAILS[screen]?.map((item) => (
                         <SettingItem
                             key={item.id}
+                            id={item.id}          // ✅ OBLIGATOIRE
                             title={item.title}
                             desc={item.desc}
                             danger={item.danger}
+                            onPress={() => {
+                                if (item.route) {
+                                    router.push(item.route);
+                                }
+                            }}
                         />
                     ))
                 }
