@@ -97,16 +97,20 @@ public class AdminController {
         );
     }
 
-    @PostMapping("/card/publish")
+    @PostMapping(
+            value = "/card/publish",
+            consumes = "multipart/form-data"
+    )
     public ResponseEntity<Card> publishCard(
-        @Valid CardPublishRequest request,
-        @AuthenticationPrincipal MyUserDetails userDetails
+            @Valid @ModelAttribute CardPublishRequest request,
+            @AuthenticationPrincipal MyUserDetails userDetails
     ) {
         return createResponse(
-            () -> adminService.publishCard(request),
-            userDetails.getUser()
+                () -> adminService.publishCard(request),
+                userDetails.getUser()
         );
     }
+
 
     @DeleteMapping("/card/{cardId}")
     public ResponseEntity<Card> deleteCard(

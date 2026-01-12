@@ -1,14 +1,25 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Post;
 import com.example.backend.model.Report;
+import com.example.backend.model.User;
+import com.example.backend.repository.PostRepository;
+import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.ReportRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class ReportService {
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ReportRepository reportRepository;
@@ -25,4 +36,27 @@ public class ReportService {
         report.setChecked(true);
         return reportRepository.save(report);
     }
+
+    public Report createReport(Long postId, Long userId, String reason) {
+
+        System.out.println("=== CREATE REPORT ===");
+        System.out.println("postId = " + postId);
+        System.out.println("userId = " + userId);
+        System.out.println("reason = " + reason);
+
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new RuntimeException("Post introuvable"));
+
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        Report report = new Report();
+        report.setPost(post);
+        report.setUser(user);
+        report.setReason(reason);
+        report.setChecked(null);
+
+        return reportRepository.save(report);
+    }
+
 }

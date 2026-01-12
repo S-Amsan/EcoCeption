@@ -86,34 +86,52 @@ export async function invalidateDocument(documentId) {
     return data;
 }
 
-export async function publishCard(title, description, photo, trophies) {
+export async function publishCard(title, description, photoUrl, points, partnerId) {
     const token = await AsyncStorage.getItem("@auth_token");
+
+    if (!token) {
+        throw new Error("Utilisateur non authentifié");
+    }
+
     const formData = new FormData();
 
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("trophies", trophies);
+    formData.append("points", points);
+
+    if (partnerId) {
+        formData.append("partnerId", partnerId);
+    }
+
 
     if (Platform.OS === "web") {
-        formData.append("photo", photo); // File natif
+        const response = await fetch(photoUrl);
+        const blob = await response.blob();
+        const file = new File([blob], "photo.png", { type: blob.type });
+        formData.append("photo", file);
     } else {
+
         formData.append("photo", {
-            uri: photo.uri,
-            name: photo.name ?? "document.jpg",
-            type: photo.type ?? "image/jpeg",
+            uri: photoUrl,
+            name: "photo.jpg",
+            type: "image/jpeg",
         });
     }
 
-    const response = await fetch(`${API_URL}/admin/card`, {
+    const response = await fetch(`${API_URL}/admin/card/publish`, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
         },
-        body: formData
+        body: formData,
     });
 
-    const data = await response.json();
-    return data;
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Erreur publication carte");
+    }
+
+    return await response.json();
 }
 
 export async function deleteCard(cardId) {

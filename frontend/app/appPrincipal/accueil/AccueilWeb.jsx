@@ -184,7 +184,8 @@ export default function AccueilWeb() {
                     <Pressable style={style.modalContent} onPress={() => {}}>
                         {signalementStep === "reasons" && (
                             <SignalementReasons
-                                onSelect={() => setSignalementStep("success")}
+                                postId={selectedPostId}
+                                onSuccess={() => setSignalementStep("success")}
                             />
                         )}
 

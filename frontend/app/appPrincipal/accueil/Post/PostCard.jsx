@@ -330,7 +330,6 @@ export default function PostCard({ post, onSignaler }) {
                 </View>
             )}
 
-            {/* ACTIONS (posts normaux uniquement et pas celui du user actuel) */}
             {!postUserActuel && post?.id && (
                 <View style={styles.actions}>
                     <TouchableOpacity onPress={handleLike}>
