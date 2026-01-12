@@ -97,7 +97,8 @@ export default StyleSheet.create({
         width: "70%",
         height: 370,
         borderRadius: 16,
-        marginLeft:"12%",
+
+        alignSelf:'center'
     },
 
     actions: {
@@ -200,8 +201,10 @@ export default StyleSheet.create({
         padding: 12,
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: "#E6E6E6",
-        backgroundColor: "#FFFFFF",
+        borderColor: "#000000",
+        width: "70%",
+
+        alignSelf: "center",
     },
 
     quoteHeader: {
@@ -236,8 +239,8 @@ export default StyleSheet.create({
     },
 
     quoteImage: {
-        width: 110,
-        height: 80,
+        width: "50%",
+        height: 220,
         borderRadius: 12,
         marginRight: 12,
         backgroundColor: "#F2F2F2",
@@ -253,6 +256,4 @@ export default StyleSheet.create({
         fontWeight: "700",
         color: "#2ECC71",
     }
-
-
 });

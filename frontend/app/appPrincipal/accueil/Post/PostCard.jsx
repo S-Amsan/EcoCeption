@@ -38,8 +38,6 @@ export default function PostCard({ post, onSignaler }) {
        REACTION (posts normaux)
     ============================ */
     useEffect(() => {
-        if (isPickupPost) return;
-
         let cancelled = false;
 
         const loadReaction = async () => {
@@ -55,11 +53,7 @@ export default function PostCard({ post, onSignaler }) {
                 const disliked = await didIDislikePost(post.id);
                 if (cancelled) return;
 
-                if (disliked) {
-                    setReaction("dislike");
-                } else {
-                    setReaction(null);
-                }
+                setReaction(disliked ? "dislike" : null);
             } catch (e) {
                 console.error("Erreur chargement réaction", e);
             }
@@ -70,7 +64,8 @@ export default function PostCard({ post, onSignaler }) {
         return () => {
             cancelled = true;
         };
-    }, [post.id, isPickupPost]);
+    }, [post.id]);
+
 
     /* ============================
        AUTEUR DU POST
@@ -110,13 +105,11 @@ export default function PostCard({ post, onSignaler }) {
                     return;
                 }
 
-                // 1) Récupérer l’objet
                 const obj = await fetchObjectById(post.object_id);
                 if (cancelled) return;
 
                 setOriginalObject(obj);
 
-                // 2) Récupérer l’auteur de l’objet (publisher)
                 if (obj?.publisher_user_id) {
                     const user = await fetchUserById(obj.publisher_user_id);
                     if (cancelled) return;
@@ -151,7 +144,7 @@ export default function PostCard({ post, onSignaler }) {
        ACTIONS
     ============================ */
     const handleLike = async () => {
-        if (isPickupPost || reaction === "like" || loadingLike) return;
+        if (reaction === "like" || loadingLike) return;
 
         try {
             setLoadingLike(true);
@@ -165,7 +158,7 @@ export default function PostCard({ post, onSignaler }) {
     };
 
     const handleDislike = async () => {
-        if (isPickupPost || reaction === "dislike" || loadingLike) return;
+        if (reaction === "like" || loadingLike) return;
 
         try {
             setLoadingLike(true);
@@ -338,7 +331,7 @@ export default function PostCard({ post, onSignaler }) {
             )}
 
             {/* ACTIONS (posts normaux uniquement et pas celui du user actuel) */}
-            {!isPickupPost && !postUserActuel && (
+            {!postUserActuel && post?.id && (
                 <View style={styles.actions}>
                     <TouchableOpacity onPress={handleLike}>
                         <Image
