@@ -1,8 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.model.Objekt;
-import com.example.backend.model.User;
-import com.example.backend.model.UserStats;
+import com.example.backend.model.*;
 import com.example.backend.repository.UserStatsRepository;
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,10 @@ public class RewardService {
     public void onObjectPickup(Objekt object) {
         incrementUserPoints(object.getPublishedBy(), 500);
         incrementUserPoints(object.getPickedUpBy(), 500);
+    }
+
+    public void onPurchase(User user, Purchase purchase) {
+        incrementUserPoints(user, purchase.getPointsUsed());
     }
 
     public void maybeGainFlame(User user) {

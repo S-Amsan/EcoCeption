@@ -93,6 +93,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/admin/**")
                     .authenticated()
+                    .requestMatchers("/store/buy")
+                    .authenticated()
             )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sess ->

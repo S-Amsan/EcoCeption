@@ -1,13 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.model.Post;
-import com.example.backend.model.User;
-import com.example.backend.model.UserStats;
-import com.example.backend.model.action.Action;
-import com.example.backend.model.action.ActionType;
+import com.example.backend.model.*;
+import com.example.backend.model.action.*;
 import com.example.backend.repository.UserStatsRepository;
-import com.example.backend.repository.action.ActionRepository;
-import com.example.backend.repository.action.ActionTypeRepository;
+import com.example.backend.repository.action.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +32,10 @@ public class ActionService {
             rewardService.on5Likes(post.getUser());
             giveActionTo(post.getUser(), ActionTypes.VOTE_5_POSTS);
         }
+    }
+
+    public void onPurchase(User user) {
+        giveActionTo(user, ActionTypes.DONATE);
     }
 
     private void giveActionTo(User user, ActionTypes type) {
