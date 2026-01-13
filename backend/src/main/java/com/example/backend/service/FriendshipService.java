@@ -1,4 +1,4 @@
-package com.example.backend.service.friend;
+package com.example.backend.service;
 
 import com.example.backend.exceptions.BusinessLogicException;
 import com.example.backend.exceptions.InvalidRequestException;
@@ -11,6 +11,7 @@ import com.example.backend.repository.friend.FriendshipRepository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,16 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class FriendshipService {
 
-    private final FriendshipRepository friendshipRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private FriendshipRepository friendshipRepository;
 
-    public FriendshipService(
-        FriendshipRepository friendshipRepository,
-        UserRepository userRepository
-    ) {
-        this.friendshipRepository = friendshipRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Send a friend request from {@code requesterId} to {@code addresseeId}.

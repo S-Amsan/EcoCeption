@@ -4,7 +4,7 @@ import com.example.backend.model.User;
 import com.example.backend.model.http.req.friend.FriendRequestCreateRequest;
 import com.example.backend.model.http.res.UserResponse;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.service.friend.FriendshipService;
+import com.example.backend.service.FriendshipService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

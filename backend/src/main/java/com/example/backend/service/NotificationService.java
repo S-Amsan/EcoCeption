@@ -1,4 +1,4 @@
-package com.example.backend.service.notification;
+package com.example.backend.service;
 
 import com.example.backend.model.Notification;
 import com.example.backend.model.User;

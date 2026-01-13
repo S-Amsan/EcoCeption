@@ -3,7 +3,6 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.AccountUpdateRequest;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.service.stats.UserStatsService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

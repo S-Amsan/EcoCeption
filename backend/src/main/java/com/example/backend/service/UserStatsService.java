@@ -1,4 +1,4 @@
-package com.example.backend.service.stats;
+package com.example.backend.service;
 
 import com.example.backend.model.User;
 import com.example.backend.model.UserStats;
@@ -6,7 +6,6 @@ import com.example.backend.model.http.res.UserStatsResponse;
 import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.UserStatsRepository;
-import com.example.backend.service.PostService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
