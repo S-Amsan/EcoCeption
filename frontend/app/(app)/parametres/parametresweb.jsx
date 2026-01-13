@@ -1,27 +1,156 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, Pressable, Platform } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Navbar from "../../../components/Navbar";
 import Header from "../../../components/Header";
 import styles from "./styles/parametresStyle";
+import { deleteMyAccount } from "../../../services/user.api";
 
+/* ===== MENU GAUCHE (IDENTIQUE MOBILE) ===== */
 const SETTINGS_MENU = [
     { key: "account", label: "Votre compte" },
     { key: "security", label: "Sécurité et accès au compte" },
     { key: "privacy", label: "Confidentialité et sécurité" },
     { key: "notifications", label: "Notifications" },
-    { key: "accessibility", label: "Accessibilité, affichage et langues" },
+    { key: "accessibility", label: "Thèmes" },
     { key: "resources", label: "Ressources supplémentaires" },
 ];
 
+/* ===== DÉTAILS (IDENTIQUES MOBILE) ===== */
+const SECTION_DETAILS = {
+    account: [
+        {
+            id: "account-info",
+            title: "Informations du compte",
+            desc: "Consultez les informations de votre compte.",
+            route: "/appPrincipal/parametres/account/info",
+        },
+        {
+            id: "account-password",
+            title: "Changer le mot de passe",
+            desc: "Modifiez votre mot de passe à tout moment.",
+        },
+        {
+            id: "account-disconnection",
+            title: "Déconnexion",
+            desc: "Déconnectez-vous.",
+        },
+        {
+            id: "account-disable",
+            title: "Désactiver le compte",
+            desc: "Supprimer définitivement votre compte.",
+            danger: true,
+        },
+    ],
+    security: [
+        {
+            id: "security-main",
+            title: "Sécurité du compte",
+            desc: "Gérez la sécurité de votre compte.",
+        },
+        {
+            id: "security-password",
+            title: "Changer le mot de passe",
+            desc: "Renforcez la sécurité de votre compte.",
+        },
+        {
+            id: "security-2fa",
+            title: "Authentification à deux facteurs",
+            desc: "Ajoutez une couche de sécurité.",
+        },
+    ],
+    privacy: [
+        {
+            id: "privacy-account",
+            title: "Confidentialité du compte",
+            desc: "Gérez la visibilité de vos informations.",
+        },
+        {
+            id: "privacy-visibility",
+            title: "Visibilité du profil",
+            desc: "Contrôlez la visibilité de votre profil.",
+        },
+    ],
+    notifications: [
+        {
+            id: "notif-pref",
+            title: "Préférences de notifications",
+            desc: "Choisissez comment vous recevez les notifications.",
+        },
+    ],
+    accessibility: [
+        { id: "dark", title: "Sombre" },
+        { id: "light", title: "Clair" },
+    ],
+    resources: [
+        {
+            id: "help",
+            title: "Centre d’aide",
+            desc: "Consultez les réponses aux questions fréquentes.",
+        },
+        {
+            id: "terms",
+            title: "Conditions d’utilisation",
+            desc: "Lisez les règles du service.",
+        },
+        {
+            id: "privacy-policy",
+            title: "Politique de confidentialité",
+            desc: "Découvrez comment vos données sont utilisées.",
+        },
+    ],
+};
 
 export default function ParametresWeb() {
+    const router = useRouter();
     const [activeSection, setActiveSection] = useState("account");
     const [activeSetting, setActiveSetting] = useState(null);
 
-    const SettingItem = ({ id, title, desc, danger = false }) => (
+    /* ===== ACTIONS ===== */
+
+    const logout = async () => {
+        await AsyncStorage.removeItem("@auth_token");
+        await AsyncStorage.removeItem("@auth_email");
+        await AsyncStorage.removeItem("@auth_user");
+        router.replace("/Login");
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            await deleteMyAccount();
+            await logout();
+        } catch {
+            Alert.alert("Erreur", "Impossible de supprimer le compte");
+        }
+    };
+
+    const confirmDisableAccount = () => {
+        Alert.alert(
+            "Désactiver le compte",
+            "Êtes-vous sûr de vouloir désactiver votre compte ?",
+            [
+                { text: "Non", style: "cancel" },
+                {
+                    text: "Oui, je suis sûr",
+                    style: "destructive",
+                    onPress: handleDeleteAccount,
+                },
+            ]
+        );
+    };
+
+    /* ===== ITEM ===== */
+
+    const SettingItem = ({ id, title, desc, danger }) => (
         <Pressable
-            onPress={() => setActiveSetting(id)}
+            onPress={() => {
+                setActiveSetting(id);
+
+                if (id === "account-disconnection") logout();
+                if (id === "account-disable") confirmDisableAccount();
+            }}
             style={({ hovered }) => [
                 danger ? styles.settingItemDanger : styles.settingItem,
                 hovered && styles.settingItemHover,
@@ -31,171 +160,31 @@ export default function ParametresWeb() {
             <Text style={danger ? styles.settingDanger : styles.settingTitle}>
                 {title}
             </Text>
-            <Text style={styles.settingDesc}>{desc}</Text>
+            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
         </Pressable>
     );
 
-    const renderRightPanel = () => {
-        switch (activeSection) {
-            case "account":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Votre compte</Text>
-                        <SettingItem
-                            id="account-info"
-                            title="Informations du compte"
-                            desc="Consultez les informations de votre compte comme votre numéro de téléphone et votre adresse e-mail."
-                        />
-                        <SettingItem
-                            id="account-password"
-                            title="Changer le mot de passe"
-                            desc="Modifiez votre mot de passe à tout moment."
-                        />
-                        <SettingItem
-                            id="account-data"
-                            title="Télécharger une archive de vos données"
-                            desc="Obtenez un aperçu des données associées à votre compte."
-                        />
-                        <SettingItem
-                            id="account-disable"
-                            title="Désactiver le compte"
-                            desc="Découvrez comment désactiver temporairement ou définitivement votre compte."
-                            danger
-                        />
-                    </>
-                );
+    /* ===== PANNEAU DROIT ===== */
 
-            case "security":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Sécurité et accès au compte</Text>
-                        <SettingItem
-                            id="security-main"
-                            title="Sécurité du compte"
-                            desc="Gérez la sécurité de votre compte et protégez-le contre les accès non autorisés."
-                        />
-                        <SettingItem
-                            id="security-password"
-                            title="Chanaaaaager le mot de passe"
-                            desc="Mettez à jour votre mot de passe pour renforcer la sécurité de votre compte."
-                        />
-                        <SettingItem
-                            id="security-2fa"
-                            title="Authentification à deux facteurs"
-                            desc="Ajoutez une couche de sécurité supplémentaire lors de la connexion."
-                        />
-                    </>
-                );
+    const renderRightPanel = () => (
+        <>
+            <Text style={styles.rightTitle}>
+                {SETTINGS_MENU.find((s) => s.key === activeSection)?.label}
+            </Text>
 
-            case "privacy":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Confidentialité et sécurité</Text>
-                        <SettingItem
-                            id="privacy-account"
-                            title="Confidentialité du compte"
-                            desc="Gérez qui peut voir votre contenu et interagir avec vous."
-                        />
-                        <SettingItem
-                            id="privacy-blocked"
-                            title="Comptes bloqués"
-                            desc="Consultez et gérez la liste des comptes que vous avez bloqués."
-                        />
-                        <SettingItem
-                            id="privacy-visibility"
-                            title="Visibilité du profil"
-                            desc="Contrôlez la visibilité de votre profil et de vos informations personnelles."
-                        />
-                    </>
-                );
-
-            case "notifications":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Notifications</Text>
-                        <SettingItem
-                            id="notif-pref"
-                            title="Préférences de notifications"
-                            desc="Choisissez comment et quand vous recevez des notifications."
-                        />
-                        <SettingItem
-                            id="notif-push"
-                            title="Notifications push"
-                            desc="Activez ou désactivez les notifications sur votre appareil."
-                        />
-                        <SettingItem
-                            id="notif-mail"
-                            title="Notifications par e-mail"
-                            desc="Gérez les e-mails que vous recevez concernant votre activité."
-                        />
-                    </>
-                );
-
-            case "accessibility":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Accessibilité, affichage et langues</Text>
-                        <SettingItem
-                            id="accessibility"
-                            title="Accessibilité"
-                            desc="Ajustez l’interface pour améliorer votre expérience d’utilisation."
-                        />
-                        <SettingItem
-                            id="display"
-                            title="Affichage"
-                            desc="Modifiez le thème, la taille du texte et l’apparence générale."
-                        />
-                        <SettingItem
-                            id="language"
-                            title="Langue"
-                            desc="Choisissez la langue utilisée dans l’application."
-                        />
-                    </>
-                );
-
-            case "resources":
-                return (
-                    <>
-                        <Text style={styles.rightTitle}>Ressources supplémentaires</Text>
-                        <SettingItem
-                            id="help"
-                            title="Centre d’aide"
-                            desc="Consultez les réponses aux questions fréquentes."
-                        />
-                        <SettingItem
-                            id="terms"
-                            title="Conditions d’utilisation"
-                            desc="Lisez les règles et conditions liées à l’utilisation du service."
-                        />
-                        <SettingItem
-                            id="privacy-policy"
-                            title="Politique de confidentialité"
-                            desc="Découvrez comment vos données sont collectées et utilisées."
-                        />
-                    </>
-                );
-
-            default:
-                return <Text style={styles.placeholder}>Section en cours de construction 🚧</Text>;
-        }
-    };
+            {SECTION_DETAILS[activeSection]?.map((item) => (
+                <SettingItem key={item.id} {...item} />
+            ))}
+        </>
+    );
 
     return (
         <View style={styles.page}>
-            {Platform.OS === "web" && (
                 <View style={styles.navbar}>
                     <Navbar />
                     <Header />
                 </View>
-            )}
-            {Platform.OS !== "web" && (
-                <Header
-                    titre="Paramètres"
-                    boutonRetour={true}
-                    onBack={() => router.back()} // ou navigation.goBack()
-                    boutonNotification={true}
-                />
-            )}
+
             <View style={styles.container}>
                 <Header />
                 <View style={styles.center}>
@@ -229,11 +218,9 @@ export default function ParametresWeb() {
                 </View>
             </View>
 
-            {Platform.OS === "web" && (
                 <View style={styles.right}>
                     <ScrollView>{renderRightPanel()}</ScrollView>
                 </View>
-            )}
         </View>
     );
 }

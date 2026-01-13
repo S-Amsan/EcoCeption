@@ -4,6 +4,7 @@ import Header from "../../../components/Header";
 import styles from "./styles/parametresStyle";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deleteMyAccount } from "../../../services/user.api";
 
 const SETTINGS_MENU = [
     { key: "account", label: "Votre compte" },
@@ -74,9 +75,14 @@ export default function ParametresMobile() {
     };
 
 
-    function disableAccount() {
-        return undefined;
-    }
+    const handleDeleteAccount = async () => {
+        try {
+            await deleteMyAccount(); // appel backend existant
+            await logout();          // retour login
+        } catch (e) {
+            Alert.alert("Erreur", "Impossible de supprimer le compte");
+        }
+    };
 
     const confirmDisableAccount = () => {
         Alert.alert(
@@ -90,7 +96,7 @@ export default function ParametresMobile() {
                 {
                     text: "Oui, je suis sûr",
                     style: "destructive",
-                    onPress: () => disableAccount(),
+                    onPress: () => handleDeleteAccount,
                 },
             ]
         );

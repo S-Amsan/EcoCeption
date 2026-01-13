@@ -111,7 +111,7 @@ export default function NotificationDrawer() {
                                 <Text style={styles.notifTitle}>{notif.title}</Text>
                                 <Text style={styles.notifDesc}>{notif.description}</Text>
                                 <Text style={styles.notifDate}>{notif.receivedAt}</Text>
-                                <Text style={styles.notifTitle}>{notif.status}</Text>
+                                <Text style={styles.notifTitle}>{notif.isRead}</Text>
                             </View>
                         </View>
                     ))}
