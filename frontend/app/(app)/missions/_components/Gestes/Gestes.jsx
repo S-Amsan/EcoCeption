@@ -111,11 +111,11 @@ export default function Gestes({ onAssociate }) {
 
     if (isWeb) {
 
-
         return (
             <ScrollView contentContainerStyle={styles.webContainer}>
                 {partenaires.map((p) => {
                     const docState = p.document?.state ?? "NONE";
+                    console.log(p)
 
                     return (
                         <View key={p.id} style={styles.webCard}>
@@ -145,8 +145,7 @@ export default function Gestes({ onAssociate }) {
                         {/* MAIN CONTENT */}
                         <View style={styles.webContent}>
                             <Text style={styles.webTitle}>
-                                Associer votre {p.id === "nous" ? "carte fidélité" : "abonnement"}{" "}
-                                {p.name} à Ecoception et gagner 50 000 points
+                                {p.description}
                             </Text>
 
                             <Text style={styles.webDescription}>
