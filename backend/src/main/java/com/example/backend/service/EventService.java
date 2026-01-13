@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.model.event.Event;
 import com.example.backend.model.event.EventParticipant;
+import com.example.backend.model.http.req.EventPublishRequest;
 import com.example.backend.repository.event.EventParticipantRepository;
 import com.example.backend.repository.event.EventRepository;
 import java.util.Date;
@@ -110,5 +111,16 @@ public class EventService {
             )
             .size();
         return Optional.of(count);
+    }
+
+    public Event publish(EventPublishRequest request) {
+        Event event = new Event();
+
+        event.setName(request.getName());
+        event.setDeadline(request.getDeadline());
+        event.setGoalPoints(request.getGoalPoints());
+        event.setInscriptionCost(request.getInscriptionCost());
+
+        return eventRepository.save(event);
     }
 }

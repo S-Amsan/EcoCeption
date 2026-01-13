@@ -6,6 +6,7 @@ import com.example.backend.model.competition.Competition;
 import com.example.backend.model.document.Document;
 import com.example.backend.model.document.DocumentState;
 import com.example.backend.model.donation.Donation;
+import com.example.backend.model.event.Event;
 import com.example.backend.model.http.req.*;
 import com.example.backend.model.partner.Partner;
 import java.util.List;
@@ -38,6 +39,9 @@ public class AdminService {
 
     @Autowired
     private CompetitionService competitionService;
+
+    @Autowired
+    private EventService eventService;
 
     public Report checkReport(Long reportId) {
         var maybeReport = reportService.getReportById(reportId);
@@ -136,5 +140,9 @@ public class AdminService {
 
     public Donation deleteDonation(Long donationId) {
         return donationService.deleteDonation(donationId);
+    }
+
+    public Event publishEvent(EventPublishRequest request) {
+        return eventService.publish(request);
     }
 }

@@ -4,6 +4,7 @@ import com.example.backend.model.*;
 import com.example.backend.model.competition.Competition;
 import com.example.backend.model.document.*;
 import com.example.backend.model.donation.Donation;
+import com.example.backend.model.event.Event;
 import com.example.backend.model.http.req.*;
 import com.example.backend.model.partner.Partner;
 import com.example.backend.model.security.MyUserDetails;
@@ -179,6 +180,17 @@ public class AdminController {
     ) {
         return createResponse(
             () -> adminService.deleteDonation(donationId),
+            userDetails.getUser()
+        );
+    }
+
+    @PostMapping("/event")
+    public ResponseEntity<Event> publishEvent(
+        @Valid EventPublishRequest request,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.publishEvent(request),
             userDetails.getUser()
         );
     }

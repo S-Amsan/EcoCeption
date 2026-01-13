@@ -26,7 +26,11 @@ public class Event {
      * triggering lazy-loading / recursive structures in API responses.
      */
     @JsonIgnore
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+        mappedBy = "event",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<EventParticipant> participants;
