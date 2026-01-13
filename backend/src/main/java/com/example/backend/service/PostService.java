@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.Objekt;
 import com.example.backend.model.Post;
 import com.example.backend.model.Report;
@@ -15,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -94,7 +94,7 @@ public class PostService {
         }
     }
 
-    private ResponseEntity<Void> updatePostReactions(
+    private void updatePostReactions(
         Long postId,
         User user,
         Consumer<Post> f,
@@ -103,7 +103,7 @@ public class PostService {
         var maybePost = postRepository.findById(postId);
 
         if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Post", postId);
         }
 
         var post = maybePost.get();
@@ -113,12 +113,10 @@ public class PostService {
         maybeValidatePost(post);
 
         postRepository.save(post);
-
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> like(Long postId, User user) {
-        return updatePostReactions(
+    public void like(Long postId, User user) {
+        updatePostReactions(
             postId,
             user,
             post -> post.like(user),
@@ -126,8 +124,8 @@ public class PostService {
         );
     }
 
-    public ResponseEntity<Void> dislike(Long postId, User user) {
-        return updatePostReactions(
+    public void dislike(Long postId, User user) {
+        updatePostReactions(
             postId,
             user,
             post -> post.dislike(user),
@@ -135,26 +133,26 @@ public class PostService {
         );
     }
 
-    public ResponseEntity<Boolean> isLikedBy(Long postId, User user) {
+    public boolean isLikedBy(Long postId, User user) {
         var maybePost = postRepository.findById(postId);
 
         if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Post", postId);
         }
 
         var post = maybePost.get();
-        return ResponseEntity.ok(hasReacted(user, post.getLikes()));
+        return hasReacted(user, post.getLikes());
     }
 
-    public ResponseEntity<Boolean> isDislikedBy(Long postId, User user) {
+    public boolean isDislikedBy(Long postId, User user) {
         var maybePost = postRepository.findById(postId);
 
         if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Post", postId);
         }
 
         var post = maybePost.get();
-        return ResponseEntity.ok(hasReacted(user, post.getDislikes()));
+        return hasReacted(user, post.getDislikes());
     }
 
     private boolean hasReacted(User user, Set<User> reactions) {
@@ -166,15 +164,11 @@ public class PostService {
         DISLIKE,
     }
 
-    public ResponseEntity<Report> report(
-        Long postId,
-        PostReportRequest request,
-        User user
-    ) {
+    public Report report(Long postId, PostReportRequest request, User user) {
         var maybePost = postRepository.findById(postId);
 
         if (maybePost.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Post", postId);
         }
 
         Post post = maybePost.get();
@@ -185,7 +179,7 @@ public class PostService {
         report.setUser(user);
         report.setReason(request.getReason());
 
-        return ResponseEntity.ok(reportRepository.save(report));
+        return reportRepository.save(report);
     }
 
     public Optional<Post> getPostById(Long postId) {

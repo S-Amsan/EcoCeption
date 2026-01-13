@@ -44,7 +44,9 @@ public class PostController {
         @Valid PostReportRequest request,
         @AuthenticationPrincipal MyUserDetails user
     ) {
-        return postService.report(postId, request, user.getUser());
+        return ResponseEntity.ok(
+            postService.report(postId, request, user.getUser())
+        );
     }
 
     @PostMapping("/post/{postId}/like")
@@ -52,7 +54,8 @@ public class PostController {
         @PathVariable Long postId,
         @AuthenticationPrincipal MyUserDetails user
     ) {
-        return postService.like(postId, user.getUser());
+        postService.like(postId, user.getUser());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/post/{postId}/liked")
@@ -60,7 +63,7 @@ public class PostController {
         @PathVariable Long postId,
         @AuthenticationPrincipal MyUserDetails user
     ) {
-        return postService.isLikedBy(postId, user.getUser());
+        return ResponseEntity.ok(postService.isLikedBy(postId, user.getUser()));
     }
 
     @PostMapping("/post/{postId}/dislike")
@@ -68,7 +71,8 @@ public class PostController {
         @PathVariable Long postId,
         @AuthenticationPrincipal MyUserDetails user
     ) {
-        return postService.dislike(postId, user.getUser());
+        postService.dislike(postId, user.getUser());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/post/{postId}/disliked")
@@ -76,6 +80,8 @@ public class PostController {
         @PathVariable Long postId,
         @AuthenticationPrincipal MyUserDetails user
     ) {
-        return postService.isDislikedBy(postId, user.getUser());
+        return ResponseEntity.ok(
+            postService.isDislikedBy(postId, user.getUser())
+        );
     }
 }

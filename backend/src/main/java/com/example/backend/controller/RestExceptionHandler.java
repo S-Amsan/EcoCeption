@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.exceptions.AccountAlreadyExistsException;
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.http.res.ApiError;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.time.LocalDateTime;
@@ -72,7 +73,10 @@ public class RestExceptionHandler {
         AuthenticationException ex
     ) {
         System.out.println("Handling AuthenticationException ");
-        return buildResponse(HttpStatus.UNAUTHORIZED, "Authentication error: "+ex.getMessage());
+        return buildResponse(
+            HttpStatus.UNAUTHORIZED,
+            "Authentication error: " + ex.getMessage()
+        );
     }
 
     /**
@@ -107,6 +111,13 @@ public class RestExceptionHandler {
         AccountAlreadyExistsException ex
     ) {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleResourceNotFoundException(
+        ResourceNotFoundException ex
+    ) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     /**

@@ -12,7 +12,6 @@ import com.example.backend.service.security.JwtService;
 import java.io.IOException;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<AuthenticationResponse> login(LoginRequest request) {
+    public AuthenticationResponse login(LoginRequest request) {
         User user = userRepository
             .findByEmail(request.getEmail())
             .orElseThrow(() -> new LoginException("Utilisateur non trouvé"));
@@ -47,14 +46,14 @@ public class AuthService {
 
         String token = jwtService.generateToken(request.getEmail());
 
-        return ResponseEntity.ok(
-            new AuthenticationResponse(user.getId(), user.getPseudo(), token)
+        return new AuthenticationResponse(
+            user.getId(),
+            user.getPseudo(),
+            token
         );
     }
 
-    public ResponseEntity<AuthenticationResponse> signup(
-        SignUpRequest request
-    ) {
+    public AuthenticationResponse signup(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AccountAlreadyExistsException(
                 AccountAlreadyExistsException.Type.EMAIL,
@@ -101,8 +100,10 @@ public class AuthService {
 
         String token = jwtService.generateToken(request.getEmail());
 
-        return ResponseEntity.ok(
-            new AuthenticationResponse(user.getId(), user.getPseudo(), token)
+        return new AuthenticationResponse(
+            user.getId(),
+            user.getPseudo(),
+            token
         );
     }
 

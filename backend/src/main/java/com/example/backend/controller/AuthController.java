@@ -23,14 +23,14 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(
         @Valid LoginRequest request
     ) {
-        return authService.login(request);
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<AuthenticationResponse> signup(
         @Valid SignUpRequest request
     ) {
-        return authService.signup(request);
+        return ResponseEntity.ok(authService.signup(request));
     }
 
     // =============================
