@@ -173,7 +173,7 @@ export default function Partenaires({carte}) {
     const handleDelete = (partenaire) => {
         try {
             deletePartner(partenaire.id).then(() => {
-                carte.reloadData("partenaires");
+                carte.reloadData(["partenaires","recompenses"]);
 
                 Toast.show({
                     type: "success",

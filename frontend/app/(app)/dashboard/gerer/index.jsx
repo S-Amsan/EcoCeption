@@ -19,8 +19,8 @@ import {fetchAllReports} from "../../../../services/reports.api";
 import {fetchAllCards} from "../../../../services/cards.api";
 import {fetchAllDocuments} from "../../../../services/documents.api";
 import {fetchDonations, getAllPartners} from "../../../../services/admin.api";
-import {fetchFollowingCompetitions} from "../../../../services/competitions.api";
-import {fetchFollowingEvents} from "../../../../services/events.api";
+import {fetchAllCompetitions} from "../../../../services/competitions.api";
+import {fetchAllEvents} from "../../../../services/events.api";
 
 import {loadUser} from "../../../../services/RegisterStorage";
 import styles from "./styles";
@@ -69,8 +69,8 @@ export default function Gerer() {
         gestes: fetchAllCards,
         justificatifs: fetchAllDocuments,
         recompenses: fetchDonations,
-        evenements: fetchFollowingEvents,
-        concours: fetchFollowingCompetitions,
+        evenements: fetchAllEvents,
+        concours: fetchAllCompetitions,
         partenaires: getAllPartners,
     }), []);
 

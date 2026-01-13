@@ -8,7 +8,7 @@ import point from "../../../../../assets/icones/point.png";
 import Toast from "react-native-toast-message";
 
 import {Picker} from "@react-native-picker/picker";
-import {publishDonation} from "../../../../../services/admin.api";
+import {deleteDonation, publishDonation} from "../../../../../services/admin.api";
 
 const normalizeLabel = (t) => {
     const s = String(t ?? "").trim();
@@ -281,7 +281,8 @@ export default function Recompenses({carte, allData}) {
                 image,
                 cardImage,
                 bannerImage,
-                partnerId
+                partnerId,
+                categorie
             );
 
             carte.reloadData("recompenses");
@@ -302,6 +303,30 @@ export default function Recompenses({carte, allData}) {
             });
         }
     };
+
+
+    const handleDelete = (recompense) => {
+        try {
+            deleteDonation(recompense.id).then(() => {
+                carte.reloadData("recompenses");
+
+                Toast.show({
+                    type: "success",
+                    text1: "Confirmation de suppression",
+                    text2: `La recompense ${recompense.description} a été supprimé avec succès!`,
+                });
+            })
+        }catch (err) {
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text2: err?.message ?? "Erreur API",
+            });
+        }
+
+
+    };
+
 
     return (
         <Carte
@@ -392,7 +417,7 @@ export default function Recompenses({carte, allData}) {
 
                                     <TouchableOpacity
                                         style={[styles.bouton, styles.boutonRouge, {marginTop: 6}]}
-                                        onPress={() => {null}}
+                                        onPress={() => {handleDelete(c)}}
                                     >
                                         <Text style={styles.boutonText}>Supprimer</Text>
                                     </TouchableOpacity>
