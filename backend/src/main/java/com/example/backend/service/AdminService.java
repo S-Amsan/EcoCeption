@@ -145,4 +145,8 @@ public class AdminService {
     public Event publishEvent(EventPublishRequest request) {
         return eventService.publish(request);
     }
+
+    public Event deleteEvent(Long eventId) {
+        return eventService.deleteEvent(eventId);
+    }
 }

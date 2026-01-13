@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.model.event.Event;
 import com.example.backend.model.event.EventParticipant;
@@ -122,5 +123,15 @@ public class EventService {
         event.setInscriptionCost(request.getInscriptionCost());
 
         return eventRepository.save(event);
+    }
+
+    public Event deleteEvent(Long eventId) {
+        Event event = eventRepository
+            .findById(eventId)
+            .orElseThrow(() -> new ResourceNotFoundException("event", eventId));
+
+        eventRepository.delete(event);
+
+        return event;
     }
 }

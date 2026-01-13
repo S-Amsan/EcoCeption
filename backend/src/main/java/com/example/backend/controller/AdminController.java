@@ -195,6 +195,17 @@ public class AdminController {
         );
     }
 
+    @DeleteMapping("/event/{eventId}")
+    public ResponseEntity<Event> deleteEvent(
+        @PathVariable Long eventId,
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        return createResponse(
+            () -> adminService.deleteEvent(eventId),
+            userDetails.getUser()
+        );
+    }
+
     @PostMapping("/competition")
     public ResponseEntity<Competition> publishCompetition(
         @Valid CompetitionPublishRequest request,
