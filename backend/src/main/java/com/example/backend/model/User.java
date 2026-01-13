@@ -32,18 +32,18 @@ public class User {
     @Column(unique = true, nullable = true, length = 20)
     private String phone;
 
-    @Column(name = "photo_profile_url", nullable = true)
+    @Column(nullable = true)
     private String photoProfileUrl = null;
 
     @Column(nullable = true)
     private String profileBannerUrl = null;
 
     @CreationTimestamp
-    @Column(name = "date_creation", updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     private Instant dateCreation;
 
     @UpdateTimestamp
-    @Column(name = "date_modification", nullable = true)
+    @Column(nullable = true)
     private Instant dateModification;
 
     @Column(nullable = true)
