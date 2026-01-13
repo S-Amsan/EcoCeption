@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const PanierContext = createContext(null);
 
 const PANIER_KEY = "ecocecption_panier_articles";
+const FAVORIS_KEY = "ecocecption_favoris";
 
 const genererCodeFictif = () => {
     const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -39,7 +40,6 @@ export function PanierProvider({ children }) {
         chargerPanier();
     }, []);
 
-    // Sauvegarder le panier à chaque changement
     useEffect(() => {
         const sauvegarderPanier = async () => {
             try {
@@ -51,6 +51,34 @@ export function PanierProvider({ children }) {
 
         sauvegarderPanier();
     }, [articles]);
+
+    useEffect(() => {
+        const chargerFavoris = async () => {
+            try {
+                const raw = await AsyncStorage.getItem(FAVORIS_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) setFavoris(parsed);
+                }
+            } catch (e) {
+                console.log("Erreur chargement favoris:", e);
+            }
+        };
+
+        chargerFavoris();
+    }, []);
+
+    useEffect(() => {
+        const sauvegarderFavoris = async () => {
+            try {
+                await AsyncStorage.setItem(FAVORIS_KEY, JSON.stringify(favoris));
+            } catch (e) {
+                console.log("Erreur sauvegarde favoris:", e);
+            }
+        };
+
+        sauvegarderFavoris();
+    }, [favoris]);
 
     const nombreProduits = useMemo(() => {
         return articles.reduce((acc, it) => acc + (Number(it.quantity) || 1), 0);

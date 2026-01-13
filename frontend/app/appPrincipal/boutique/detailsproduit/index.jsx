@@ -393,7 +393,15 @@ export default function DetailProduit() {
 
                             <View style={styles.ligneInfo}>
                                 <Text style={styles.infoLabel}>Genre :</Text>
-                                <Text style={styles.infoLien}>Cartes Cadeau</Text>
+                                <Text style={styles.infoLien}>
+                                    {String(type).toLowerCase() === "carte"
+                                        ? "Cartes cadeaux"
+                                        : String(type).toLowerCase() === "coupon"
+                                            ? "Bons de réduction"
+                                            : String(type).toLowerCase() === "don"
+                                                ? "Dons"
+                                                : "Catégorie"}
+                                </Text>
                             </View>
                         </View>
                     </View>
