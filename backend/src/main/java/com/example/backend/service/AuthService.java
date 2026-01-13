@@ -10,6 +10,7 @@ import com.example.backend.model.http.res.FileUploadResponse;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.security.JwtService;
 import java.io.IOException;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -115,5 +116,20 @@ public class AuthService {
 
     public boolean phoneExists(String phone) {
         return userRepository.existsByPhone(phone);
+    }
+
+    public Map<String, Boolean> getAvailabilityStatus(
+        String pseudo,
+        String email,
+        String phone
+    ) {
+        return Map.of(
+            "pseudoTaken",
+            pseudo != null && pseudoExists(pseudo),
+            "emailTaken",
+            email != null && emailExists(email),
+            "phoneTaken",
+            phone != null && phoneExists(phone)
+        );
     }
 }

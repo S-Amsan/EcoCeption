@@ -3,10 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.model.Objekt;
 import com.example.backend.model.http.req.ObjektPostRequest;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.repository.ObjektRepository;
-import com.example.backend.service.FileUploadService;
-import com.example.backend.service.RewardService;
-import com.example.backend.service.SuccessService;
+import com.example.backend.service.ObjektService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -24,42 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class ObjektController {
 
     @Autowired
-    private FileUploadService fileUploadService;
-
-    @Autowired
-    private ObjektRepository objektRepository;
-
-    @Autowired
-    private RewardService rewardService;
-
-    @Autowired
-    private SuccessService successService;
+    private ObjektService objektService;
 
     @PostMapping("/post")
     public ResponseEntity<Objekt> post(
         @Valid ObjektPostRequest request,
         @AuthenticationPrincipal MyUserDetails userDetails
     ) throws IOException {
-        var response = fileUploadService.upload(request.getImage());
-
-        if (response.getError() != null) {
-            throw new RuntimeException(
-                "Error uploading post image: " + response.getError()
-            );
-        }
-
-        Objekt object = new Objekt();
-
-        object.setPublishedBy(userDetails.getUser());
-        object.setTitle(request.getTitle());
-        object.setDescription(request.getDescription());
-        object.setAddress(request.getAddress());
-        object.setPickedUpBy(null);
-        object.setPhotoUrl(
-            FileUploadService.endpoint.toString() + '/' + response.getFilename()
+        Objekt object = objektService.postObject(
+            request,
+            userDetails.getUser()
         );
-
-        return ResponseEntity.ok(objektRepository.save(object));
+        return ResponseEntity.ok(object);
     }
 
     @GetMapping("/id/{objectId}")
@@ -67,7 +40,7 @@ public class ObjektController {
         @PathVariable Long objectId,
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        var maybeObject = objektRepository.findById(objectId);
+        var maybeObject = objektService.getObjectById(objectId);
 
         if (maybeObject.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -81,23 +54,18 @@ public class ObjektController {
         @PathVariable Long objectId,
         @AuthenticationPrincipal MyUserDetails userDetails
     ) {
-        var maybeObject = objektRepository.findById(objectId);
-
-        if (maybeObject.isEmpty()) {
+        try {
+            objektService.pickupObject(objectId, userDetails.getUser());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
         }
-
-        var object = maybeObject.get();
-
-        object.setPickedUpBy(userDetails.getUser());
-        rewardService.onObjectPickup(objektRepository.save(object));
-        successService.onObjectPickup(userDetails.getUser());
-
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/all")
     public List<Objekt> getAll() {
-        return objektRepository.findAll();
+        return objektService.getAllObjects();
     }
 }

@@ -5,7 +5,6 @@ import com.example.backend.model.http.req.SignUpRequest;
 import com.example.backend.model.http.res.AuthenticationResponse;
 import com.example.backend.service.AuthService;
 import jakarta.validation.Valid;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +43,7 @@ public class AuthController {
         @RequestParam(required = false) String phone
     ) {
         return ResponseEntity.ok(
-            Map.of(
-                "pseudoTaken",
-                pseudo != null && authService.pseudoExists(pseudo),
-                "emailTaken",
-                email != null && authService.emailExists(email),
-                "phoneTaken",
-                phone != null && authService.phoneExists(phone)
-            )
+            authService.getAvailabilityStatus(pseudo, email, phone)
         );
     }
 }

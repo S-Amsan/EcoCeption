@@ -2,7 +2,6 @@ package com.example.backend.controller;
 
 import com.example.backend.model.document.Document;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.repository.DocumentRepository;
 import com.example.backend.service.DocumentService;
 import java.io.IOException;
 import java.util.List;
@@ -15,9 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/document")
 public class DocumentController {
-
-    @Autowired
-    private DocumentRepository documentRepository;
 
     @Autowired
     private DocumentService documentService;
@@ -35,6 +31,6 @@ public class DocumentController {
 
     @GetMapping("/all")
     public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+        return documentService.getAllDocuments();
     }
 }

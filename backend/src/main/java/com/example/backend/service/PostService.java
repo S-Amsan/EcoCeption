@@ -10,6 +10,7 @@ import com.example.backend.repository.ObjektRepository;
 import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.ReportRepository;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -201,5 +202,9 @@ public class PostService {
     public Post invalidatePost(Post post) {
         post.setValidated(false);
         return postRepository.save(post);
+    }
+
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 }

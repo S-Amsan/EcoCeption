@@ -6,6 +6,7 @@ import com.example.backend.model.event.EventParticipant;
 import com.example.backend.repository.event.EventParticipantRepository;
 import com.example.backend.repository.event.EventRepository;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,5 +78,37 @@ public class EventService {
             .sum();
 
         return Optional.of(total);
+    }
+
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
+    }
+
+    public List<Event> getEventsForUser(User user) {
+        return eventRepository.findAllByParticipantsUser(user);
+    }
+
+    public Optional<Integer> getParticipantsCount(Long eventId) {
+        var maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            return Optional.empty();
+        }
+        var event = maybeEvent.get();
+        return Optional.of(event.getParticipants().size());
+    }
+
+    public Optional<Integer> getQualifiedParticipantsCount(Long eventId) {
+        var maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            return Optional.empty();
+        }
+        var event = maybeEvent.get();
+        int count = eventParticipantRepository
+            .findAllByEventAndPointsGreaterThanEqual(
+                event,
+                event.getGoalPoints()
+            )
+            .size();
+        return Optional.of(count);
     }
 }

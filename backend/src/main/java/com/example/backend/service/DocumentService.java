@@ -7,6 +7,7 @@ import com.example.backend.model.document.DocumentState;
 import com.example.backend.repository.CardRepository;
 import com.example.backend.repository.DocumentRepository;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,9 @@ public class DocumentService {
     ) {
         document.setState(state);
         return documentRepository.save(document);
+    }
+
+    public List<Document> getAllDocuments() {
+        return documentRepository.findAll();
     }
 }

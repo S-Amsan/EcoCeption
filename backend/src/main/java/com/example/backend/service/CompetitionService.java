@@ -4,9 +4,12 @@ import com.example.backend.model.User;
 import com.example.backend.model.competition.Competition;
 import com.example.backend.model.competition.CompetitionParticipant;
 import com.example.backend.model.http.req.CompetitionPublishRequest;
+import com.example.backend.model.success.SuccessType;
 import com.example.backend.repository.competition.CompetitionParticipantRepository;
 import com.example.backend.repository.competition.CompetitionRepository;
+import com.example.backend.repository.success.SuccessTypeRepository;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,9 @@ public class CompetitionService {
 
     @Autowired
     private CompetitionParticipantRepository competitionParticipantRepository;
+
+    @Autowired
+    private SuccessTypeRepository successTypeRepository;
 
     public Competition getLatestCompetition() {
         return competitionRepository.findFirstByDeadlineAfterOrderByCreationDate(
@@ -106,5 +112,41 @@ public class CompetitionService {
         competitionRepository.delete(competition);
 
         return competition;
+    }
+
+    public List<Competition> getAllCompetitions() {
+        return competitionRepository.findAll();
+    }
+
+    public List<Competition> getCompetitionsForUser(User user) {
+        return competitionRepository.findAllByParticipantsUser(user);
+    }
+
+    public List<SuccessType> getAllSuccessTypes() {
+        return successTypeRepository.findAll();
+    }
+
+    public Optional<Integer> getParticipantsCount(Long competitionId) {
+        var maybeCompetition = competitionRepository.findById(competitionId);
+        if (maybeCompetition.isEmpty()) {
+            return Optional.empty();
+        }
+        var competition = maybeCompetition.get();
+        return Optional.of(competition.getParticipants().size());
+    }
+
+    public Optional<Integer> getQualifiedParticipantsCount(Long competitionId) {
+        var maybeCompetition = competitionRepository.findById(competitionId);
+        if (maybeCompetition.isEmpty()) {
+            return Optional.empty();
+        }
+        var competition = maybeCompetition.get();
+        int count = competitionParticipantRepository
+            .findAllByCompetitionAndPointsGreaterThanEqual(
+                competition,
+                competition.getGoalPoints()
+            )
+            .size();
+        return Optional.of(count);
     }
 }

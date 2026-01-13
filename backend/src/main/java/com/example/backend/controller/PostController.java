@@ -5,7 +5,6 @@ import com.example.backend.model.Report;
 import com.example.backend.model.http.req.PostPublishRequest;
 import com.example.backend.model.http.req.PostReportRequest;
 import com.example.backend.model.security.MyUserDetails;
-import com.example.backend.repository.PostRepository;
 import com.example.backend.service.PostService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -24,12 +23,9 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private PostRepository postRepository;
-
     @GetMapping("/posts")
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postService.getAllPosts();
     }
 
     @PostMapping("/post")
