@@ -107,7 +107,11 @@ export default function Gestes({carte, allData}) {
         console.log("AJOUT GESTE =", payload);
 
 
-        publishCard(payload.partenaire.name, payload.description, payload.partenaire.imageUrl, payload.points)
+        publishCard( payload.partenaire.name,
+            payload.description,
+            payload.partenaire.imageUrl,
+            payload.points,
+            payload.partenaireId  )
             .then(() => {
                 carte.reloadData("gestes");
                 Toast.show({
