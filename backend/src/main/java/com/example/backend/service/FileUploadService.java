@@ -1,5 +1,8 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
+import com.example.backend.exceptions.InvalidRequestException;
+import com.example.backend.exceptions.ServiceUnavailableException;
 import com.example.backend.model.http.res.FileUploadResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -22,12 +25,14 @@ public class FileUploadService {
         try {
             endpoint = new URI("http://82.66.240.161:8090/files");
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ServiceUnavailableException(
+                "Invalid file upload endpoint configuration",
+                e
+            );
         }
     }
 
     public FileUploadResponse upload(MultipartFile file) throws IOException {
-
         // 🔍 LOGS DE DEBUG (ICI ET PAS AILLEURS)
         System.out.println("ORIGINAL FILENAME = " + file.getOriginalFilename());
         System.out.println("CONTENT TYPE = " + file.getContentType());
@@ -42,23 +47,24 @@ public class FileUploadService {
         HttpResponse<String> response = sendRequest(request);
 
         if (response == null) {
-            throw new RuntimeException("Upload service unreachable");
+            throw new ServiceUnavailableException("Upload service unreachable");
         }
 
         System.out.println("UPLOAD STATUS: " + response.statusCode());
         System.out.println("UPLOAD BODY: " + response.body());
 
         if (response.statusCode() != 200) {
-            throw new RuntimeException(
-                "Upload failed: " + response.statusCode() + " " + response.body()
+            throw new FileUploadException(
+                "Upload failed: " +
+                    response.statusCode() +
+                    " " +
+                    response.body()
             );
         }
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(response.body(), FileUploadResponse.class);
     }
-
-
 
     private HttpResponse<String> sendRequest(HttpRequest request)
         throws IOException {
@@ -75,24 +81,31 @@ public class FileUploadService {
 
     private String getFileExtension(String filename) {
         if (filename == null || !filename.contains(".")) {
-            throw new IllegalArgumentException("Missing file extension");
+            throw new InvalidRequestException(
+                "filename",
+                "Missing file extension"
+            );
         }
 
-        String ext = filename.substring(filename.lastIndexOf('.') + 1)
+        String ext = filename
+            .substring(filename.lastIndexOf('.') + 1)
             .toLowerCase()
             .trim();
 
         if (!ext.matches("png|jpg|jpeg|pdf")) {
-            throw new IllegalArgumentException("Unsupported file extension: " + ext);
+            throw new InvalidRequestException(
+                "file extension",
+                "Unsupported file extension: " + ext
+            );
         }
 
         return ext;
     }
 
     public HttpResponse<String> delete(String url)
-        throws IllegalArgumentException, IOException {
+        throws InvalidRequestException, IOException {
         if (!url.startsWith(endpoint.toString())) {
-            throw new IllegalArgumentException(
+            throw new InvalidRequestException(
                 "Invalid base URL, should start with " + endpoint
             );
         }

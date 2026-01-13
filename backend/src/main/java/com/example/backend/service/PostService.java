@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
 import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.Objekt;
 import com.example.backend.model.Post;
@@ -44,7 +45,7 @@ public class PostService {
         var response = fileUploadService.upload(request.getImage());
 
         if (response.getError() != null) {
-            throw new RuntimeException(
+            throw new FileUploadException(
                 "Error uploading post image: " + response.getError()
             );
         }

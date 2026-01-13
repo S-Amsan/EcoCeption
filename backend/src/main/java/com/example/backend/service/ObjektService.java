@@ -1,5 +1,8 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.BusinessLogicException;
+import com.example.backend.exceptions.FileUploadException;
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.Objekt;
 import com.example.backend.model.User;
 import com.example.backend.model.http.req.ObjektPostRequest;
@@ -30,7 +33,7 @@ public class ObjektService {
         var uploadResponse = fileUploadService.upload(request.getImage());
 
         if (uploadResponse.getError() != null) {
-            throw new RuntimeException(
+            throw new FileUploadException(
                 "Error uploading post image: " + uploadResponse.getError()
             );
         }
@@ -58,15 +61,13 @@ public class ObjektService {
         var maybeObject = objektRepository.findById(objectId);
 
         if (maybeObject.isEmpty()) {
-            throw new IllegalArgumentException(
-                "Object not found with id: " + objectId
-            );
+            throw new ResourceNotFoundException("Object", objectId);
         }
 
         var object = maybeObject.get();
 
         if (object.getPickedUpBy() != null) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Object has already been picked up"
             );
         }

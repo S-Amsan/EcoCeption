@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
 import com.example.backend.model.donation.Donation;
 import com.example.backend.model.http.req.DonationPublishRequest;
 import com.example.backend.model.http.res.FileUploadResponse;
@@ -45,7 +46,7 @@ public class DonationService {
         try {
             fileUploadResponse = fileUploadService.upload(request.getImage());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload card photo", e);
+            throw new FileUploadException("Failed to upload card photo", e);
         }
 
         donation.setImageUrl(
@@ -59,7 +60,7 @@ public class DonationService {
                 request.getCardImage()
             );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload card photo", e);
+            throw new FileUploadException("Failed to upload card photo", e);
         }
 
         donation.setCardImageUrl(
@@ -73,7 +74,7 @@ public class DonationService {
                 request.getBannerImage()
             );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload banner photo", e);
+            throw new FileUploadException("Failed to upload banner photo", e);
         }
 
         donation.setBannerImageUrl(

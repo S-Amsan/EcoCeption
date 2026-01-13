@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
 import com.example.backend.model.http.req.PartnerAddRequest;
 import com.example.backend.model.http.res.FileUploadResponse;
 import com.example.backend.model.partner.Partner;
@@ -37,7 +38,7 @@ public class PartnerService {
         try {
             fileUploadResponse = fileUploadService.upload(request.getImage());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload card photo", e);
+            throw new FileUploadException("Failed to upload card photo", e);
         }
 
         partner.setImageUrl(

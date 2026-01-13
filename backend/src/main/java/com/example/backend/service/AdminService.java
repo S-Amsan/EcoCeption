@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.*;
 import com.example.backend.model.competition.Competition;
 import com.example.backend.model.document.Document;
@@ -42,7 +43,7 @@ public class AdminService {
         var maybeReport = reportService.getReportById(reportId);
 
         if (maybeReport.isEmpty()) {
-            throw new IllegalArgumentException("Report not found");
+            throw new ResourceNotFoundException("Report", reportId);
         }
 
         return reportService.checkReport(maybeReport.get());
@@ -52,7 +53,7 @@ public class AdminService {
         var maybePost = postService.getPostById(postId);
 
         if (maybePost.isEmpty()) {
-            throw new IllegalArgumentException("Post not found");
+            throw new ResourceNotFoundException("Post", postId);
         }
 
         return postService.invalidatePost(maybePost.get());
@@ -62,7 +63,7 @@ public class AdminService {
         var maybeUser = userService.getUserById(userId);
 
         if (maybeUser.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
+            throw new ResourceNotFoundException("User", userId);
         }
 
         return userService.changeBanStatusOf(maybeUser.get(), banned);
@@ -80,7 +81,7 @@ public class AdminService {
         var maybeDocument = documentService.getDocumentById(documentId);
 
         if (maybeDocument.isEmpty()) {
-            throw new IllegalArgumentException("Document not found");
+            throw new ResourceNotFoundException("Document", documentId);
         }
 
         return documentService.changeValidationStatusOf(

@@ -1,5 +1,7 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.Card;
 import com.example.backend.model.http.req.CardPublishRequest;
 import com.example.backend.model.http.res.FileUploadResponse;
@@ -17,9 +19,9 @@ public class CardService {
     private final FileUploadService fileUploadService;
 
     public CardService(
-            CardRepository cardRepository,
-            PartnerService partnerService,
-            FileUploadService fileUploadService
+        CardRepository cardRepository,
+        PartnerService partnerService,
+        FileUploadService fileUploadService
     ) {
         this.cardRepository = cardRepository;
         this.partnerService = partnerService;
@@ -32,8 +34,8 @@ public class CardService {
 
     public Card getCardById(Long id) {
         return cardRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Card", id));
     }
 
     public Card publish(CardPublishRequest request) {
@@ -45,20 +47,28 @@ public class CardService {
 
         if (request.getPartnerId() != null) {
             Partner partner = partnerService
-                    .getById(request.getPartnerId())
-                    .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
+                .getById(request.getPartnerId())
+                .orElseThrow(() ->
+                    new ResourceNotFoundException(
+                        "Partner",
+                        request.getPartnerId()
+                    )
+                );
             card.setPartner(partner);
         }
 
         try {
-            FileUploadResponse fileUploadResponse =
-                    fileUploadService.upload(request.getPhoto());
+            FileUploadResponse fileUploadResponse = fileUploadService.upload(
+                request.getPhoto()
+            );
 
             card.setPhotoUrl(
-                    FileUploadService.endpoint + "/" + fileUploadResponse.getFilename()
+                FileUploadService.endpoint +
+                    "/" +
+                    fileUploadResponse.getFilename()
             );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload card photo", e);
+            throw new FileUploadException("Failed to upload card photo", e);
         }
 
         return cardRepository.save(card);
@@ -70,4 +80,3 @@ public class CardService {
         return card;
     }
 }
-

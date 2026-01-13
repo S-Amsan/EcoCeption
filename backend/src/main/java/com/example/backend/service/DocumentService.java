@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.FileUploadException;
 import com.example.backend.model.Card;
 import com.example.backend.model.User;
 import com.example.backend.model.document.Document;
@@ -30,7 +31,7 @@ public class DocumentService {
         var response = fileUploadService.upload(file);
 
         if (response.getError() != null) {
-            throw new RuntimeException(response.getError());
+            throw new FileUploadException(response.getError());
         }
 
         Card card = cardRepository.findById(cardId).orElseThrow();

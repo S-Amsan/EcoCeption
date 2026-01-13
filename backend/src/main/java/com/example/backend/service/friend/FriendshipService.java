@@ -1,5 +1,8 @@
 package com.example.backend.service.friend;
 
+import com.example.backend.exceptions.BusinessLogicException;
+import com.example.backend.exceptions.InvalidRequestException;
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.model.friend.Friendship;
 import com.example.backend.model.friend.FriendshipStatus;
@@ -44,12 +47,12 @@ public class FriendshipService {
     @Transactional
     public Friendship sendRequest(Long requesterId, Long addresseeId) {
         if (requesterId == null || addresseeId == null) {
-            throw new IllegalArgumentException(
+            throw new InvalidRequestException(
                 "requesterId and addresseeId are required."
             );
         }
         if (requesterId.equals(addresseeId)) {
-            throw new IllegalArgumentException(
+            throw new InvalidRequestException(
                 "You cannot send a friend request to yourself."
             );
         }
@@ -64,17 +67,17 @@ public class FriendshipService {
             Friendship existing = existingOpt.get();
 
             if (existing.getStatus() == FriendshipStatus.PENDING) {
-                throw new IllegalStateException(
+                throw new BusinessLogicException(
                     "A friend request is already pending between these users."
                 );
             }
             if (existing.getStatus() == FriendshipStatus.ACCEPTED) {
-                throw new IllegalStateException(
+                throw new BusinessLogicException(
                     "These users are already friends."
                 );
             }
             if (existing.getStatus() == FriendshipStatus.BLOCKED) {
-                throw new IllegalStateException(
+                throw new BusinessLogicException(
                     "A friendship cannot be requested because one of the users is blocked."
                 );
             }
@@ -109,7 +112,7 @@ public class FriendshipService {
         Friendship friendship = requireFriendship(requestId);
 
         if (friendship.getStatus() != FriendshipStatus.PENDING) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only pending requests can be accepted."
             );
         }
@@ -117,12 +120,12 @@ public class FriendshipService {
             friendship.getAddressee() == null ||
             friendship.getAddressee().getId() == null
         ) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Invalid friendship: addressee is missing."
             );
         }
         if (!friendship.getAddressee().getId().equals(currentUserId)) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only the addressee can accept this friend request."
             );
         }
@@ -143,7 +146,7 @@ public class FriendshipService {
         Friendship friendship = requireFriendship(requestId);
 
         if (friendship.getStatus() != FriendshipStatus.PENDING) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only pending requests can be rejected."
             );
         }
@@ -151,12 +154,12 @@ public class FriendshipService {
             friendship.getAddressee() == null ||
             friendship.getAddressee().getId() == null
         ) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Invalid friendship: addressee is missing."
             );
         }
         if (!friendship.getAddressee().getId().equals(currentUserId)) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only the addressee can reject this friend request."
             );
         }
@@ -177,7 +180,7 @@ public class FriendshipService {
         Friendship friendship = requireFriendship(requestId);
 
         if (friendship.getStatus() != FriendshipStatus.PENDING) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only pending requests can be canceled."
             );
         }
@@ -185,12 +188,12 @@ public class FriendshipService {
             friendship.getRequester() == null ||
             friendship.getRequester().getId() == null
         ) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Invalid friendship: requester is missing."
             );
         }
         if (!friendship.getRequester().getId().equals(currentUserId)) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only the requester can cancel this friend request."
             );
         }
@@ -206,12 +209,12 @@ public class FriendshipService {
     @Transactional
     public void unfriend(Long currentUserId, Long friendUserId) {
         if (currentUserId == null || friendUserId == null) {
-            throw new IllegalArgumentException(
+            throw new InvalidRequestException(
                 "currentUserId and friendUserId are required."
             );
         }
         if (currentUserId.equals(friendUserId)) {
-            throw new IllegalArgumentException("You cannot unfriend yourself.");
+            throw new InvalidRequestException("You cannot unfriend yourself.");
         }
 
         Friendship friendship = friendshipRepository
@@ -223,7 +226,7 @@ public class FriendshipService {
             );
 
         if (friendship.getStatus() != FriendshipStatus.ACCEPTED) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                 "Only accepted friendships can be removed."
             );
         }
@@ -237,7 +240,7 @@ public class FriendshipService {
     @Transactional(readOnly = true)
     public List<User> listFriends(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("userId is required.");
+            throw new InvalidRequestException("userId is required.");
         }
 
         return friendshipRepository
@@ -254,7 +257,7 @@ public class FriendshipService {
     @Transactional(readOnly = true)
     public List<User> listIncomingRequests(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("userId is required.");
+            throw new InvalidRequestException("userId is required.");
         }
 
         return friendshipRepository
@@ -271,7 +274,7 @@ public class FriendshipService {
     @Transactional(readOnly = true)
     public List<User> listOutgoingRequests(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("userId is required.");
+            throw new InvalidRequestException("userId is required.");
         }
 
         return friendshipRepository
@@ -287,7 +290,7 @@ public class FriendshipService {
         Long userIdB
     ) {
         if (userIdA == null || userIdB == null) {
-            throw new IllegalArgumentException("Both user ids are required.");
+            throw new InvalidRequestException("Both user ids are required.");
         }
         return friendshipRepository.findBetweenUsers(userIdA, userIdB);
     }
@@ -302,14 +305,12 @@ public class FriendshipService {
 
     private Friendship requireFriendship(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("requestId is required.");
+            throw new InvalidRequestException("requestId is required.");
         }
         return friendshipRepository
             .findById(id)
             .orElseThrow(() ->
-                new IllegalArgumentException(
-                    "Friend request not found: id=" + id
-                )
+                new ResourceNotFoundException("Friend request", id)
             );
     }
 

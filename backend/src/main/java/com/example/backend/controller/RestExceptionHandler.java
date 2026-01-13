@@ -1,7 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.exceptions.AccountAlreadyExistsException;
+import com.example.backend.exceptions.BusinessLogicException;
+import com.example.backend.exceptions.FileUploadException;
+import com.example.backend.exceptions.InvalidRequestException;
 import com.example.backend.exceptions.ResourceNotFoundException;
+import com.example.backend.exceptions.ServiceUnavailableException;
 import com.example.backend.model.http.res.ApiError;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.time.LocalDateTime;
@@ -118,6 +122,34 @@ public class RestExceptionHandler {
         ResourceNotFoundException ex
     ) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ApiError> handleInvalidRequestException(
+        InvalidRequestException ex
+    ) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ApiError> handleBusinessLogicException(
+        BusinessLogicException ex
+    ) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ApiError> handleFileUploadException(
+        FileUploadException ex
+    ) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ApiError> handleServiceUnavailableException(
+        ServiceUnavailableException ex
+    ) {
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
     }
 
     /**
