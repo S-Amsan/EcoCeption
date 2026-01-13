@@ -230,6 +230,20 @@ export async function fetchDonations() {
     return data;
 }
 
+export async function deleteDonation(donationId) {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/admin/donation/${donationId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
+
 export async function publishDonation(
     slug,
     title,

@@ -3,6 +3,8 @@ package com.example.backend.model.donation;
 import com.example.backend.model.partner.Partner;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Entity
@@ -46,6 +48,7 @@ public class Donation {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "partner_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Partner partner;
 
     public Donation() {}

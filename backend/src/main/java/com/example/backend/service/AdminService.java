@@ -133,4 +133,8 @@ public class AdminService {
     public Competition deleteCompetition(Long competitionId) {
         return competitionService.deleteCompetition(competitionId);
     }
+
+    public Donation deleteDonation(Long donationId) {
+        return donationService.deleteDonation(donationId);
+    }
 }

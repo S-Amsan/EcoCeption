@@ -100,4 +100,16 @@ public class DonationService {
 
         return donationRepository.save(donation);
     }
+
+    public Donation deleteDonation(Long donationId) {
+        Donation donation = donationRepository
+            .findById(donationId)
+            .orElseThrow(() ->
+                new ResourceNotFoundException("donation", donationId)
+            );
+
+        donationRepository.delete(donation);
+
+        return donation;
+    }
 }
