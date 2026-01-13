@@ -47,6 +47,14 @@ public class UserController {
     @Autowired
     private EventService eventService;
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteMyAccount(
+        @AuthenticationPrincipal MyUserDetails userDetails
+    ) {
+        userService.deleteUser(userDetails.getUser());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();

@@ -122,4 +122,8 @@ public class UserService {
     public void onPostReaction(User user) {
         statsService.incrementVotesCount(user);
     }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 }

@@ -53,8 +53,15 @@ export async function fetchUserById(id) {
     return await res.json();
 }
 
-
-
+export async function deleteMyAccount() {
+    const token = await AsyncStorage.getItem('@auth_token');
+    const res = await fetch(`${API_URL}/user/delete`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+}
 
 export async function fetchUsers() {
     const token = await AsyncStorage.getItem('@auth_token');
