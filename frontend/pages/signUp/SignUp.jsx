@@ -8,6 +8,9 @@ import {
     Modal,
     FlatList,
     ScrollView,
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
     Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,6 +25,7 @@ import {
 import Toast from "react-native-toast-message";
 
 import style from "./styles/signUpStyles";
+import {API_URL} from "../../constants/API_URL";
 
 const countries = [
     { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
@@ -143,7 +147,7 @@ export default function SignUp(){
             const encodedPhone = encodeURIComponent(selectedCountry.dialCode + cleanPhone);
 
             const response = await fetch(
-                `http://localhost:8080/auth/check?pseudo=${encodedPseudo}&email=${encodedEmail}&phone=${encodedPhone}`
+                `${API_URL}/auth/check?pseudo=${encodedPseudo}&email=${encodedEmail}&phone=${encodedPhone}`
             );
 
             const result = await response.json();
@@ -259,12 +263,19 @@ export default function SignUp(){
         </TouchableOpacity>
     );
 
-    return(
-        <LinearGradient
-            colors={['#00DB83', '#0CD8A9']}
-            style={style.gradient}
+    return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-            {Platform.OS === 'web' ? (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <LinearGradient
+                    colors={['#00DB83', '#0CD8A9']}
+                    style={style.gradient}
+                >
+                    {/* TON CODE EXISTANT, INCHANGÉ */}
+
+                    {Platform.OS === 'web' ? (
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                             showsVerticalScrollIndicator={false}>
                 <View style={style.container}>
@@ -439,7 +450,7 @@ export default function SignUp(){
                                 value={getDisplayPhone()}
                                 onChangeText={handlePhoneChange}
                                 keyboardType="numeric"
-                                maxLength={getMaxLength()} // ✅ Correction ici
+                                maxLength={getMaxLength()}
                             />
                         </View>
                         <Text style={style.phoneHint}>
@@ -525,6 +536,8 @@ export default function SignUp(){
                     </View>
                 </View>
             </Modal>
-        </LinearGradient>
+                </LinearGradient>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };

@@ -23,11 +23,9 @@ import {
 import { signupMultipart } from "../../services/signup.api";
 
 import styles from "./styles/photoStyles";
+import { login } from "../../services/login.api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL =
-    Platform.OS === "android"
-        ? "http://10.0.2.2:8080"
-        : "http://localhost:8080";
 
 export default function Photo() {
     const [photoUri, setPhotoUri] = useState(null);
@@ -115,7 +113,7 @@ export default function Photo() {
         setLoading(true);
 
         try {
-            const user = await signupMultipart({
+            await signupMultipart({
                 pseudo: data.pseudo,
                 email: data.email,
                 password: data.password,
@@ -125,7 +123,8 @@ export default function Photo() {
                 photoUri
             });
 
-            await saveUser(user);
+            await login(data.email, data.password);
+
             await clearRegisterData();
 
             Toast.show({
@@ -134,7 +133,8 @@ export default function Photo() {
                 text2: "Bienvenue !"
             });
 
-            router.replace("//app//accueil");
+            router.replace("/(app)/accueil");
+
         } catch (err) {
             console.log("Erreur signup:", err);
             Toast.show({
@@ -142,10 +142,11 @@ export default function Photo() {
                 text1: "Erreur d'inscription",
                 text2: "Veuillez réessayer."
             });
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
+
 
 
     return (
@@ -178,7 +179,7 @@ export default function Photo() {
                 <Text style={styles.label}>Nom</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Entrez votre nom"
+                    placeholder="Entrez votre nom (minimum 4 lettres)"
                     placeholderTextColor="#A9A9A9"
                     value={name}
                     onChangeText={setName}

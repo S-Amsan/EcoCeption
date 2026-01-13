@@ -1,4 +1,15 @@
-import { Image, View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+    Image,
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    Platform,
+    KeyboardAvoidingView,
+    Keyboard
+} from "react-native";
+
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import style from "./styles/ageStyles";
@@ -47,11 +58,17 @@ export default function Age() {
     };
 
     return (
-        <LinearGradient
-            colors={["#00DB83", "#0CD8A9"]}
-            style={style.gradient}
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-            <View style={style.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <LinearGradient
+                    colors={["#00DB83", "#0CD8A9"]}
+                    style={style.gradient}
+                >
+
+                <View style={style.container}>
                 <Image
                     source={require("../../assets/logo.png")}
                     style={style.logo}
@@ -68,10 +85,13 @@ export default function Age() {
                     <TextInput
                         style={style.input}
                         placeholder="Entrez votre âge"
-                        keyboardType="numeric"
+                        keyboardType="number-pad"
                         value={age}
                         onChangeText={setAge}
+                        returnKeyType="done"
+                        onSubmitEditing={() => Keyboard.dismiss()}
                     />
+
 
                     <TouchableOpacity onPress={handleSkip} style={style.skip}>
                         <Text style={style.skipText}>Passer {">"}</Text>
@@ -83,5 +103,7 @@ export default function Age() {
                 </TouchableOpacity>
             </View>
         </LinearGradient>
-    );
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+);
 }

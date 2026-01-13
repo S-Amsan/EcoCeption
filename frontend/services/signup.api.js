@@ -2,8 +2,6 @@
 import { Platform } from "react-native";
 import { API_URL } from "../constants/API_URL";
 
-
-
 export async function signupMultipart({
                                           pseudo,
                                           email,

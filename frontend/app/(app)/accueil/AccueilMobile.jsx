@@ -6,10 +6,12 @@ import {
     Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Header from "../../../components/Header";
 import Navbar from "../../../components/Navbar";
 import ScanActionButton from "../../../components/ScanActionButton";
+import OnboardingModal from "../../../components/OnboardingModal";
 
 import PostCard from "./Post/PostCard";
 import ObjectCard from "../missions/_components/ObjectCard/ObjectCard";
@@ -20,6 +22,8 @@ import { fetchAllPosts } from "../../../services/posts.api";
 import { getAllObjects } from "../../../services/objects.api";
 import { loadUser as loadUserFromStorage } from "../../../services/RegisterStorage";
 
+const ONBOARDING_KEY = "@onboarding_seen";
+
 export default function AccueilMobile() {
     const router = useRouter();
 
@@ -28,9 +32,21 @@ export default function AccueilMobile() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
 
-    /* ===========================
-       LOAD USER
-    =========================== */
+    // ===== ONBOARDING =====
+    const [showOnboarding, setShowOnboarding] = useState(false);
+
+    useEffect(() => {
+        AsyncStorage.getItem(ONBOARDING_KEY).then(value => {
+            if (!value) setShowOnboarding(true);
+        });
+    }, []);
+
+    const closeOnboarding = async () => {
+        await AsyncStorage.setItem(ONBOARDING_KEY, "true");
+        setShowOnboarding(false);
+    };
+
+    // ===== LOAD USER =====
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -43,9 +59,7 @@ export default function AccueilMobile() {
         loadUser();
     }, []);
 
-    /* ===========================
-       LOAD FEED
-    =========================== */
+    // ===== LOAD FEED =====
     useEffect(() => {
         const loadFeed = async () => {
             try {
@@ -55,9 +69,7 @@ export default function AccueilMobile() {
                 ]);
 
                 const availableObjects = Array.isArray(objectsData)
-                    ? objectsData.filter(
-                        o => o.picked_up_user_id === null
-                    )
+                    ? objectsData.filter(o => o.picked_up_user_id === null)
                     : [];
 
                 setPosts(Array.isArray(postsData) ? postsData : []);
@@ -72,10 +84,7 @@ export default function AccueilMobile() {
         loadFeed();
     }, []);
 
-
-    /* ===========================
-       FEED UNIFIÉ
-    =========================== */
+    // ===== FEED UNIFIÉ =====
     const feed = [
         ...posts.map(post => ({
             type: "post",
@@ -91,9 +100,7 @@ export default function AccueilMobile() {
         })),
     ].sort((a, b) => b.date - a.date);
 
-    /* ===========================
-       ANIMATIONS
-    =========================== */
+    // ===== ANIMATIONS =====
     const NAVBAR_HEIGHT = 90;
     const SCAN_BTN_HIDE_X = 120;
 
@@ -136,9 +143,7 @@ export default function AccueilMobile() {
         lastScrollY.current = y;
     };
 
-    /* ===========================
-       RENDER
-    =========================== */
+    // ===== RENDER =====
     return (
         <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
             {/* NAVBAR */}
@@ -175,10 +180,16 @@ export default function AccueilMobile() {
             </Animated.View>
 
             {/* CONTENT */}
-            <View style={{ flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <Header user={user} boutonNotification userProfil userDetails />
 
-                <View style={{ flex: 1, padding: 10, backgroundColor:"#fff"  }}>
+                {/* ONBOARDING */}
+                <OnboardingModal
+                    visible={showOnboarding}
+                    onClose={closeOnboarding}
+                />
+
+                <View style={{ flex: 1, padding: 10, backgroundColor: "#fff" }}>
                     {loading ? (
                         <ActivityIndicator size="large" color="#1DDE9A" />
                     ) : (
@@ -206,11 +217,10 @@ export default function AccueilMobile() {
                                         <ObjectCard
                                             key={item.id}
                                             item={item.data}
-                                            buttonLabel="Récuperer l'objet"
+                                            buttonLabel="Récupérer l'objet"
                                             onSeeObjet={() => {
-                                                console.log("CLICK");
                                                 router.push({
-                                                    pathname: "missions",
+                                                    pathname: "/missions",
                                                     params: {
                                                         mode: "recup",
                                                         id: item.data.id,
@@ -218,7 +228,6 @@ export default function AccueilMobile() {
                                                 });
                                             }}
                                         />
-
                                     );
                                 }
 

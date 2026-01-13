@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     View,
     ScrollView,
     ActivityIndicator,
-    Pressable, Text, TouchableOpacity,Image,
+    Pressable,
+    Text,
+    TouchableOpacity,
+    Image,
 } from "react-native";
-import { useMemo } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import Header from "../../../components/Header";
 import Navbar from "../../../components/Navbar";
+import OnboardingModal from "../../../components/OnboardingModal";
 
 import PostCard from "./Post/PostCard";
 import ObjectCard from "../missions/_components/ObjectCard/ObjectCard";
@@ -19,7 +24,9 @@ import style from "./styles/accueilStyle";
 
 import { fetchAllPosts } from "../../../services/posts.api";
 import { getAllObjects } from "../../../services/objects.api";
-import {fetchUserById} from "../../../services/user.api";
+import { fetchUserById } from "../../../services/user.api";
+
+const ONBOARDING_KEY = "@onboarding_seen";
 
 export default function AccueilWeb() {
     const [posts, setPosts] = useState([]);
@@ -46,13 +53,25 @@ export default function AccueilWeb() {
         },
     ]);
 
-
     const [showObjectModal, setShowObjectModal] = useState(false);
 
+    // ===== ONBOARDING =====
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
-    /* ===========================
-       LOAD POSTS + OBJECTS
-    =========================== */
+    useEffect(() => {
+        AsyncStorage.getItem(ONBOARDING_KEY).then(value => {
+            if (!value) {
+                setShowOnboarding(true);
+            }
+        });
+    }, []);
+
+    const closeOnboarding = async () => {
+        await AsyncStorage.setItem(ONBOARDING_KEY, "true");
+        setShowOnboarding(false);
+    };
+
+    // ===== LOAD FEED =====
     useEffect(() => {
         const loadFeed = async () => {
             try {
@@ -62,9 +81,7 @@ export default function AccueilWeb() {
                 ]);
 
                 const availableObjects = Array.isArray(objectsData)
-                    ? objectsData.filter(
-                        o => o.picked_up_user_id === null
-                    )
+                    ? objectsData.filter(o => o.picked_up_user_id === null)
                     : [];
 
                 setPosts(Array.isArray(postsData) ? postsData : []);
@@ -79,19 +96,15 @@ export default function AccueilWeb() {
         loadFeed();
     }, []);
 
-
+    // ===== PUBLISHER INFO =====
     function PublisherInfo({ userId }) {
         const [pseudo, setPseudo] = useState(null);
-        const [avatar, setAvatar] = useState(null);
 
         useEffect(() => {
             if (!userId) return;
 
             fetchUserById(userId)
-                .then(user => {
-                    setPseudo(user.pseudo);
-                    setAvatar(user.photoProfileUrl);
-                })
+                .then(user => setPseudo(user.pseudo))
                 .catch(console.error);
         }, [userId]);
 
@@ -102,28 +115,14 @@ export default function AccueilWeb() {
         );
     }
 
-    /* ===========================
-       FEED UNIFIÉ
-    =========================== */
-
-    const TYPE_MAP = {
-        "Recycler": "Post",
-        "Objet": "PostObjet",
-        "Récupérer": "PostRecupObjet",
-    };
-
-
+    // ===== FEED UNIFIÉ =====
     const filteredFeed = useMemo(() => {
         const typeLabel = filtres.find(f => f.id === "type")?.select;
         const tri = filtres.find(f => f.id === "tri")?.select;
 
-        const selectedSubType = TYPE_MAP[typeLabel];
-
         const feed = [
-
             ...posts.map(post => {
-                const isRecup = post.object_id !== null && post.object_id !== undefined;
-
+                const isRecup = post.object_id != null;
                 return {
                     type: "post",
                     subType: isRecup ? "PostRecupObjet" : "Post",
@@ -131,8 +130,6 @@ export default function AccueilWeb() {
                     data: post,
                 };
             }),
-
-
             ...objects.map(object => ({
                 type: "object",
                 subType: "PostObjet",
@@ -141,64 +138,34 @@ export default function AccueilWeb() {
             })),
         ];
 
-
         return feed
-
             .filter(item => {
-                if (!typeLabel || typeLabel === "Tous") return true;
-
-                if (typeLabel === "Recycler") {
-                    return item.type === "post" && item.subType === "Post";
-                }
-
-                if (typeLabel === "Récupérer") {
-                    return item.type === "post" && item.subType === "PostRecupObjet";
-                }
-
-                if (typeLabel === "Objet") {
-                    return item.type === "object";
-                }
-
+                if (typeLabel === "Tous") return true;
+                if (typeLabel === "Recycler") return item.subType === "Post";
+                if (typeLabel === "Récupérer") return item.subType === "PostRecupObjet";
+                if (typeLabel === "Objet") return item.subType === "PostObjet";
                 return true;
             })
-
-
-
             .filter(item => {
                 if (!recherche) return true;
-
                 const q = recherche.toLowerCase();
-
-
-                if (item.subType === "PostObjet") {
-                    return item.data.title?.toLowerCase().includes(q);
-                }
-
-
-                if (item.subType === "PostRecupObjet") {
-                    return item.data.description?.toLowerCase().includes(q);
-                }
-
-                return item.data.description?.toLowerCase().includes(q);
+                return item.data.description?.toLowerCase().includes(q)
+                    || item.data.title?.toLowerCase().includes(q);
             })
-
-            // ===== TRI =====
             .sort((a, b) => {
-                if (tri === "Ancien") {
-                    return a.date - b.date;
-                }
+                if (tri === "Ancien") return a.date - b.date;
                 return b.date - a.date;
             });
     }, [posts, objects, recherche, filtres]);
 
     return (
         <View style={{ flex: 1, flexDirection: "row", backgroundColor: "#f5f5f5" }}>
-            {/* ===== NAVBAR ===== */}
+            {/* NAVBAR */}
             <View style={{ width: "15%" }}>
                 <Navbar />
             </View>
 
-            {/* ===== MAIN CONTENT ===== */}
+            {/* MAIN */}
             <View style={{ flex: 1 }}>
                 <Header
                     recherche={recherche}
@@ -214,47 +181,52 @@ export default function AccueilWeb() {
                         {loading ? (
                             <ActivityIndicator size="large" color="#1DDE9A" />
                         ) : (
-                            filteredFeed.map(item => {
+                            <>
+                                <OnboardingModal
+                                    visible={showOnboarding}
+                                    onClose={closeOnboarding}
+                                />
 
-                                switch (item.subType) {
-                                    case "Post":
-                                    case "PostRecupObjet":
-                                        return (
-                                            <PostCard
-                                                key={`${item.type}-${item.data.id}`}
-                                                post={item.data}
-                                                styles={style}
-                                                onSignaler={() => {
-                                                    setSelectedPostId(item.data.id);
-                                                    setShowSignalement(true);
-                                                }}
-                                            />
-                                        );
+                                {filteredFeed.map(item => {
+                                    switch (item.subType) {
+                                        case "Post":
+                                        case "PostRecupObjet":
+                                            return (
+                                                <PostCard
+                                                    key={`${item.type}-${item.data.id}`}
+                                                    post={item.data}
+                                                    styles={style}
+                                                    onSignaler={() => {
+                                                        setSelectedPostId(item.data.id);
+                                                        setShowSignalement(true);
+                                                    }}
+                                                />
+                                            );
 
-                                    case "PostObjet":
-                                        return (
-                                            <ObjectCard
-                                                key={`${item.type}-${item.data.id}`}
-                                                item={item.data}
-                                                buttonLabel="Voir l'objet"
-                                                onSeeObjet={(objet) => {
-                                                    setSelectedObjet(objet);
-                                                    setShowObjectModal(true);
-                                                }}
-                                            />
-                                        );
+                                        case "PostObjet":
+                                            return (
+                                                <ObjectCard
+                                                    key={`${item.type}-${item.data.id}`}
+                                                    item={item.data}
+                                                    buttonLabel="Voir l'objet"
+                                                    onSeeObjet={(objet) => {
+                                                        setSelectedObjet(objet);
+                                                        setShowObjectModal(true);
+                                                    }}
+                                                />
+                                            );
 
-                                    default:
-                                        return null;
-                                }
-
-                            })
+                                        default:
+                                            return null;
+                                    }
+                                })}
+                            </>
                         )}
                     </View>
                 </ScrollView>
             </View>
 
-            {/* ===== MODAL SIGNALEMENT ===== */}
+            {/* MODAL SIGNALEMENT */}
             {showSignalement && (
                 <Pressable
                     style={style.modalOverlay}
@@ -265,14 +237,12 @@ export default function AccueilWeb() {
                     }}
                 >
                     <Pressable style={style.modalContent} onPress={() => {}}>
-                        {signalementStep === "reasons" && (
+                        {signalementStep === "reasons" ? (
                             <SignalementReasons
                                 postId={selectedPostId}
                                 onSuccess={() => setSignalementStep("success")}
                             />
-                        )}
-
-                        {signalementStep === "success" && (
+                        ) : (
                             <SignalementSuccess
                                 onDone={() => {
                                     setShowSignalement(false);
@@ -285,7 +255,7 @@ export default function AccueilWeb() {
                 </Pressable>
             )}
 
-            {/* ===== MODAL OBJET ===== */}
+            {/* MODAL OBJET */}
             {showObjectModal && selectedObjet && (
                 <Pressable
                     style={style.modalOverlay}
@@ -307,11 +277,11 @@ export default function AccueilWeb() {
 
                             <PublisherInfo userId={selectedObjet.publisher_user_id} />
 
-                            <Text style={{ fontSize: 18,marginTop: 6 }}>
+                            <Text style={{ fontSize: 18, marginTop: 6 }}>
                                 Adresse : {selectedObjet.address}
                             </Text>
 
-                            <Text style={{ fontSize: 18,marginTop: 6}}>
+                            <Text style={{ fontSize: 18, marginTop: 6 }}>
                                 Description : {selectedObjet.description}
                             </Text>
 
@@ -322,7 +292,7 @@ export default function AccueilWeb() {
                                     padding: 14,
                                     borderRadius: 10,
                                     alignItems: "center",
-                                    marginBottom:15,
+                                    marginBottom: 15,
                                 }}
                                 onPress={() => {
                                     setShowObjectModal(false);
@@ -337,7 +307,6 @@ export default function AccueilWeb() {
                     </Pressable>
                 </Pressable>
             )}
-
         </View>
     );
 }

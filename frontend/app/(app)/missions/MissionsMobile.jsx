@@ -16,8 +16,8 @@ import {getAllObjects} from "../../../services/objects.api";
 
 export default function MissionsMobile() {
     /* ===== ÉTATS ===== */
-    const [page, setPage] = useState("listes"); // listes | recupObjet | associate | postObjet
-    const [ongletActifId, setOngletActifId] = useState("listes"); // listes | gestes
+    const [page, setPage] = useState("listes");
+    const [ongletActifId, setOngletActifId] = useState("listes");
     const [selectedObjet, setSelectedObjet] = useState(null);
     const { page: pageFromScan, product, code } = useLocalSearchParams();
 
