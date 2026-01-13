@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useCallback, useState} from "react";
-import {View, Text, ScrollView, ActivityIndicator} from "react-native";
+import {View, Text, ScrollView, ActivityIndicator, TouchableOpacity} from "react-native";
 
 import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
@@ -18,12 +18,14 @@ import {fetchUsers} from "../../../../services/user.api";
 import {fetchAllReports} from "../../../../services/reports.api";
 import {fetchAllCards} from "../../../../services/cards.api";
 import {fetchAllDocuments} from "../../../../services/documents.api";
-import {fetchDonations, getAllPartners} from "../../../../services/admin.api";
+import {fetchDonations, getAllPartners, publishDonation} from "../../../../services/admin.api";
 import {fetchAllCompetitions} from "../../../../services/competitions.api";
 import {fetchAllEvents} from "../../../../services/events.api";
 
 import {loadUser} from "../../../../services/RegisterStorage";
 import styles from "./styles";
+import {DONS} from "../../../../utils/data/association";
+import {PRODUITS} from "../../../../utils/data/produit";
 
 export default function Gerer() {
     const [user, setUser] = React.useState(null);
@@ -203,6 +205,7 @@ export default function Gerer() {
         },
     ];
 
+
     return (
         <View style={styles.container}>
             <View style={{ width: "15%" }}>
@@ -235,6 +238,8 @@ export default function Gerer() {
                         </View>
                     </ScrollView>
                 )}
+                <View>
+                </View>
             </View>
         </View>
     );

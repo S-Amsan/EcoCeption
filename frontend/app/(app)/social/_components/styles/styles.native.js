@@ -117,7 +117,7 @@ export default StyleSheet.create({
         backgroundColor: "#FF5858"
     },
     boutonSinscrire : {
-        backgroundColor: "#008DC9"
+        backgroundColor: "#bababa"
     },
     boutonPrincipaleText:{
         textAlign: "center",

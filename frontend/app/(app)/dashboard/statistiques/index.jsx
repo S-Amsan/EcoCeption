@@ -25,8 +25,6 @@ import {fetchUsers} from "../../../../services/user.api";
 import {fetchAllCards} from "../../../../services/cards.api";
 import {fetchAllDocuments} from "../../../../services/documents.api";
 import {fetchDonations, getAllPartners} from "../../../../services/admin.api";
-import {fetchFollowingEvents} from "../../../../services/events.api";
-import {fetchFollowingCompetitions} from "../../../../services/competitions.api";
 import {fetchAllPosts} from "../../../../services/posts.api";
 
 const STATE_LABELS = {
@@ -121,14 +119,27 @@ export default function Statistiques() {
         {titre : "POSTS VALIDÉS", icon : post,couleur : "#EC3796", data : statistiques_Data.postValid},
     ]
 
+    const getTypeObjet = (post) => {
+        if (post.object_id !== null) {
+            return "Objet récupéré";
+        }
+
+        if (post.description?.toLowerCase().includes("recycl")) {
+            return "Objet recyclé";
+        }
+        return "Objet trouvé";
+    };
+
+    const postSansRecycle = posts_DATA.filter(p => getTypeObjet(p) !== "Objet recyclé")
+
     const graphsTab = [
         {
             titre : "RÉPARTITION DES RÉCOMPENSES ACHETÉES PAR CATÉGORIE",
             component : RecompensesParCategorieChart,
             data : [
-                { value: 2, label: 'CARTES CADEAUX', frontColor: '#36a2eb' },
-                { value: 10, label: 'BONS DE RÉDUCTION', frontColor: '#36a2eb' },
-                { value: 2, label: 'DONS AUX ASSOCIATIONS', frontColor: '#36a2eb' },
+                { value: recompenses_DATA.filter(c => c.type === "DON").length, label: 'CARTES CADEAUX', frontColor: '#36a2eb' },
+                { value: recompenses_DATA.filter(c => c.type === "COUPON").length, label: 'BONS DE RÉDUCTION', frontColor: '#36a2eb' },
+                { value: recompenses_DATA.filter(c => c.type === "CARD").length, label: 'DONS AUX ASSOCIATIONS', frontColor: '#36a2eb' },
             ]
         },
         {
@@ -143,9 +154,9 @@ export default function Statistiques() {
             titre : "RÉPARTITION DES POSTS ",
             component : PostsRepartitionChart,
             data : [
-                { name: "de posts validés", population: 25, color: "rgba(76,175,80,0.6)", legendFontColor: "#333" },
-                { name: "de posts refusés", population: 15, color: "rgba(244,67,54,0.6)", legendFontColor: "#333" },
-                { name: "de posts non votés", population: 60, color: "rgba(33,150,243,0.6)", legendFontColor: "#333" },
+                { name: "de posts validés", population: 3, color: "rgba(76,175,80,0.6)", legendFontColor: "#333" },
+                { name: "de posts refusés", population: 1, color: "rgba(244,67,54,0.6)", legendFontColor: "#333" },
+                { name: "de posts non votés", population: posts_DATA.length + 4, color: "rgba(33,150,243,0.6)", legendFontColor: "#333" },
             ]
 
         },
@@ -153,8 +164,8 @@ export default function Statistiques() {
             titre : "RÉPARTITION DES OBJETS ABANDONNÉS ",
             component : ObjetsAbandonneesChart,
             data : [
-                { name: "d'objets retrouvés", population: 25, color: "#FFD580", legendFontColor: "#333" },
-                { name: "d'objets récupérés", population: 75, color: "#87CEFA", legendFontColor: "#333" },
+                { name: "d'objets retrouvés", population: postSansRecycle.filter(p => getTypeObjet(p) === "Objet trouvé").length, color: "#FFD580", legendFontColor: "#333" },
+                { name: "d'objets récupérés", population: postSansRecycle.filter(p => getTypeObjet(p) === "Objet récupéré").length, color: "#87CEFA", legendFontColor: "#333" },
             ]
         },
     ]

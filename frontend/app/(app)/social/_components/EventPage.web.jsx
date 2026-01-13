@@ -14,6 +14,7 @@ import {getMessageEncouragement} from "../../../../utils/message";
 import PopUp from "../../../../components/PopUp";
 import TabNavbarWeb from "../../../../components/TabNavbarWeb";
 import Navbar from "../../../../components/Navbar";
+import Toast from "react-native-toast-message";
 
 
 const EVENT_CONFIG = {
@@ -112,7 +113,13 @@ const EnCours = ({config, event_DATA}) => {
                                 style={styles.boutonPrincipaleText}>Se désinscrire</Text></TouchableOpacity>
                         ) :
                         (
-                            <TouchableOpacity style={[styles.boutonPrincipaleContainer, styles.boutonSinscrire]}><Text
+                            <TouchableOpacity style={[styles.boutonPrincipaleContainer, styles.boutonSinscrire]} onPress={
+                                () => Toast.show({
+                                    type: "error",
+                                    text1: "Inscription impossible",
+                                    text2: "Vous n'avez pas assez de points pour vous inscrire.",
+                                })
+                            }><Text
                                 style={styles.boutonPrincipaleText}>S’inscrire</Text></TouchableOpacity>
                         )
                     }

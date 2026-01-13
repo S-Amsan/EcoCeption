@@ -10,23 +10,19 @@ import Toast from "react-native-toast-message";
 import {Picker} from "@react-native-picker/picker";
 import {deleteDonation, publishDonation} from "../../../../../services/admin.api";
 
-const normalizeLabel = (t) => {
-    const s = String(t ?? "").trim();
-    if (!s) return "";
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-};
-
 const CATEGORIES = ["Tous", "Dons", "Bons de réduction", "Cartes cadeaux"];
 const POINT_RANGES = ["Tous", "0–999", "1 000–4 999", "5 000–9 999", "10 000+"];
 
-const getCategorie = (c) => {
-    const raw = c?.categorie ?? c?.category ?? "Dons";
-    const normalized = normalizeLabel(raw);
+const CATEGORIES_TAB = {
+    DON: "Dons",
+    COUPON : "Bons de réduction",
+    CARD : "Cartes cadeaux"
+}
 
-    const match = CATEGORIES.find(
-        (x) => x !== "Tous" && x.toLowerCase() === normalized.toLowerCase()
-    );
-    return match ?? "Dons";
+const getCategorie = (c) => {
+    console.log(c)
+
+    return CATEGORIES_TAB[c.type] ?? "Dons";
 };
 
 const getPartenaire = (c) => c?.partner?.name ?? "—";
@@ -184,8 +180,6 @@ export default function Recompenses({carte, allData}) {
     const [slug, setSlug] = useState("");
     const [title, setTitle] = useState("");
 
-
-
     const [fullTitle, setFullTitle] = useState("");
     const [description, setDescription] = useState("");
     const [fullDescription, setFullDescription] = useState("");
@@ -205,7 +199,7 @@ export default function Recompenses({carte, allData}) {
 
     const resetForm = () => {
         setPartnerId("");
-        setCategorie("Dons");
+        setCategorie("DON");
         setPoints("");
         setSlug("");
         setTitle("");
@@ -303,7 +297,6 @@ export default function Recompenses({carte, allData}) {
             });
         }
     };
-
 
     const handleDelete = (recompense) => {
         try {
@@ -456,7 +449,7 @@ export default function Recompenses({carte, allData}) {
                             <Text style={{width: "15%"}}>Catégorie :</Text>
                             <Picker selectedValue={categorie} onValueChange={setCategorie} style={styles.pickerWrapper}>
                                 <Picker.Item label="Dons" value="DON" />
-                                <Picker.Item label="Bons de réduction" value="COUPON" />
+                                <Picker.Item label="Bons de réduction" value="COUPOON" />
                                 <Picker.Item label="Cartes cadeaux" value="CARD" />
                             </Picker>
                         </View>

@@ -31,7 +31,7 @@ export default function RecompensesParCategorieChart({data}) {
                 textAlign: 'center'
             }}
             noOfSections={4}
-            maxValue={1000}
+            maxValue={20}
             height={180}
             showVerticalLines={false}
             showFractionalValues={false}
@@ -48,8 +48,7 @@ export default function RecompensesParCategorieChart({data}) {
             }}
             // Ajouter ces props pour contrôler l'apparence des barres
             barBorderRadius={0} // Radius à 0 pour des rectangles
-            // Personnaliser les labels Y
-            yAxisLabelTexts={['0', '250', '500', '1000']}
+            yAxisLabelTexts={['0', '5', '10', '15', '20']}
             // Améliorer la grille
             showLine={false}
             // Contrôler la couleur de fond des barres
