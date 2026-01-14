@@ -15,70 +15,66 @@ const SETTINGS_MENU = [
     { key: "resources", label: "Ressources supplémentaires" },
 ];
 
-
-
-
-
-
-// Détails pour chaque section (ce qui était à droite sur le web)
 const SECTION_DETAILS = {
     account: [
-        {   id: "account-info",
+        {
+            id: "account-info",
             title: "Informations du compte",
-            desc: "Consultez les informations de votre compte comme votre numéro de téléphone et votre adresse e-mail.",
-            route: "/appPrincipal/parametres/account/info",
+            desc: "Consultez les informations de votre compte.",
+            route: "/(app)/parametres/account/info",
         },
-        { id: "account-password", title: "Changer le mot de passe", desc: "Modifiez votre mot de passe à tout moment." },
-        { id: "account-disconnection", title: "Déconnexion", desc: "Déconnectez vous." },
-        { id: "account-disable", title: "Désactiver le compte", desc: "Découvrez comment désactiver temporairement ou définitivement votre compte.", danger: true },
+        { id: "account-disconnection", title: "Déconnexion", desc: "Déconnectez-vous." },
+        { id: "account-disable", title: "Désactiver le compte", desc: "Supprimer définitivement votre compte.", danger: true },
     ],
     security: [
-        { id: "security-main", title: "Sécurité du compte", desc: "Gérez la sécurité de votre compte et protégez-le contre les accès non autorisés." },
-        { id: "security-password", title: "Changer le mot de passe", desc: "Mettez à jour votre mot de passe pour renforcer la sécurité de votre compte." },
-        { id: "security-2fa", title: "Authentification à deux facteurs", desc: "Ajoutez une couche de sécurité supplémentaire lors de la connexion." },
+        { id: "security-password", title: "Changer le mot de passe", desc: "Renforcez la sécurité de votre compte.", route: "/(app)/parametres/security/password" },
+        { id: "security-2fa", title: "Authentification à deux facteurs", desc: "Ajoutez une couche de sécurité.", route: "/(app)/parametres/security/2fa" },
     ],
     privacy: [
-        { id: "privacy-account", title: "Confidentialité du compte", desc: "Gérez qui peut voir votre contenu et interagir avec vous." },
-        { id: "privacy-visibility", title: "Visibilité du profil", desc: "Contrôlez la visibilité de votre profil et de vos informations personnelles." },
+        { id: "privacy-account", title: "Confidentialité du compte", desc: "Gérez la visibilité de vos informations.", route: "/(app)/parametres/privacy/account" },
+        { id: "privacy-visibility", title: "Visibilité du profil", desc: "Contrôlez la visibilité de votre profil.", route: "/(app)/parametres/privacy/visibility" },
     ],
     notifications: [
-        { id: "notif-pref", title: "Préférences de notifications", desc: "Choisissez comment et quand vous recevez des notifications." },
+        { id: "notif-pref", title: "Préférences de notifications", desc: "Choisissez comment vous recevez les notifications.", route: "/(app)/parametres/notifications/preferences" },
     ],
-    accessibility: [
-        { id: "dark", title: "Sombre" },
-        { id: "light", title: "Clair"},
-
+    theme: [
+        { id: "dark", title: "Sombre", desc: "Activer le mode nuit.", route: "/(app)/parametres/theme/dark" },
+        { id: "light", title: "Clair", desc: "Activer le mode jour.", route: "/(app)/parametres/theme/light" },
     ],
     resources: [
-        { id: "help", title: "Centre d’aide", desc: "Consultez les réponses aux questions fréquentes." },
-        { id: "terms", title: "Conditions d’utilisation", desc: "Lisez les règles et conditions liées à l’utilisation du service." },
-        { id: "privacy-policy", title: "Politique de confidentialité", desc: "Découvrez comment vos données sont collectées et utilisées." },
+        { id: "help", title: "Centre d’aide", desc: "Consultez les réponses aux questions fréquentes.", route: "/(app)/parametres/resources/help" },
+        { id: "terms", title: "Conditions d’utilisation", desc: "Lisez les règles du service.", route: "/(app)/parametres/resources/terms" },
+        { id: "privacy-policy", title: "Politique de confidentialité", desc: "Découvrez comment vos données sont utilisées.", route: "/(app)/parametres/resources/policy" },
     ],
 };
+
 const getTitle = (screen) => {
     switch (screen) {
         case "account": return "Votre compte";
         case "security": return "Sécurité";
+        case "privacy": return "Confidentialité";
         case "notifications": return "Notifications";
+        case "accessibility": return "Thèmes";
+        case "resources": return "Ressources";
         default: return "Paramètres";
     }
 };
+
 export default function ParametresMobile() {
-    const router = useRouter(); // ✅ OBLIGATOIRE
+    const router = useRouter();
+    const [screen, setScreen] = useState("main");
 
     const logout = async () => {
         await AsyncStorage.removeItem("@auth_token");
         await AsyncStorage.removeItem("@auth_email");
         await AsyncStorage.removeItem("@auth_user");
-
-        router.replace("Login"); // ou "/"
+        router.replace("Login");
     };
-
 
     const handleDeleteAccount = async () => {
         try {
-            await deleteMyAccount(); // appel backend existant
-            await logout();          // retour login
+            await deleteMyAccount();
+            await logout();
         } catch (e) {
             Alert.alert("Erreur", "Impossible de supprimer le compte");
         }
@@ -87,90 +83,73 @@ export default function ParametresMobile() {
     const confirmDisableAccount = () => {
         Alert.alert(
             "Désactiver le compte",
-            "Êtes-vous sûr de vouloir désactiver votre compte ? Cette action est irréversible.",
+            "Êtes-vous sûr ? Cette action est irréversible.",
             [
-                {
-                    text: "Non",
-                    style: "cancel",
-                },
-                {
-                    text: "Oui, je suis sûr",
-                    style: "destructive",
-                    onPress: () => handleDeleteAccount,
-                },
+                { text: "Non", style: "cancel" },
+                { text: "Oui, je suis sûr", style: "destructive", onPress: handleDeleteAccount }, // ✅ CORRIGÉ ICI
             ]
         );
     };
-    const [screen, setScreen] = useState("main");
 
-    const SettingItem = ({ id, title, desc, danger = false, onPress}) => (
+    const SettingItem = ({ id, title, desc, danger, route }) => (
         <Pressable
             style={[styles.settingItem, danger && styles.settingItemDanger]}
             onPress={() => {
-                if (id === "account-disconnection") logout();
-                if (id === "account-disable") confirmDisableAccount();
-
+                if (id === "account-disconnection") {
+                    logout();
+                } else if (id === "account-disable") {
+                    confirmDisableAccount();
+                } else if (route) {
+                    router.push(route); // ✅ CORRIGÉ ICI
+                }
             }}
-
-            >
+        >
             <Text style={[styles.settingTitle, danger && styles.settingDanger]}>
                 {title}
             </Text>
-            <Text style={styles.settingDesc}>{desc}</Text>
+            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
         </Pressable>
     );
 
     return (
-        <View style={{ flex: 1 }}>
-            {/* HEADER TOUJOURS PRÉSENT */}
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <Header
                 titre={getTitle(screen)}
                 boutonRetour
                 onBack={() => {
                     if (screen === "main") {
-                        router.back();   // ← revenir à la page précédente
+                        router.back();
                     } else {
-                        setScreen("main"); // ← revenir au menu paramètres
+                        setScreen("main");
                     }
                 }}
             />
 
             <ScrollView style={styles.center}>
-                {/* ===== PAGE 1 : LISTE DES SECTIONS ===== */}
-                {screen === "main" && (
+                {screen === "main" ? (
                     SETTINGS_MENU.map((section) => (
                         <Pressable
                             key={section.key}
                             style={styles.menuItem}
                             onPress={() => setScreen(section.key)}
                         >
-                            <Text style={styles.menuLabel}>
-                                {section.label}
-                            </Text>
+                            <Text style={styles.menuLabel}>{section.label}</Text>
                             <Text style={styles.chevron}>›</Text>
                         </Pressable>
                     ))
-                )}
-
-                {/* ===== PAGE 2 : DÉTAILS ===== */}
-                {screen !== "main" &&
+                ) : (
                     SECTION_DETAILS[screen]?.map((item) => (
                         <SettingItem
                             key={item.id}
-                            id={item.id}          // ✅ OBLIGATOIRE
+                            id={item.id}
                             title={item.title}
                             desc={item.desc}
                             danger={item.danger}
-                            onPress={() => {
-                                if (item.route) {
-                                    router.push(item.route);
-                                }
-                            }}
+                            route={item.route} // ✅ OBLIGATOIRE POUR QUE LE CLIC MARCHE
                         />
                     ))
-                }
+                )}
             </ScrollView>
         </View>
     );
 }
-

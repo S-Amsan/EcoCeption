@@ -1,61 +1,45 @@
 import React from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
-import Navbar from "../../../../../components/Navbar"; // Ajuste le nombre de ../ selon le dossier
-import Header from "../../../../../components/Header";
-import styles from "../../styles/parametresStyle"; // Chemin vers ton fichier style
+import Header from "../../../../../components/Header"; // Ajuste le nombre de ../ selon la profondeur
+import styles from "../../styles/parametresStyle";
 
-export default function SubSectionWebTemplate() {
+export default function SubSectionMobileTemplate() {
     const router = useRouter();
 
     return (
-        <View style={styles.page}>
-            {/* COLONNE 1 : NAVBAR (Inchangée) */}
-            <View style={styles.navbar}>
-                <Navbar />
-                <Header />
-            </View>
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            {/* HEADER : Garde le même style, affiche le titre et gère le retour */}
+            <Header
+                titre="Nom de la Sous-Section" // <--- À CHANGER POUR CHAQUE PAGE
+                boutonRetour={true}
+                onBack={() => router.back()}
+            />
 
-            {/* COLONNE 2 : CONTENU CENTRAL */}
-            <View style={styles.container}>
-                {/* HEADER AVEC BOUTON RETOUR */}
-                <Header
-                    titre="Retour"
-                    boutonRetour={true}
-                    onBack={() => router.back()}
-                />
+            <ScrollView style={styles.center}>
+                <View style={{ paddingVertical: 10 }}>
 
-                <View style={styles.center}>
-                    <ScrollView>
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
+                    {/* TITRE DE LA PAGE DANS LE CONTENU (Optionnel) */}
+                    <Text style={styles.pageTitle}>Détails du paramètre</Text>
 
-                        {/* ZONE DE CONTENU - Change ce qu'il y a ici */}
-                        <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Description ou formulaire à insérer ici.
-                                </Text>
-                            </View>
+                    {/* ZONE DE CONTENU : C'est ici que tu mets tes formulaires, textes, etc. */}
+                    <View style={styles.settingItem}>
+                        <Text style={styles.settingTitle}>Option 1</Text>
+                        <Text style={styles.settingDesc}>
+                            Ici, tu peux mettre tes inputs ou tes descriptions spécifiques.
+                        </Text>
+                    </View>
 
-                            {/* Exemple de bouton d'action ou autre contenu */}
-                            <Pressable style={[styles.settingItem, { marginTop: 20, backgroundColor: '#f7f9f9', borderRadius: 10 }]}>
-                                <Text style={{ color: '#1d9bf0', fontWeight: 'bold' }}>Action spécifique</Text>
-                            </Pressable>
-                        </View>
-                    </ScrollView>
+                    {/* Tu peux ajouter d'autres blocs comme celui-ci */}
+                    <View style={styles.settingItem}>
+                        <Text style={styles.settingTitle}>Option 2</Text>
+                        <Text style={styles.settingDesc}>
+                            Exemple de contenu supplémentaire.
+                        </Text>
+                    </View>
+
                 </View>
-            </View>
-
-            {/* COLONNE 3 : ESPACE DROIT (Garde l'équilibre visuel Web) */}
-            <View style={styles.right}>
-                <View style={{ padding: 20 }}>
-                    <Text style={[styles.settingDesc, { fontStyle: 'italic' }]}>
-                        Aide : Les modifications apportées ici sont appliquées instantanément à votre compte.
-                    </Text>
-                </View>
-            </View>
+            </ScrollView>
         </View>
     );
 }
