@@ -40,17 +40,33 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
+                        <View style={{ padding: 16 }}>
+                            <Text style={[styles.settingTitle, { fontSize: 18, marginBottom: 15 }]}>
+                                Utilisation de vos données
+                            </Text>
 
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
-                        <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+                            <Text style={[styles.settingDesc, { lineHeight: 20, marginBottom: 20 }]}>
+                                Nous collectons des informations pour fournir de meilleurs services à tous nos utilisateurs.
+                            </Text>
+
+                            {/* Section interactive pour la confidentialité */}
+                            <Text style={[styles.settingTitle, { fontSize: 14, color: '#536471', marginBottom: 10 }]}>
+                                VOS CHOIX
+                            </Text>
+
+                            <Pressable style={[styles.menuItem, { paddingHorizontal: 0 }]}>
+                                <Text style={styles.menuLabel}>Partage de données publicitaires</Text>
+                                <Text style={{ color: '#536471' }}>Désactivé</Text>
+                            </Pressable>
+
+                            <Pressable style={[styles.menuItem, { paddingHorizontal: 0 }]}>
+                                <Text style={styles.menuLabel}>Historique de localisation</Text>
+                                <Text style={{ color: '#1d9bf0', fontWeight: 'bold' }}>Activé</Text>
+                            </Pressable>
+
+                            <Text style={[styles.settingDesc, { marginTop: 20, fontStyle: 'italic' }]}>
+                                Vous pouvez demander la suppression de toutes vos données personnelles via la section "Désactiver le compte".
+                            </Text>
                         </View>
                     </ScrollView>
                 </View>

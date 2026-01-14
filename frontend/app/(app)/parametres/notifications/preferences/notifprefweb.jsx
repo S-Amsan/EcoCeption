@@ -40,17 +40,16 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
-
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
-                        <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+                        <View style={{ paddingVertical: 10 }}>
+                        <Pressable style={styles.menuItem}
+                        >
+                            <Text style={styles.menuLabel}>Notifications Push</Text>
+                            <Text style={{ color: '#536471' }}>Désactivées</Text>
+                        </Pressable>
+                        <Pressable style={styles.menuItem}>
+                            <Text style={styles.menuLabel}>Alertes par E-mail</Text>
+                            <Text style={{ color: '#536471' }}>Désactivées</Text>
+                        </Pressable>
                         </View>
                     </ScrollView>
                 </View>

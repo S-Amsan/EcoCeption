@@ -1,12 +1,45 @@
-import React from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import React, {useCallback, useEffect, useState} from "react";
+import {View, Text, ScrollView, Pressable, ActivityIndicator} from "react-native";
+import {useFocusEffect, useRouter} from "expo-router";
 import Navbar from "../../../../../components/Navbar";
 import Header from "../../../../../components/Header";
 import styles from "../../styles/parametresStyle";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {fetchUserByEmail} from "../../../../../services/user.api";
 
 export default function SubSectionWebTemplate() {
     const router = useRouter();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+
+    useEffect(() => {
+        const loadFreshUserData = async () => {
+            try {
+                // 1. On récupère l'email stocké à la connexion
+                const email = await AsyncStorage.getItem("@auth_email");
+
+                if (email) {
+                    // 2. On appelle l'API pour avoir les vraies infos à jour
+                    const userData = await fetchUserByEmail(email);
+                    setUser(userData);
+                }
+            } catch (e) {
+                console.error("Erreur API:", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadFreshUserData();
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+                <ActivityIndicator color="#1d9bf0" />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.page}>
@@ -40,17 +73,32 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
-
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
                         <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Nom d'utilisateur</Text>
+                                <Text style={{ color: '#536471' }}>@{user?.pseudo}</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Nom complet</Text>
+                                <Text style={{ color: '#536471' }}>{user?.name}</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>E-mail</Text>
+                                <Text style={{ color: '#536471' }}>{user?.email}</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Téléphone</Text>
+                                <Text style={{ color: '#536471' }}>{user?.phone || "Non renseigné"}</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Âge</Text>
+                                <Text style={{ color: '#536471' }}>{user?.age} ans</Text>
+                            </Pressable>
+
                         </View>
                     </ScrollView>
                 </View>

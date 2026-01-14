@@ -11,7 +11,7 @@ const SETTINGS_MENU = [
     { key: "security", label: "Sécurité et accès au compte" },
     { key: "privacy", label: "Confidentialité et sécurité" },
     { key: "notifications", label: "Notifications" },
-    { key: "accessibility", label: "Thèmes" },
+    { key: "theme", label: "Thèmes" },
     { key: "resources", label: "Ressources supplémentaires" },
 ];
 
@@ -54,7 +54,7 @@ const getTitle = (screen) => {
         case "security": return "Sécurité";
         case "privacy": return "Confidentialité";
         case "notifications": return "Notifications";
-        case "accessibility": return "Thèmes";
+        case "theme": return "Thèmes";
         case "resources": return "Ressources";
         default: return "Paramètres";
     }
@@ -131,7 +131,13 @@ export default function ParametresMobile() {
                         <Pressable
                             key={section.key}
                             style={styles.menuItem}
-                            onPress={() => setScreen(section.key)}
+                            onPress={() => {
+                                if (section.key == "theme") {
+                                } else {
+                                    setScreen(section.key);
+                                }
+                            }
+                            }
                         >
                             <Text style={styles.menuLabel}>{section.label}</Text>
                             <Text style={styles.chevron}>›</Text>

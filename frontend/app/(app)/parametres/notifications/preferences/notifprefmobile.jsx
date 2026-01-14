@@ -11,7 +11,7 @@ export default function SubSectionMobileTemplate() {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             {/* HEADER : Garde le même style, affiche le titre et gère le retour */}
             <Header
-                titre="Nom de la Sous-Section" // <--- À CHANGER POUR CHAQUE PAGE
+                titre="Notifications" // <--- À CHANGER POUR CHAQUE PAGE
                 boutonRetour={true}
                 onBack={() => router.back()}
             />
@@ -19,23 +19,17 @@ export default function SubSectionMobileTemplate() {
             <ScrollView style={styles.center}>
                 <View style={{ paddingVertical: 10 }}>
 
-                    {/* TITRE DE LA PAGE DANS LE CONTENU (Optionnel) */}
-                    <Text style={styles.pageTitle}>Détails du paramètre</Text>
 
-                    {/* ZONE DE CONTENU : C'est ici que tu mets tes formulaires, textes, etc. */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 1</Text>
-                        <Text style={styles.settingDesc}>
-                            Ici, tu peux mettre tes inputs ou tes descriptions spécifiques.
-                        </Text>
-                    </View>
-
-                    {/* Tu peux ajouter d'autres blocs comme celui-ci */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 2</Text>
-                        <Text style={styles.settingDesc}>
-                            Exemple de contenu supplémentaire.
-                        </Text>
+                    <View style={{ paddingVertical: 10 }}>
+                        <Pressable style={styles.menuItem}
+                        >
+                            <Text style={styles.menuLabel}>Notifications Push</Text>
+                            <Text style={{ color: '#536471' }}>Désactivées</Text>
+                        </Pressable>
+                        <Pressable style={styles.menuItem}>
+                            <Text style={styles.menuLabel}>Alertes par E-mail</Text>
+                            <Text style={{ color: '#536471' }}>Désactivées</Text>
+                        </Pressable>
                     </View>
 
                 </View>

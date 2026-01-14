@@ -13,8 +13,7 @@ const SETTINGS_MENU = [
     { key: "account", label: "Votre compte" },
     { key: "security", label: "Sécurité et accès au compte" },
     { key: "privacy", label: "Confidentialité et sécurité" },
-    { key: "notifications", label: "Notifications" },
-    { key: "accessibility", label: "Thèmes" },
+    { key: "theme", label: "Thèmes" },
     { key: "resources", label: "Ressources supplémentaires" },
 ];
 
@@ -67,14 +66,7 @@ const SECTION_DETAILS = {
             route: "/(app)/parametres/privacy/visibility",
         },
     ],
-    notifications: [
-        {
-            id: "notif-pref",
-            title: "Préférences de notifications",
-            desc: "Choisissez comment vous recevez les notifications.",
-            route: "/(app)/parametres/notifications/preferences",
-        },
-    ],
+
     theme: [
         {
             id: "dark",
@@ -196,10 +188,15 @@ export default function ParametresWeb() {
                                 key={item.key}
                                 id={item.id}
                                 onPress={() => {
-                                    setActiveSection(item.key);
-                                    setActiveSetting(null);
-                                }}
-                                style={({ hovered }) => [
+                                    if (item.key == "theme") {
+                                    } else {
+                                        setActiveSection(item.key);
+                                        setActiveSetting(null);
+
+                                    }
+                                }
+                                }
+                            style={({ hovered }) => [
                                     styles.menuItem,
                                     hovered && styles.menuItemHover,
                                     activeSection === item.key && styles.menuItemActive,

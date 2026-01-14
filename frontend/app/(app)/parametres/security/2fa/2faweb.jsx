@@ -40,17 +40,16 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
-
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
                         <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+
+                            <Pressable style={[styles.menuItem, { marginTop: 10 }]}>
+                                <Text style={styles.menuLabel}>Activer la 2FA via E-mail</Text>
+                                <Text style={{ color: '#536471' }}>Désactivé</Text>
+                            </Pressable>
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>E-mail de récupération</Text>
+                                <Text style={{ color: '#1d9bf0' }}>Configuré</Text>
+                            </Pressable>
                         </View>
                     </ScrollView>
                 </View>

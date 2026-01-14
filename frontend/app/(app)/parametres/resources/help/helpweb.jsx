@@ -40,17 +40,30 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
+                        <View style={{ paddingVertical: 10 }}>
+                            <Text style={[styles.settingDesc, { paddingHorizontal: 16, marginBottom: 10 }]}>
+                                Comment pouvons-nous vous aider ?
+                            </Text>
 
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
-                        <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Mon compte est bloqué</Text>
+                                <Text style={styles.chevron}>›</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Signaler un problème technique</Text>
+                                <Text style={styles.chevron}>›</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Sécurité et piratage</Text>
+                                <Text style={styles.chevron}>›</Text>
+                            </Pressable>
+
+                            <Pressable style={styles.menuItem}>
+                                <Text style={styles.menuLabel}>Règles de la communauté</Text>
+                                <Text style={styles.chevron}>›</Text>
+                            </Pressable>
                         </View>
                     </ScrollView>
                 </View>

@@ -11,7 +11,7 @@ export default function SubSectionMobileTemplate() {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             {/* HEADER : Garde le même style, affiche le titre et gère le retour */}
             <Header
-                titre="Nom de la Sous-Section" // <--- À CHANGER POUR CHAQUE PAGE
+                titre="Ressources" // <--- À CHANGER POUR CHAQUE PAGE
                 boutonRetour={true}
                 onBack={() => router.back()}
             />
@@ -19,25 +19,31 @@ export default function SubSectionMobileTemplate() {
             <ScrollView style={styles.center}>
                 <View style={{ paddingVertical: 10 }}>
 
-                    {/* TITRE DE LA PAGE DANS LE CONTENU (Optionnel) */}
-                    <Text style={styles.pageTitle}>Détails du paramètre</Text>
-
-                    {/* ZONE DE CONTENU : C'est ici que tu mets tes formulaires, textes, etc. */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 1</Text>
-                        <Text style={styles.settingDesc}>
-                            Ici, tu peux mettre tes inputs ou tes descriptions spécifiques.
+                    <View style={{ padding: 20 }}>
+                        <Text style={[styles.settingTitle, { fontSize: 22, marginBottom: 15 }]}>
+                            Charte du Collecteur Ecoception
                         </Text>
-                    </View>
 
-                    {/* Tu peux ajouter d'autres blocs comme celui-ci */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 2</Text>
-                        <Text style={styles.settingDesc}>
-                            Exemple de contenu supplémentaire.
+                        <Text style={[styles.settingDesc, { lineHeight: 22, color: '#000' }]}>
+                            <Text style={{ fontWeight: 'bold' }}>1. Engagement de sincérité</Text>{"\n"}
+                            En utilisant l'application, vous vous engagez à prendre des photos réelles de déchets ramassés. Toute tentative de fraude (photos Internet, photos répétées) entraînera une remise à zéro de vos points.{"\n\n"}
+
+                            <Text style={{ fontWeight: 'bold' }}>2. Validation des points</Text>{"\n"}
+                            Les points sont attribués après analyse de la photo. Nous nous réservons le droit de refuser une action si le déchet n'est pas clairement identifiable ou si le lieu semble inapproprié.{"\n\n"}
+
+                            <Text style={{ fontWeight: 'bold' }}>3. Sécurité lors du ramassage</Text>{"\n"}
+                            L'utilisateur est seul responsable de sa sécurité. Ne ramassez jamais de déchets dangereux (seringues, produits chimiques, verre brisé) sans équipement de protection adéquat.{"\n\n"}
+
+                            <Text style={{ fontWeight: 'bold' }}>4. Utilisation des récompenses</Text>{"\n"}
+                            Les points et trophées gagnés n'ont pas de valeur monétaire réelle, sauf indication contraire dans le cadre d'un partenariat spécifique avec nos sponsors.
                         </Text>
-                    </View>
 
+                        <View style={{ marginTop: 30, padding: 15, backgroundColor: '#f7f9f9', borderRadius: 10 }}>
+                            <Text style={{ fontSize: 12, color: '#536471', textAlign: 'center' }}>
+                                Règlement mis à jour le : 14 Janvier 2026
+                            </Text>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </View>

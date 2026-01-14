@@ -11,7 +11,7 @@ export default function SubSectionMobileTemplate() {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             {/* HEADER : Garde le même style, affiche le titre et gère le retour */}
             <Header
-                titre="Nom de la Sous-Section" // <--- À CHANGER POUR CHAQUE PAGE
+                titre="Confidentialité" // <--- À CHANGER POUR CHAQUE PAGE
                 boutonRetour={true}
                 onBack={() => router.back()}
             />
@@ -19,25 +19,14 @@ export default function SubSectionMobileTemplate() {
             <ScrollView style={styles.center}>
                 <View style={{ paddingVertical: 10 }}>
 
-                    {/* TITRE DE LA PAGE DANS LE CONTENU (Optionnel) */}
-                    <Text style={styles.pageTitle}>Détails du paramètre</Text>
+                    <View style={{ padding: 16 }}>
+                        <Pressable style={[styles.menuItem, { marginTop: 10 }]}>
+                            <Text style={styles.menuLabel}>Visibilité du compte</Text>
+                            <Text style={{ color: '#1d9bf0' }}>Privé</Text>
+                        </Pressable>
 
-                    {/* ZONE DE CONTENU : C'est ici que tu mets tes formulaires, textes, etc. */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 1</Text>
-                        <Text style={styles.settingDesc}>
-                            Ici, tu peux mettre tes inputs ou tes descriptions spécifiques.
-                        </Text>
-                    </View>
 
-                    {/* Tu peux ajouter d'autres blocs comme celui-ci */}
-                    <View style={styles.settingItem}>
-                        <Text style={styles.settingTitle}>Option 2</Text>
-                        <Text style={styles.settingDesc}>
-                            Exemple de contenu supplémentaire.
-                        </Text>
-                    </View>
-
+                </View>
                 </View>
             </ScrollView>
         </View>

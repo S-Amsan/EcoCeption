@@ -22,7 +22,14 @@ export default StyleSheet.create({
         backgroundColor: "#fff",
 
     },
-
+    inputUpdate: {
+        borderBottomWidth: 1,
+        borderColor: '#eff3f4',
+        paddingVertical: 10,
+        fontSize: 16,
+        marginBottom: 20,
+        color: '#000'
+    },
     /* GLOBAL CONTAINER */
     container: {
         flex: 1,

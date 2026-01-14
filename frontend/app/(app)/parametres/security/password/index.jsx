@@ -4,6 +4,6 @@ import Securitypasswordweb from "./securitypasswordweb";
 import Securitypasswordmobile from "./securitypasswordmobile";
 
 export default function Index() {
-    return isWeb ? <Securitypasswordmobile /> : <Securitypasswordmobile />;
+    return isWeb ? <Securitypasswordweb /> : <Securitypasswordmobile />;
 }
 

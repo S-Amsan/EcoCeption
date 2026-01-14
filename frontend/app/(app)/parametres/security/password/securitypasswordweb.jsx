@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import {View, Text, ScrollView, Pressable, TextInput} from "react-native";
 import { useRouter } from "expo-router";
 import Navbar from "../../../../../components/Navbar";
 import Header from "../../../../../components/Header";
@@ -40,17 +40,21 @@ export default function SubSectionWebTemplate() {
                             <Text style={{ fontSize: 16, fontWeight: '600' }}>Retour aux paramètres</Text>
                         </Pressable>
 
-                        {/* TITRE DE LA PAGE */}
-                        <Text style={styles.pageTitle}>Nom de la sous-section</Text>
-
-                        {/* ZONE DE CONTENU (À MODIFIER) */}
-                        <View style={{ padding: 20 }}>
-                            <View style={styles.settingItem}>
-                                <Text style={styles.settingTitle}>Titre du paramètre</Text>
-                                <Text style={styles.settingDesc}>
-                                    Contenu de ta page ici...
-                                </Text>
-                            </View>
+                        <View style={{ padding: 16 }}>
+                            <Text style={[styles.settingTitle, { marginBottom: 20 }]}>Changez votre mot de passe</Text>
+                            <TextInput
+                                style={{ borderBottomWidth: 1, borderColor: '#eff3f4', padding: 12, marginBottom: 20 }}
+                                placeholder="Ancien mot de passe"
+                                secureTextEntry
+                            />
+                            <TextInput
+                                style={{ borderBottomWidth: 1, borderColor: '#eff3f4', padding: 12, marginBottom: 20 }}
+                                placeholder="Nouveau mot de passe"
+                                secureTextEntry
+                            />
+                            <Pressable style={{ backgroundColor: '#1d9bf0', padding: 15, borderRadius: 30, alignItems: 'center' }}>
+                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Mettre à jour le mot de passe</Text>
+                            </Pressable>
                         </View>
                     </ScrollView>
                 </View>
