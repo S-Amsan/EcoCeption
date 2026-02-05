@@ -238,3 +238,24 @@ export async function fetchSuccessForUser(userId) {
     const actions = await res.json();
     return actions;
 }
+
+function decodeJwt(token) {
+    const payload = token.split(".")[1];
+    return JSON.parse(atob(payload));
+}
+
+export async function isTokenValid() {
+    const token = await AsyncStorage.getItem("@auth_token");
+    if (!token) return false;
+
+    try {
+        const { exp } = decodeJwt(token);
+        if (!exp) return false;
+
+        const now = Date.now() / 1000;
+        return exp > now;
+    } catch (e) {
+        return false;
+    }
+}
+

@@ -9,6 +9,7 @@ import Animated, {
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import {isTokenValid} from "../services/user.api";
 
 export default function SplashScreen() {
     const logoTranslateY = useSharedValue(-200);
@@ -34,12 +35,11 @@ export default function SplashScreen() {
     }, []);
 
     const redirectAfterSplash = async () => {
-        const token = await AsyncStorage.getItem("@auth_token");
-
-        if (token) {
+        const isValid = await isTokenValid();
+        if(isValid){
             router.replace("/(app)/accueil");
-        } else {
-            router.replace("/(auth)/login");
+        }else{
+            router.replace("/home"); 
         }
     };
 
