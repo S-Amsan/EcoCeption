@@ -12,12 +12,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {useNavigation, useRouter} from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import style from "./styles/loginStyles";
-import {saveUser} from "../../services/RegisterStorage";
-import { login } from "../../services/login.api";
+import {saveUser} from "../../../services/RegisterStorage";
+import { login } from "../../../services/login.api";
 import Toast from "react-native-toast-message";
 
 
-export default function Login(){
+export default function Index(){
     const router = useRouter();
 
     const navigation = useNavigation();
@@ -51,7 +51,7 @@ export default function Login(){
 
 
         const handleSignUp = () => {
-            router.push("/(auth)/SignUp");
+            router.push("/(auth)/signUp");
         };
 
     const handleForgotPassword = () => {
@@ -68,7 +68,7 @@ export default function Login(){
                             showsVerticalScrollIndicator={false}>
                 <View style={style.container}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../../../assets/logo.png')}
                         style={style.logo}
                         resizeMode="contain"
                     />
@@ -172,7 +172,7 @@ export default function Login(){
                 <ScrollView>
                         <View style={style.container}>
                 <Image
-                    source={require('../../assets/logo.png')}
+                    source={require('../../../assets/logo.png')}
                     style={style.logo}
                     resizeMode="contain"
                 />

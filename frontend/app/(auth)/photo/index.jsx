@@ -19,15 +19,15 @@ import {
     clearRegisterData,
     updateRegisterData,
     saveUser
-} from "../../services/RegisterStorage";
-import { signupMultipart } from "../../services/signup.api";
+} from "../../../services/RegisterStorage";
+import { signupMultipart } from "../../../services/signup.api";
 
 import styles from "./styles/photoStyles";
-import { login } from "../../services/login.api";
+import { login } from "../../../services/login.api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-export default function Photo() {
+export default function Index() {
     const [photoUri, setPhotoUri] = useState(null);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -174,7 +174,7 @@ export default function Photo() {
                                 />
                             ) : (
                                 <Image
-                                    source={require("../../assets/icones/photo.png")}
+                                    source={require("../../../assets/icones/photo.png")}
                                     style={styles.cameraIcon}
                                 />
                             )}

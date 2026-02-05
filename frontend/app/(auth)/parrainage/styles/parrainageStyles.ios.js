@@ -1,5 +1,5 @@
 import {StyleSheet, Dimensions} from "react-native";
-import {isTablet, scale, verticalScale} from "../../../utils/dimensions";
+import {isTablet, scale, verticalScale} from "../../../../utils/dimensions";
 
 const { width, height} = Dimensions.get("window");
 

@@ -1,24 +1,16 @@
-import {
-    Image,
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    Platform,
-    KeyboardAvoidingView,
-    Keyboard
-} from "react-native";
-
 import React, { useEffect, useState } from "react";
+import {Image, View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Platform, KeyboardAvoidingView, Keyboard} from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
-import style from "./styles/ageStyles";
-import { loadRegisterData, updateRegisterData } from "../../services/RegisterStorage";
-import { useNavigation } from "expo-router";
+import {useRouter} from "expo-router";
 import Toast from "react-native-toast-message";
 
-export default function Age() {
-    const navigation = useNavigation();
+import { loadRegisterData, updateRegisterData } from "../../../services/RegisterStorage";
+
+import style from "./styles/ageStyles";
+
+export default function Index() {
+    const router = useRouter();
     const [age, setAge] = useState("");
 
     useEffect(() => {
@@ -33,7 +25,7 @@ export default function Age() {
 
     const handleSkip = async () => {
         await updateRegisterData({ age: undefined });
-        navigation.navigate("photo");
+        router.push("photo");
     };
 
     const handleNext = async () => {
@@ -54,7 +46,7 @@ export default function Age() {
             text1: "Âge enregistré"
         });
 
-        navigation.navigate("photo");
+        router.push("photo");
     };
 
     return (
@@ -70,7 +62,7 @@ export default function Age() {
 
                 <View style={style.container}>
                 <Image
-                    source={require("../../assets/logo.png")}
+                    source={require("../../../assets/logo.png")}
                     style={style.logo}
                     resizeMode="contain"
                 />

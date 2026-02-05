@@ -1,31 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {
-    Image,
-    Text,
-    View,
-    TouchableOpacity,
-    TextInput,
-    Modal,
-    FlatList,
-    ScrollView,
-    Keyboard,
-    KeyboardAvoidingView,
-    TouchableWithoutFeedback,
-    Platform
-} from 'react-native';
+import {Image, Text, View, TouchableOpacity, TextInput, Modal, FlatList, ScrollView, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform} from 'react-native';
+
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import {
-    saveRegisterData,
-    loadRegisterData,
-    clearRegisterData,
-    updateRegisterData
-} from "../../services/RegisterStorage";
 import Toast from "react-native-toast-message";
 
+import {saveRegisterData, loadRegisterData, updateRegisterData} from "../../../services/RegisterStorage";
+import {API_URL} from "../../../constants/API_URL";
+
 import style from "./styles/signUpStyles";
-import {API_URL} from "../../constants/API_URL";
 
 const countries = [
     { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
@@ -40,8 +24,8 @@ const countries = [
     { code: 'PT', name: 'Portugal', dialCode: '+351', flag: '🇵🇹' },
 ];
 
-export default function SignUp(){
-    const navigation = useNavigation();
+export default function Index(){
+    const router = useRouter();
     const [pseudo, setPseudo] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -202,11 +186,11 @@ export default function SignUp(){
             text2: "Passe à l'étape suivante."
         });
 
-        navigation.navigate("parrainage");
+        router.push("parrainage");
     };
 
     const handleLogin = () => {
-        navigation.navigate('Login');
+        router.replace('login');
     };
 
     const formatPhoneNumber = (text) => {
@@ -280,7 +264,7 @@ export default function SignUp(){
                             showsVerticalScrollIndicator={false}>
                 <View style={style.container}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../../../assets/logo.png')}
                         style={style.logo}
                         resizeMode="contain"
                     />
@@ -397,7 +381,7 @@ export default function SignUp(){
             ) : ( <View style={style.container}>
 
                 <Image
-                    source={require('../../assets/logo.png')}
+                    source={require('../../../assets/logo.png')}
                     style={style.logo}
                     resizeMode="contain"
                 />

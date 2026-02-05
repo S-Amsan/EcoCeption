@@ -1,5 +1,5 @@
 import {StyleSheet, Dimensions} from "react-native";
-import {isTablet, scale, verticalScale} from "../../../utils/dimensions";
+import {isTablet, scale, verticalScale} from "../../../../utils/dimensions";
 
 const { width, height} = Dimensions.get("window");
 
@@ -26,7 +26,8 @@ export default StyleSheet.create({
         fontSize:20,
         color:"#fff",
         fontWeight:"500",
-        fontStyle:'italic'
+        fontStyle:'italic',
+        textAlign:"center",
     },
 
     logo: {

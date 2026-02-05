@@ -1,28 +1,23 @@
 import React, { useState } from 'react';
-import {
-    Image,
-    Text,
-    View,
-    TouchableOpacity,
-    ScrollView,
-    Animated
-} from 'react-native';
+import {Image, Text, View, TouchableOpacity, Animated} from 'react-native';
+
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter} from "expo-router";
+
 import style from "./styles/homeStyles";
 
 
-export default function Home(){
-    const navigation = useNavigation();
+export default function Index(){
+    const router = useRouter();
     const [buttonScale] = useState(new Animated.Value(1));
 
     const handleLogin = () => {
-        navigation.navigate('Login');
+        router.push("/login");
     };
 
     const handleSignup = () => {
-        navigation.navigate('SignUp');
+        router.push("/signUp");
     };
 
     const handlePolicy = () => {
@@ -53,7 +48,7 @@ export default function Home(){
         >
                 <View style={style.container}>
                         <Image
-                            source={require('../../assets/logo.png')}
+                            source={require('../../../assets/logo.png')}
                             style={style.logo}
                             resizeMode="contain"
                         />

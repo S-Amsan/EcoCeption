@@ -39,7 +39,7 @@ export default function SplashScreen() {
         if(isValid){
             router.replace("/(app)/accueil");
         }else{
-            router.replace("/home"); 
+            router.replace("/home");
         }
     };
 

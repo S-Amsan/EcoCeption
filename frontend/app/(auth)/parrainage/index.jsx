@@ -2,12 +2,12 @@ import { Image, View, Text, TextInput, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import style from "./styles/parrainageStyles";
-import { useNavigation } from "expo-router";
+import {useRouter} from "expo-router";
 import Toast from "react-native-toast-message";
-import { loadRegisterData, updateRegisterData } from "../../services/RegisterStorage";
+import { loadRegisterData, updateRegisterData } from "../../../services/RegisterStorage";
 
-export default function Parrainage() {
-    const navigation = useNavigation();
+export default function Index() {
+    const router = useRouter();
     const [parrainCode, setParrainCode] = useState("");
 
     useEffect(() => {
@@ -32,28 +32,28 @@ export default function Parrainage() {
             text2: "Passons à l'étape suivante."
         });
 
-        navigation.navigate("age");
+        router.push("age");
     };
 
     useEffect(() => {
         async function guard() {
             const data = await loadRegisterData();
             if (!data?.pseudo || !data?.email) {
-                navigation.replace("SignUp");
+                router.replace("SignUp");
             }
         }
         guard();
     }, []);
 
     const handleSkip = () => {
-        navigation.navigate("age");
+        router.navigate("age");
     };
 
     return (
         <LinearGradient colors={["#00DB83", "#0CD8A9"]} style={style.gradient}>
             <View style={style.container}>
                 <Image
-                    source={require("../../assets/logo.png")}
+                    source={require("../../../assets/logo.png")}
                     style={style.logo}
                     resizeMode="contain"
                 />
