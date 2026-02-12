@@ -43,4 +43,7 @@ public class SignUpRequest {
     private Integer age;
 
     private MultipartFile avatarImage;
+
+    @Size(min = 6, max = 6)
+    private String codeParrainageAssocie;
 }

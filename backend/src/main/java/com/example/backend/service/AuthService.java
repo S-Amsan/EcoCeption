@@ -14,6 +14,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.backend.repository.UserStatsRepository;
+import com.example.backend.model.UserStats;
 
 @Service
 public class AuthService {
@@ -23,6 +26,12 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserStatsRepository userStatsRepository;
+
+    @Autowired
+    private ParrainageService parrainageService;
 
     @Autowired
     private JwtService jwtService;
@@ -53,7 +62,9 @@ public class AuthService {
         );
     }
 
+    @Transactional
     public AuthenticationResponse signup(SignUpRequest request) {
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AccountAlreadyExistsException(
                 AccountAlreadyExistsException.Type.EMAIL,
@@ -77,9 +88,7 @@ public class AuthService {
         FileUploadResponse fileUploadResponse;
 
         try {
-            fileUploadResponse = fileUploadService.upload(
-                request.getAvatarImage()
-            );
+            fileUploadResponse = fileUploadService.upload(request.getAvatarImage());
         } catch (IOException e) {
             throw new LoginException("Failed to upload avatar image", e);
         }
@@ -91,12 +100,40 @@ public class AuthService {
         }
 
         user.setPhotoProfileUrl(
-            FileUploadService.endpoint.toString() +
-                '/' +
-                fileUploadResponse.getFilename()
+            FileUploadService.endpoint + "/" + fileUploadResponse.getFilename()
         );
 
+        user.setCodeParrainage(parrainageService.generateUniqueCode());
+
         userRepository.save(user);
+
+        UserStats userStats = new UserStats(user);
+        userStatsRepository.save(userStats);
+
+        String codeAssocie = request.getCodeParrainageAssocie();
+
+        if (codeAssocie != null && !codeAssocie.isBlank()) {
+
+            String normalizedCode = codeAssocie.trim().toUpperCase();
+
+            User parrain = userRepository
+                .findByCodeParrainage(normalizedCode)
+                .orElseThrow(() -> new LoginException("Code parrainage invalide"));
+
+            user.setCodeParrainageAssocie(normalizedCode);
+
+            // +500 filleul
+            userStats.setPoints(500);
+
+            // +500 parrain
+            UserStats parrainStats = userStatsRepository
+                .findByUserId(parrain.getId())
+                .orElseThrow(() -> new LoginException("Stats parrain introuvables"));
+
+            parrainStats.setPoints(parrainStats.getPoints() + 500);
+
+            userStatsRepository.save(parrainStats);
+        }
 
         String token = jwtService.generateToken(request.getEmail());
 
@@ -106,6 +143,7 @@ public class AuthService {
             token
         );
     }
+
 
     public boolean pseudoExists(String pseudo) {
         return userRepository.existsByPseudo(pseudo);

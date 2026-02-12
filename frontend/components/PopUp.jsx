@@ -23,6 +23,7 @@ export default function PopUp({
 
 const styles = StyleSheet.create({
     container : {
+        zIndex : 52,
         flex : 1,
         alignItems: "center",
         justifyContent: "center",

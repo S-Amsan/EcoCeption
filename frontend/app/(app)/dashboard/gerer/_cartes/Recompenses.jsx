@@ -298,17 +298,16 @@ export default function Recompenses({carte, allData}) {
         }
     };
 
-    const handleDelete = (recompense) => {
+    const handleDelete = async (recompense) => {
         try {
-            deleteDonation(recompense.id).then(() => {
-                carte.reloadData("recompenses");
+            await deleteDonation(recompense.id)
+            carte.reloadData("recompenses");
 
-                Toast.show({
-                    type: "success",
-                    text1: "Confirmation de suppression",
-                    text2: `La recompense ${recompense.description} a été supprimé avec succès!`,
-                });
-            })
+            Toast.show({
+                type: "success",
+                text1: "Confirmation de suppression",
+                text2: `La recompense ${recompense.description} a été supprimé avec succès!`,
+            });
         }catch (err) {
             Toast.show({
                 type: "error",

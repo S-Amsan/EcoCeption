@@ -33,10 +33,10 @@ export function PanierProvider({ children }) {
         try {
             const stats = await fetchMyStats();
             const points = stats.find((s) => s.type === "default")?.valeur ?? 0;
-            setPointsUtilisateur((prev) => {
-                if (prev === 0) return 0;
-                return Number(points) || 0;
-            });
+            // setPointsUtilisateur((prev) => {
+            //     if (prev === 0) return 0;
+            //     return Number(points) || 0;
+            // });
         } catch (e) {
             console.log("Erreur récupération points:", e);
         }
@@ -47,7 +47,7 @@ export function PanierProvider({ children }) {
             try {
                 const raw = await AsyncStorage.getItem(POINTS_KEY);
                 if (raw !== null) {
-                    setPointsUtilisateur(Number(raw));
+                    //setPointsUtilisateur(Number(raw));
                 } else {
                     await rafraichirPoints();
                 }
@@ -63,7 +63,7 @@ export function PanierProvider({ children }) {
     useEffect(() => {
         const sauvegarderPoints = async () => {
             try {
-                await AsyncStorage.setItem(POINTS_KEY, String(pointsUtilisateur));
+                //await AsyncStorage.setItem(POINTS_KEY, String(pointsUtilisateur));
             } catch (e) {
                 console.log("Erreur sauvegarde points:", e);
             }

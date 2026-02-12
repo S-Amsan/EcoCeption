@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         padding: 20,
         elevation: 10,
-        borderTopRightRadius: Platform.OS === "web" ? 20 : 20,
+        borderTopRightRadius: 20,
         borderBottomRightRadius: Platform.OS === "web" ? 20 : 0,
         borderTopLeftRadius : Platform.OS === "web" ? 0 : 20,
 

@@ -52,6 +52,12 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true, nullable = true, length = 6)
+    private String codeParrainage;
+
+    @Column(nullable = true, length = 6)
+    private String codeParrainageAssocie;
+
     @Column(nullable = false)
     private boolean isAdmin;
 

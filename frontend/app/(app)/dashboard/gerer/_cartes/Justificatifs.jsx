@@ -151,8 +151,8 @@ export default function Justificatifs({ carte }) {
             return;
         }
 
-        try {
-            validateDocument(justif.id).then(()=> {
+        validateDocument(justif.id)
+            .then(()=> {
                 carte.reloadData("justificatifs");
 
                 Toast.show({
@@ -161,14 +161,14 @@ export default function Justificatifs({ carte }) {
                     text2: `Le justificatif de ${justif.user.name} a été accepté avec succès!`,
                 });
             })
-
-        } catch (e) {
-            Toast.show({
-                type: "error",
-                text1: "Erreur",
-                text2: "Impossible d’accepter le justificatif.",
-            });
-        }
+            .catch((e) => {
+                Toast.show({
+                    type: "error",
+                    text1: "Erreur",
+                    text2: "Impossible d’accepter le justificatif.",
+                });
+                console.error(e)
+            })
     };
 
     const handleRefuser = async (justif) => {
@@ -183,8 +183,8 @@ export default function Justificatifs({ carte }) {
             return;
         }
 
-        try {
-            invalidateDocument(justif.id).then(()=> {
+        invalidateDocument(justif.id)
+            .then(()=> {
                 carte.reloadData("justificatifs");
 
                 Toast.show({
@@ -193,14 +193,16 @@ export default function Justificatifs({ carte }) {
                     text2: `Le justificatif de ${justif.user.name} a été refusé avec succès!`,
                 });
             })
+            .catch((e)=> {
+                Toast.show({
+                    type: "error",
+                    text1: "Erreur",
+                    text2: "Impossible de refuser le justificatif.",
+                });
+                console.error(e)
+            })
 
-        } catch (e) {
-            Toast.show({
-                type: "error",
-                text1: "Erreur",
-                text2: "Impossible de refuser le justificatif.",
-            });
-        }
+
     };
 
     const infoSupplementaire_DATA = carte?.data?.filter((c) => {

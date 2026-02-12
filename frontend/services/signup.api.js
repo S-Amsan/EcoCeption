@@ -7,6 +7,7 @@ export async function signupMultipart({
                                           email,
                                           password,
                                           name,
+                                          codeParrainageAssocie,
                                           phone,
                                           age,
                                           photoUri
@@ -19,6 +20,10 @@ export async function signupMultipart({
     formData.append("name", name);
     formData.append("phone", phone ?? "");
     formData.append("age", age ? String(age) : "");
+
+    if (codeParrainageAssocie) {
+        formData.append("codeParrainageAssocie", codeParrainageAssocie);
+    }
 
     if (Platform.OS === "web") {
         const blob = await fetch(photoUri).then(r => r.blob());

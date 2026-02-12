@@ -3,22 +3,20 @@ import {Ionicons} from "@expo/vector-icons";
 import { useNotification } from "../app/(app)/notifications/NotificationContext.jsx";
 import styles from "./styles/stylesHeader";
 import React, {useState} from "react";
-import {useNavigation, useRouter} from "expo-router";
-import { usePanier } from "../context/PanierContext";
+import {useRouter} from "expo-router";
 
 import point from "../assets/icones/point.png";
 import trophee from "../assets/icones/trophee.png";
 import flamme from "../assets/icones/flamme.png";
 
 import parametres from "../assets/icones/Header/parametres.png";
-import notificationPastille from "../assets/icones/Header/notificationPastille.png";
 import notificationSansPastille from "../assets/icones/Header/notificationSansPastille.png";
 import DEFAULT_PICTURE from "../assets/icones/default_picture.jpg";
 
 import {formatNombreCourt} from "../utils/format";
 import {isWeb} from "../utils/platform";
 
-import {fetchMyStats, fetchUserStats} from "../services/user.api";
+import {fetchMyStats} from "../services/user.api";
 
 export default function Header({
        recherche, setRecherche,  //Barre de recherche (web)
@@ -37,10 +35,7 @@ export default function Header({
 }) {
 
     const router = useRouter();
-    const navigation = useNavigation();
     const {openNotifications} = useNotification();
-
-    const { pointsUtilisateur } = usePanier();
 
     // Filtre actuellement ouvert
     const [filtreActif, setFiltreActif] = useState(null);
@@ -82,28 +77,6 @@ export default function Header({
 
     const redirect = (type) => {
         router.push(getDetailConfig(type).route);
-    };
-
-    // Photo de profil
-    const getPhotoDeProfil = (user) => {
-        if (!user) {
-            console.log("HEADER → user NULL");
-            return DEFAULT_PICTURE;
-        }
-
-        const photo =
-            user.photoProfileUrl ||
-            user.photoProfile ||
-            null;
-
-        if (!photo) {
-            console.log("HEADER → photoProfile manquante");
-            return DEFAULT_PICTURE;
-        }
-
-        console.log("HEADER → photo OK :", photo);
-
-        return { uri: photo };
     };
 
 
@@ -240,10 +213,7 @@ export default function Header({
                                                     style={{width: 22, height: 22}}
                                                 />
                                                 <Text style={[styles.detailText, { color: config.color }]}>
-                                                    {detail.type === "default"
-                                                        ? formatNombreCourt(pointsUtilisateur)
-                                                        : formatNombreCourt(detail.valeur)
-                                                    }
+                                                    {formatNombreCourt(detail.valeur)}
                                                 </Text>
                                             </TouchableOpacity>
                                         )
@@ -314,10 +284,8 @@ export default function Header({
                                 source={config.icon}
                                 style={{width: 18, height: 18}}
                             />
-                            <Text style={[styles.detailText, { color: config.color }]}>{detail.type === "default"
-                                    ? formatNombreCourt(pointsUtilisateur)
-                                    : formatNombreCourt(detail.valeur)
-                                }
+                            <Text style={[styles.detailText, { color: config.color }]}>
+                                {formatNombreCourt(detail.valeur)}
                             </Text>
                         </TouchableOpacity>
                     )

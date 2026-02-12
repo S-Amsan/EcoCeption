@@ -118,6 +118,7 @@ export default function Index() {
                 email: data.email,
                 password: data.password,
                 name: name.trim(),
+                codeParrainageAssocie: data.parrainCode,
                 phone: data.phone,
                 age: data.age,
                 photoUri

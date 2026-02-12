@@ -33,30 +33,26 @@ export default function Gestes({ onAssociate }) {
         }));
     }
 
-    const loadData = async () => {
-        try {
-            Promise.all([
-                loadUser(),
-                fetchAllCards(),
-                fetchAllDocuments(),
-            ]).then(([user,cards, documents]) => {
-                console.log("USER:", user)
-                console.log("CARDS:", cards);
-                console.log("DOCUMENTS:", documents);
+    const loadData = () => {
+        Promise.all([
+            loadUser(),
+            fetchAllCards(),
+            fetchAllDocuments(),
+        ]).then(([user,cards, documents]) => {
+            console.log("USER:", user)
+            console.log("CARDS:", cards);
+            console.log("DOCUMENTS:", documents);
 
-                documents = documents.filter((d) => d.user.id === user.id);
+            documents = documents.filter((d) => d.user.id === user.id);
 
-                const merged = mergeCardsWithDocuments(cards, documents);
+            const merged = mergeCardsWithDocuments(cards, documents);
 
-                setPartenaires(merged);
-            });
-
-
-        } catch (e) {
+            setPartenaires(merged);
+        }).catch((e) => {
             console.error("LOAD DATA ERROR", e);
-        } finally {
+        }).finally(() => {
             setLoading(false);
-        }
+        })
     };
 
     useEffect(() => {

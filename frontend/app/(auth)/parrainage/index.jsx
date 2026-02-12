@@ -5,10 +5,12 @@ import style from "./styles/parrainageStyles";
 import {useRouter} from "expo-router";
 import Toast from "react-native-toast-message";
 import { loadRegisterData, updateRegisterData } from "../../../services/RegisterStorage";
+import {existsParrainageCode} from "../../../services/parrainage.api";
 
 export default function Index() {
     const router = useRouter();
     const [parrainCode, setParrainCode] = useState("");
+    const [res, SetRes] = useState("");
 
     useEffect(() => {
         async function load() {
@@ -21,6 +23,17 @@ export default function Index() {
     }, []);
 
     const handleNext = async () => {
+        const response = await existsParrainageCode(parrainCode);
+
+        if (!response.exists) {
+            Toast.show({
+                type: "error",
+                text1: "Code invalide",
+                text2: "Aucun utilisateur n'est associé à ce code."
+            });
+            return;
+        }
+
         await updateRegisterData({
             parrainCode: parrainCode.trim() || undefined
         });
@@ -67,8 +80,9 @@ export default function Index() {
                         style={style.input}
                         placeholder="Code de parrainage"
                         placeholderTextColor="#999"
-                        value={parrainCode}
+                        value={parrainCode.trim().toUpperCase()}
                         onChangeText={setParrainCode}
+                        maxLength={6}
                     />
 
 

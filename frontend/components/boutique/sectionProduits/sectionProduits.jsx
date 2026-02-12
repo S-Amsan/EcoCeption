@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, StyleSheet, Pressable, TextInput} from "react-native";
+import {View, Text, ScrollView, Pressable, TextInput} from "react-native";
 import BlocProduit from "../blocProduit/blocProduit";
 import { PRODUITS } from "../../../utils/data/produit";
 import { COUPONS } from "../../../utils/data/couponReduction";
@@ -11,7 +11,6 @@ import { usePanier } from "../../../context/PanierContext";
 
 export default function SectionProduits({ selected, filtreActif, setFiltreActif, recherche, setRecherche }) {
     const estFiltre = selected !== null;
-    const montreTout = selected === null;
     const { favoris } = usePanier();
     const montreFavoris = selected === "favoris";
 

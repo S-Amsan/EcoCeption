@@ -170,17 +170,16 @@ export default function Partenaires({carte}) {
         }
     };
 
-    const handleDelete = (partenaire) => {
+    const handleDelete = async (partenaire) => {
         try {
-            deletePartner(partenaire.id).then(() => {
-                carte.reloadData(["partenaires","recompenses"]);
+            await deletePartner(partenaire.id)
+            carte.reloadData(["partenaires","recompenses"]);
 
-                Toast.show({
-                    type: "success",
-                    text1: "Confirmation de suppression",
-                    text2: `Le partenaire ${partenaire.name} a été supprimé avec succès!`,
-                });
-            })
+            Toast.show({
+                type: "success",
+                text1: "Confirmation de suppression",
+                text2: `Le partenaire ${partenaire.name} a été supprimé avec succès!`,
+            });
         }catch (err) {
             Toast.show({
                 type: "error",
@@ -188,8 +187,6 @@ export default function Partenaires({carte}) {
                 text2: err?.message ?? "Erreur API",
             });
         }
-
-
     };
 
     return (

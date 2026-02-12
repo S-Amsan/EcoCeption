@@ -259,3 +259,16 @@ export async function isTokenValid() {
     }
 }
 
+export async function getParrainageCode() {
+    const token = await AsyncStorage.getItem("@auth_token");
+
+    const response = await fetch(`${API_URL}/parrainage/code`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    return data;
+}
