@@ -1,6 +1,5 @@
 import { API_URL } from "../constants/API_URL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Platform} from "react-native";
 
 /**
  * Example response
@@ -49,8 +48,6 @@ export async function fetchAllReports() {
 export async function reportPost(postId, reason) {
     const token = await AsyncStorage.getItem("@auth_token");
 
-    console.log("REPORT POST", { postId, reason, token });
-
     const response = await fetch(`${API_URL}/report/${postId}`, {
         method: "POST",
         headers: {
@@ -60,13 +57,5 @@ export async function reportPost(postId, reason) {
         body: JSON.stringify({ reason }),
     });
 
-    if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || "Erreur signalement");
-    }
-
-    return true;
+    return response.json();
 }
-
-
-
