@@ -4,13 +4,14 @@ import com.example.backend.model.Post;
 import com.example.backend.model.Report;
 import com.example.backend.model.User;
 import com.example.backend.repository.PostRepository;
-import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.ReportRepository;
+import com.example.backend.repository.UserRepository;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class ReportService {
@@ -23,6 +24,9 @@ public class ReportService {
 
     @Autowired
     private ReportRepository reportRepository;
+
+    @Autowired
+    private ReportSummaryService reportSummaryService;
 
     public Optional<Report> getReportById(Long reportId) {
         return reportRepository.findById(reportId);
@@ -37,17 +41,14 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public Report createReport(Long postId, Long userId, String reason) {
-
-        System.out.println("=== CREATE REPORT ===");
-        System.out.println("postId = " + postId);
-        System.out.println("userId = " + userId);
-        System.out.println("reason = " + reason);
-
-        Post post = postRepository.findById(postId)
+    public Report createReport(Long postId, Long userId, String reason)
+        throws IOException, URISyntaxException, InterruptedException {
+        Post post = postRepository
+            .findById(postId)
             .orElseThrow(() -> new RuntimeException("Post introuvable"));
 
-        User user = userRepository.findById(userId)
+        User user = userRepository
+            .findById(userId)
             .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         Report report = new Report();
@@ -55,8 +56,8 @@ public class ReportService {
         report.setUser(user);
         report.setReason(reason);
         report.setChecked(null);
+        report.setSummary(reportSummaryService.generateSummary(post));
 
         return reportRepository.save(report);
     }
-
 }

@@ -33,6 +33,11 @@ public class Report {
     @Column(nullable = false)
     private String reason;
 
+    @OneToOne
+    @JoinColumn(name = "summary_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private ReportSummary summary = null;
+
     @Column(nullable = true)
     private Boolean checked = null;
 
