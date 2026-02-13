@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.model.Post;
 import com.example.backend.model.ReportSummary;
+import com.example.backend.repository.ReportSummaryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
@@ -11,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ public class ReportSummaryService {
 
     private static final String API_URI =
         "https://vision.googleapis.com/v1/images:annotate";
+
+    @Autowired
+    private ReportSummaryRepository reportSummaryRepository;
 
     public ReportSummary generateSummary(Post post)
         throws IOException, URISyntaxException, InterruptedException {
@@ -63,7 +68,12 @@ public class ReportSummaryService {
             VisionResponses.class
         );
 
-        return responses.responses().getFirst().safeSearchAnnotation();
+        ReportSummary summary = responses
+            .responses()
+            .getFirst()
+            .safeSearchAnnotation();
+
+        return reportSummaryRepository.save(summary);
     }
 
     private record VisionResponses(List<VisionResponse> responses) {}
