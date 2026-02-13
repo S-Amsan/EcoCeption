@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Platform, Pressable, ScrollView, Text, View} from "react-native";
+import {Platform, ScrollView, View} from "react-native";
 
 import Header from "../../../../components/Header";
 import Navbar from "../../../../components/Navbar";
@@ -10,24 +10,17 @@ import HeaderBoutique from "../../../../components/boutique/headerBoutique/heade
 import styles from "./styles/styles";
 
 import {loadUser} from "../../../../services/RegisterStorage";
-import {usePanier} from "../../../../context/PanierContext";
 
 export default function Boutique() {
     const [recherche, setRecherche] = useState("");
-    const [filtres, setFiltres] = useState([
-        { id: "tri", options: ["Récent", "Ancien"], select: "Récent" },
-        { id: "lieu", options: ["France", "Autre"], select: "France" },
-    ]);
 
     const [filtreActif, setFiltreActif] = useState(null);
-    const { ajouterPointsDebug } = usePanier();
 
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         console.log("Recherche :", recherche);
-        console.log("Filtres :", filtres);
-    }, [recherche, filtres]);
+    }, [recherche]);
 
     useEffect(() => {
         setRecherche("");

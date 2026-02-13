@@ -1,5 +1,4 @@
-import { Platform } from "react-native";
-import web from "./styles";
-import native from "./styles";
+import { StyleSheet } from "react-native";
 
-export default Platform.OS === "web" ? web : native;
+export default StyleSheet.create({
+});

@@ -186,7 +186,7 @@ const Statistiques = ({isActive, config, user_event_DATA, setOngletActifId}) => 
                     <View><Text style={styles.titre}>Historique des {config.titre.toLowerCase()}</Text></View>
                     <View style={styles.carteEventContainer}>
                         {user_event_DATA.map((event_DATA, index) => (
-                            <CarteEvent key={index} event_DATA={event_DATA} id={index+1} setEventClique={setEventClique} setOngletActifId={setOngletActifId}/>
+                            <CarteEvent key={event_DATA.name} event_DATA={event_DATA} id={index+1} setEventClique={setEventClique} setOngletActifId={setOngletActifId}/>
                         ))}
                     </View>
                 </View>
@@ -195,6 +195,7 @@ const Statistiques = ({isActive, config, user_event_DATA, setOngletActifId}) => 
         </>
     );
 };
+
 
 const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
     if (!event_DATA) {
@@ -209,6 +210,35 @@ const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
     const eventTermine = tempsRestant(event_DATA.deadline) === "Terminé"
     const qualifieALEvent = pourcentageDAvancement !== 1
 
+    const getStatut = () => {
+        if (!eventTermine) {
+            return {
+                text: "En cours",
+                style: styles.infoEtat,
+            };
+        }
+
+        if (qualifieALEvent) {
+            return {
+                text: "Non qualifié",
+                style: [styles.infoEtat, styles.defaite],
+            };
+        }
+
+        if (event_DATA.recompense) {
+            return {
+                text: "Gagné",
+                style: [styles.infoEtat, styles.victoire],
+            };
+        }
+
+        return {
+            text: "Perdu",
+            style: [styles.infoEtat, styles.defaite],
+        };
+    };
+    const { text, style } = getStatut();
+
     return (
         <TouchableOpacity style={styles.carteEvent} onPress={() => eventTermine ? setEventClique({ ...event_DATA, id }) : setOngletActifId("encours")}>
             <Text style={styles.numText}>#{id || -1}</Text>
@@ -217,18 +247,7 @@ const CarteEvent = ({event_DATA,setEventClique, setOngletActifId, id}) => {
                 <Text style={styles.infoTemps}>{eventTermine ? ("Il y a " + tempsEcoule(event_DATA.deadline)): ("Fin dans " + tempsRestant(event_DATA.deadline))}</Text>
                 <View style={styles.infoEvent}>
                     <Text style={styles.progressionText}>{pointsRecolte} / {pointsObjectif} ({(pourcentageDAvancement * 100).toFixed(1)}%)</Text>
-                    {
-                        !eventTermine ?
-                            <Text style={styles.infoEtat}>En cours</Text>
-                            :
-                            qualifieALEvent ?
-                                <Text style={[styles.infoEtat, styles.defaite]}>Non qualifié</Text>
-                                :
-                                event_DATA.recompense ?
-                                    <Text style={[styles.infoEtat, styles.victoire]}>Gagné</Text>
-                                    :
-                                    <Text style={[styles.infoEtat, styles.defaite]}>Perdu</Text>
-                    }
+                    <Text style={style}>{text}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -249,6 +268,44 @@ const EventPopup = ({event_DATA, setEventClique, config}) => {
     const participants = event_DATA.participants
     const qualifies = event_DATA.qualified
     const pointsARedistribuer = formatNombreEspace(participants * event_DATA.inscriptionCost)
+
+    const renderResultatEvent = () => {
+        const aQualifie = pourcentageDAvancement === 1;
+
+        if (!aQualifie) {
+            return (
+                <>
+                    <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                    <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                    <Text style={[styles.eventResultatInfo, styles.rougeText]}>
+                        <Text style={styles.gras}>Vous n&#39;avez pas réussi à vous qualifier</Text>
+                    </Text>
+                </>
+            );
+        }
+
+        if (event_DATA.recompense) {
+            return (
+                <>
+                    <Text style={styles.eventResultatTitre}>🏆 Vous avez gagné : </Text>
+                    <Text style={styles.eventResultatSousTitre}>{event_DATA.recompense.Nom}</Text>
+                    <Text style={styles.eventResultatInfo}>
+                        <Text style={styles.gras}>Récompense disponible</Text> dans votre profil
+                    </Text>
+                </>
+            );
+        }
+
+        return (
+            <>
+                <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
+                <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
+                <Text style={[styles.eventResultatInfo, styles.rougeText]}>
+                    <Text style={styles.gras}>Vous n’avez pas été tiré au sort cette fois.</Text>
+                </Text>
+            </>
+        );
+    };
 
     return (
         <View style={styles.popupContainer}>
@@ -272,26 +329,7 @@ const EventPopup = ({event_DATA, setEventClique, config}) => {
                 </View>
                 <Text style={styles.eventProgression}>{pointsRecolte} pts / {pointsObjectif} pts</Text>
                 <View style={styles.eventResultat}>
-                    {pourcentageDAvancement === 1 ?
-                        event_DATA.recompense ?
-                            (<>
-                                <Text style={styles.eventResultatTitre}>🏆 Vous avez gagné : </Text>
-                                <Text style={styles.eventResultatSousTitre}>{event_DATA.recompense.Nom}</Text>
-                                <Text style={styles.eventResultatInfo}><Text style={styles.gras}>Récompense disponible</Text> dans votre profil</Text>
-                            </>):
-                            (<>
-                                <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
-                                <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
-                                <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n’avez pas été tiré au sort cette fois.</Text></Text>
-                            </>)
-                        :
-                        (<>
-                            <Text style={styles.eventResultatTitre}>😭 Vous avez perdu : </Text>
-                            <Text style={styles.eventResultatSousTitre}>{getMessageEncouragement()}</Text>
-                            <Text style={[styles.eventResultatInfo,styles.rougeText]}><Text style={styles.gras}>Vous n&#39;avez pas réussi à vous qualifier</Text></Text>
-                        </>)
-                    }
-
+                    {renderResultatEvent()}
                 </View>
                 <View style={styles.eventInfoSuppWrapper}>
                     <Text style={styles.eventInfoSuppTitre}>Informations supplémentaires</Text>

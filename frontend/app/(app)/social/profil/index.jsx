@@ -137,7 +137,7 @@ const Cartes = ({user_DATA, router}) => {
 }
 
 const MesRecompenses = () => {
-    // Recompences non ouvert TODO récupéré le nombre de récompence avec le status (non ouvert) Table RecompenceGagne, 0 si aucun
+    // Recompences non ouvert
     const recompencesGagne = 0
 
     return (
@@ -175,8 +175,8 @@ const Realisations = ({succes_DATA, user_succes_DATA}) => {
 
                 {isWeb ? (
                     <View style={styles.realisationsWebContainer}>
-                        {userSucces.map((item, index) => (
-                            <RealisationItem key={index} item={item} />
+                        {userSucces.map((item) => (
+                            <RealisationItem key={item.id} item={item} />
                         ))}
                     </View>
                 ) : (
@@ -245,8 +245,8 @@ const UserActivites = ({user_activite_DATA, userActuel}) => {
             {user_activite_DATA?.length > 0 ?
                 <View style={styles.activitesContainer}>
                     {
-                        user_activite_DATA.map((activite, index) =>
-                            <View key={index} style={styles.activiteContainer}>
+                        user_activite_DATA.map((activite) =>
+                            <View key={activite.id} style={styles.activiteContainer}>
                                 <Image source={{uri : activite.image_url}} style={styles.activiteImage}/>
                                 <Text style={styles.activiteText}>{activite.description}</Text>
                             </View>
@@ -313,13 +313,20 @@ export default function Profil(){
 
 
     // Classement
+    const buildUserPatchFromRank = (userFromRank, userClassement) => {
+        if (userFromRank) {
+            return { stats: userFromRank.stats, classement: userFromRank.classement };
+        }
+        return { classement: userClassement };
+    };
+
     useEffect(() => {
         let cancelled = false;
 
         const loadAndRank = async () => {
-            if (!users_DATA?.length || !user_DATA?.id) return;
+            const userId = user_DATA?.id;
+            if (!Array.isArray(users_DATA) || users_DATA.length === 0 || !userId) return;
 
-            // Récupérer les stats pour tous les users
             const usersWithStats = await Promise.all(
                 users_DATA.map(async (u) => {
                     const stats = await fetchUserStats(u.id);
@@ -329,27 +336,18 @@ export default function Profil(){
 
             if (cancelled) return;
 
-            // Trier + ajouter classement
             const usersSortedByRank = [...usersWithStats]
                 .sort((a, b) => (b.stats?.trophies ?? 0) - (a.stats?.trophies ?? 0))
                 .map((u, i) => ({ ...u, classement: i + 1 }));
 
-            // Classement + stats du user connecté
-            const userIndex = usersSortedByRank.findIndex((u) => u.id === user_DATA.id);
-
+            const userIndex = usersSortedByRank.findIndex((u) => u.id === userId);
             const userClassement = userIndex + 1;
             const userFromRank = userIndex >= 0 ? usersSortedByRank[userIndex] : null;
 
             setUserDATA((prev) => {
                 if (!prev) return prev;
-
-                return {
-                    ...prev,
-                    // on prend les infos à jour (stats + classement) si on l'a trouvé
-                    ...(userFromRank ? { stats: userFromRank.stats, classement: userFromRank.classement } : { classement: userClassement }),
-                };
+                return { ...prev, ...buildUserPatchFromRank(userFromRank, userClassement) };
             });
-
         };
 
         loadAndRank();
@@ -358,6 +356,7 @@ export default function Profil(){
             cancelled = true;
         };
     }, [users_DATA, user_DATA?.id]);
+
 
     useEffect(()=> {
         if (!user_DATA?.stats) return;

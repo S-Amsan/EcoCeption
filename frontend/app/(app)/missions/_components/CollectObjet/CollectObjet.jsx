@@ -35,7 +35,7 @@ export default function ObjetRecupPhoto({ objet, onBack, onSubmit }) {
             }
 
             const result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                mediaTypes: ["images"],
                 allowsEditing: true,
                 quality: 0.7,
             });

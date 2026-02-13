@@ -201,7 +201,7 @@ function ParrainageCard(){
                 <View style={{gap : 10}}>
                     <Text style={{fontWeight : "bold", fontSize : 18, color : "white"}}>Parrainer un ami</Text>
                     <View style={{flexDirection : "row", alignItems: "center",justifyContent : "center", backgroundColor : "white", borderRadius : 12, paddingVertical : 3, paddingHorizontal: 5, alignSelf: "flex-start"}}>
-                        <Text style={{fontWeight : "bold"}}>+1000</Text>
+                        <Text style={{fontWeight : "bold"}}>+500</Text>
                         <Image source={point} style={{height:15, width:15}} />
                         <Text style={{fontSize : 11, color : "#757575"}}>/filleul</Text>
                     </View>

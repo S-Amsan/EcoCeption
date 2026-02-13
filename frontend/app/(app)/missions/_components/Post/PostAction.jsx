@@ -16,7 +16,7 @@ import { postPost } from "../../../../../services/posts.api";
 import styles from "./Styles/styles";
 
 export default function PostAction() {
-    const { code, product } = useLocalSearchParams();
+    const { product } = useLocalSearchParams();
     const parsedProduct = product ? JSON.parse(product) : null;
 
     const [showUploadMenu, setShowUploadMenu] = useState(false);
@@ -39,7 +39,7 @@ export default function PostAction() {
         }
 
         const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ["images"],
             allowsEditing: true,
             quality: 0.8,
         });
@@ -65,7 +65,7 @@ export default function PostAction() {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ["images"],
             allowsEditing: true,
             quality: 0.8,
         });

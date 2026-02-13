@@ -193,7 +193,7 @@ export default function Recompenses({carte, allData}) {
     const [bannerPreview, setBannerPreview] = useState("");
 
     const onChangePoints = (v) => {
-        const cleaned = (v ?? "").replace(/[^0-9]/g, "");
+        const cleaned = (v ?? "").replace(/\D/g, "");
         setPoints(cleaned);
     };
 

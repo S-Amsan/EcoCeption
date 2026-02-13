@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {View, Text, ScrollView, Pressable, ActivityIndicator} from "react-native";
-import {useFocusEffect, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 import Navbar from "../../../../../components/Navbar";
 import Header from "../../../../../components/Header";
 import styles from "../../styles/parametresStyle";

@@ -1,5 +1,16 @@
-import React, { useCallback } from "react";
-import {Platform, View, Text, Image, Pressable, StyleSheet, ScrollView, ImageBackground, Alert, ToastAndroid} from "react-native";
+import React, { useCallback, useMemo } from "react";
+import {
+    Platform,
+    View,
+    Text,
+    Image,
+    Pressable,
+    StyleSheet,
+    ScrollView,
+    ImageBackground,
+    Alert,
+    ToastAndroid,
+} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
@@ -12,217 +23,177 @@ import HeaderBoutique from "../../../../components/boutique/headerBoutique/heade
 
 import point from "../../../../assets/icones/point.png";
 import partage from "../../../../assets/icones/boutique/partage.png";
-import coeur from "../../../../assets/icones/boutique/coeur.png";
 
 import styles from "./styles/styles";
-import {Ionicons} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function DetailProduit() {
-    const router = useRouter();
-    const params = useLocalSearchParams();
+const webNoSelect = StyleSheet.create({
+    noSelect: { userSelect: "none" },
+});
 
-    const id = params.id ?? "";
-    const titreCourt = params.titre ?? "Produit";
-    const titreComplet = params.titreComplet ?? `E-carte cadeau ${titreCourt} de 10€`;
-    const description = params.descriptionLongue ?? params.description ?? "Aucune description disponible.";
-    const points = params.points ?? "0";
-    const imageCarte = params.imageCarte ?? params.image ?? "";
-    const imageBanniere = params.banniere ?? params.image ?? "";
-    const type = params.type ?? "cartes";
-    const { ajouterAuPanier, acheterOffre, toggleFavori, estFavori, pointsUtilisateur } = usePanier();
-    const coutProduit = Number(points) || 0;
-    const peutAcheter = Number(pointsUtilisateur) >= coutProduit;
-    const favori = estFavori(id);
-    const lienfictif = "https://ecoception.fr/boutique";
+const lienfictif = "https://ecoception.fr/boutique";
 
-    const handlePartager = async () => {
-        const texte = `Découvre cette offre : ${titreComplet}\n${lienfictif}`;
-
-        try {
-            if (Platform.OS === "web") {
-                await navigator.clipboard.writeText(texte);
-                window.alert("Copié dans le presse-papier ✅");
-                return;
-            }
-
-            await Clipboard.setStringAsync(texte);
-
-            if (Platform.OS === "android") {
-                ToastAndroid.show("Copié dans le presse-papier ✅", ToastAndroid.SHORT);
-            } else {
-                Alert.alert("Copié ✅", "Copié dans le presse-papier");
-            }
-        } catch (e) {
-            console.log("Erreur partage:", e);
-
-            if (Platform.OS === "web") {
-                window.alert("Impossible de copier ❌");
-            } else {
-                Alert.alert("Erreur", "Impossible de copier ❌");
-            }
-        }
+function getTypeLabel(type) {
+    const key = String(type).toLowerCase();
+    const map = {
+        carte: "Cartes cadeaux",
+        coupon: "Bons de réduction",
+        don: "Dons",
     };
+    return map[key] ?? "Aucune";
+}
 
-    const articleCourant = {
-        id: String(id),
-        titre: String(titreCourt),
-        titreComplet: String(titreComplet),
-        description: String(params.description ?? ""),
-        descriptionLongue: String(description),
-        points: Number(points),
-        imageCarte: String(imageCarte),
-        banniere: String(imageBanniere),
-        type: String(type),
-        quantity: 1,
-    };
+async function copyToClipboard(text) {
+    if (Platform.OS === "web") {
+        await navigator.clipboard.writeText(text);
+        return;
+    }
+    await Clipboard.setStringAsync(text);
+}
 
+function notifyCopySuccess() {
+    if (Platform.OS === "web") {
+        window.alert("Copié dans le presse-papier ✅");
+        return;
+    }
+    if (Platform.OS === "android") {
+        ToastAndroid.show("Copié dans le presse-papier ✅", ToastAndroid.SHORT);
+        return;
+    }
+    Alert.alert("Copié ✅", "Copié dans le presse-papier");
+}
 
-    const handleAddToCartWeb = useCallback(() => {
-        ajouterAuPanier({
-            id: String(id),
-            titre: String(titreCourt),
-            titreComplet: String(titreComplet),
-            description: String(params.description ?? ""),
-            descriptionLongue: String(description),
-            points: Number(points),
-            imageCarte: String(imageCarte),
-            banniere: String(imageBanniere),
-            type: String(type),
-            quantity: 1,
-        });
+function notifyCopyError() {
+    if (Platform.OS === "web") {
+        window.alert("Impossible de copier ❌");
+        return;
+    }
+    Alert.alert("Erreur", "Impossible de copier ❌");
+}
 
-        router.push({
-            pathname: "boutique/panier",
-            params: { justAdded: "1" },
-        });
-    }, [
-        ajouterAuPanier,
-        id,
-        titreCourt,
-        titreComplet,
-        params.description,
-        description,
-        points,
-        imageCarte,
-        imageBanniere,
-        type,
-        router,
-    ]);
+function DetailProduitMobile({
+                                 router,
+                                 imageBanniere,
+                                 imageCarte,
+                                 type,
+                                 titreCourt,
+                                 titreComplet,
+                                 points,
+                                 description,
+                                 peutAcheter,
+                                 handlePartager,
+                                 toggleFavori,
+                                 favori,
+                                 articleCourant,
+                                 handleBuyMobile,
+                             }) {
+    return (
+        <View style={styles.ecran}>
+            <Header boutonNotification={true} userDetails={true} userProfil={true} />
 
-    const handleBuyMobile = useCallback(() => {
-        const ok = acheterOffre(articleCourant);
+            <ScrollView style={styles.defilement} showsVerticalScrollIndicator={false}>
+                <View style={styles.banniere}>
+                    <ImageBackground
+                        source={{ uri: imageBanniere }}
+                        style={styles.banniereImage}
+                        blurRadius={8}
+                    >
+                        <View style={styles.banniereFiltre} />
 
-        if (!ok) {
-            Alert.alert(
-                "Points insuffisants",
-                "Tu n’as pas assez de points pour acheter cette offre"
-            );
-            return;
-        }
+                        <View style={styles.actionsHaut}>
+                            <Pressable onPress={() => router.back()} style={styles.boutonRetour}>
+                                <Text style={styles.iconeRetour}>
+                                    <Ionicons name="chevron-back" size={21} />
+                                </Text>
+                            </Pressable>
 
-        router.push({
-            pathname: "boutique/historique",
-            params: { justBought: "1" },
-        });
-    }, [acheterOffre, articleCourant, router]);
-
-
-    if (Platform.OS !== "web") {
-        return (
-            <View style={styles.ecran}>
-
-                <Header
-                    boutonNotification={true}
-                    userDetails={true}
-                    userProfil={true}
-                />
-
-                <ScrollView style={styles.defilement} showsVerticalScrollIndicator={false}>
-                    <View style={styles.banniere}>
-                        <ImageBackground source={{ uri: imageBanniere }} style={styles.banniereImage} blurRadius={8}>
-
-                            <View style={styles.banniereFiltre} />
-
-                            <View style={styles.actionsHaut}>
-                                <Pressable onPress={() => router.back()} style={styles.boutonRetour}>
-                                    <Text style={styles.iconeRetour}><Ionicons name="chevron-back" size={21}/></Text>
+                            <View style={styles.actionsDroite}>
+                                <Pressable style={styles.boutonIcone} onPress={handlePartager}>
+                                    <Image source={partage} style={styles.iconeAction} />
                                 </Pressable>
 
-                                <View style={styles.actionsDroite}>
-                                    <Pressable style={styles.boutonIcone} onPress={handlePartager}>
-                                        <Image source={partage} style={styles.iconeAction} />
-                                    </Pressable>
-
-                                    <Pressable
-                                        style={styles.boutonIcone}
-                                        onPress={() => toggleFavori(articleCourant)}
-                                    >
-                                        <Ionicons
-                                            name={favori ? "heart" : "heart-outline"}
-                                            size={25}
-                                            color={favori ? "red" : "black"}
-                                        />
-                                    </Pressable>
-                                </View>
+                                <Pressable
+                                    style={styles.boutonIcone}
+                                    onPress={() => toggleFavori(articleCourant)}
+                                >
+                                    <Ionicons
+                                        name={favori ? "heart" : "heart-outline"}
+                                        size={25}
+                                        color={favori ? "red" : "black"}
+                                    />
+                                </Pressable>
                             </View>
-
-                            <View style={styles.carteAuCentre}>
-                                <Image source={{ uri: imageCarte }} style={styles.imageCarte} />
-                            </View>
-                        </ImageBackground>
-                    </View>
-
-                    <View style={styles.contenu}>
-                        <Text style={styles.badgeType}>
-                            {String(type).toLowerCase() === "carte"
-                                ? "Cartes cadeaux"
-                                : String(type).toLowerCase() === "coupon"
-                                    ? "Bons de réduction"
-                                    : String(type).toLowerCase() === "don"
-                                        ? "Dons"
-                                        : "Catégorie"}
-                        </Text>
-
-                        <Text style={styles.titreProduitCourt}>{titreCourt}</Text>
-                        <Text style={styles.titreProduitComplet}>{titreComplet}</Text>
-
-                        <View style={styles.lignePrix}>
-                            <Text style={styles.prixLabel}>Dès</Text>
-                            <Text style={styles.prixValeur}>{points}</Text>
-                            <Image source={point} style={styles.iconePoints} />
                         </View>
 
-                        <View style={styles.infosCourtes}>
-                            <Text style={styles.infosCourtesLigne}>✅ En stock</Text>
-                            <Text style={styles.infosCourtesSousTexte}>{titreCourt}</Text>
+                        <View style={styles.carteAuCentre}>
+                            <Image source={{ uri: imageCarte }} style={styles.imageCarte} />
                         </View>
-
-                        <View style={styles.separateur} />
-
-                        <Text style={styles.titreSection}>À propos</Text>
-                        <Text style={styles.label}>Description :</Text>
-                        <Text style={styles.texteDescription}>{description}</Text>
-
-                        <View style={{ height: 110 }} />
-                    </View>
-                </ScrollView>
-
-                <View style={styles.barreAchat}>
-                    <Pressable style={[styles.boutonAchat, !peutAcheter && styles.boutonAchatDisabled]} onPress={handleBuyMobile} disabled={!peutAcheter}>
-                        <LinearGradient
-                            colors={["#00DB83", "#0CD8A9"]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.fondGradient}
-                            pointerEvents="none"
-                        />
-                        <Text style={styles.texteBoutonAchat} selectable={false}>Acheter l’offre</Text>
-                    </Pressable>
+                    </ImageBackground>
                 </View>
-            </View>
-        );
-    }
 
+                <View style={styles.contenu}>
+                    <Text style={styles.badgeType}>{getTypeLabel(type)}</Text>
+
+                    <Text style={styles.titreProduitCourt}>{titreCourt}</Text>
+                    <Text style={styles.titreProduitComplet}>{titreComplet}</Text>
+
+                    <View style={styles.lignePrix}>
+                        <Text style={styles.prixLabel}>Dès</Text>
+                        <Text style={styles.prixValeur}>{points}</Text>
+                        <Image source={point} style={styles.iconePoints} />
+                    </View>
+
+                    <View style={styles.infosCourtes}>
+                        <Text style={styles.infosCourtesLigne}>✅ En stock</Text>
+                        <Text style={styles.infosCourtesSousTexte}>{titreCourt}</Text>
+                    </View>
+
+                    <View style={styles.separateur} />
+
+                    <Text style={styles.titreSection}>À propos</Text>
+                    <Text style={styles.label}>Description :</Text>
+                    <Text style={styles.texteDescription}>{description}</Text>
+
+                    <View style={{ height: 110 }} />
+                </View>
+            </ScrollView>
+
+            <View style={styles.barreAchat}>
+                <Pressable
+                    style={[styles.boutonAchat, !peutAcheter && styles.boutonAchatDisabled]}
+                    onPress={handleBuyMobile}
+                    disabled={!peutAcheter}
+                >
+                    <LinearGradient
+                        colors={["#00DB83", "#0CD8A9"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.fondGradient}
+                        pointerEvents="none"
+                    />
+                    <Text style={styles.texteBoutonAchat} selectable={false}>
+                        Acheter l’offre
+                    </Text>
+                </Pressable>
+            </View>
+        </View>
+    );
+}
+
+function DetailProduitWeb({
+                              router,
+                              imageBanniere,
+                              imageCarte,
+                              titreComplet,
+                              points,
+                              description,
+                              handlePartager,
+                              toggleFavori,
+                              favori,
+                              articleCourant,
+                              handleAddToCartWeb,
+                              type,
+                          }) {
     return (
         <View style={styles.racine}>
             <View style={styles.zoneNavbar}>
@@ -311,7 +282,6 @@ export default function DetailProduit() {
                                                 />
                                             </Pressable>
 
-
                                             <Pressable
                                                 style={styles.boutonSecondaire}
                                                 onPress={() => toggleFavori(articleCourant)}
@@ -330,7 +300,6 @@ export default function DetailProduit() {
                                                     color={favori ? "red" : "white"}
                                                     style={{ zIndex: 2, marginTop: 3 }}
                                                 />
-
                                             </Pressable>
 
                                             <Pressable
@@ -380,15 +349,7 @@ export default function DetailProduit() {
 
                             <View style={styles.ligneInfo}>
                                 <Text style={styles.infoLabel}>Genre :</Text>
-                                <Text style={styles.infoLien}>
-                                    {String(type).toLowerCase() === "carte"
-                                        ? "Cartes cadeaux"
-                                        : String(type).toLowerCase() === "coupon"
-                                            ? "Bons de réduction"
-                                            : String(type).toLowerCase() === "don"
-                                                ? "Dons"
-                                                : "Catégorie"}
-                                </Text>
+                                <Text style={styles.infoLien}>{getTypeLabel(type)}</Text>
                             </View>
                         </View>
                     </View>
@@ -398,6 +359,119 @@ export default function DetailProduit() {
     );
 }
 
-const webNoSelect = StyleSheet.create({
-    noSelect: { userSelect: "none" },
-});
+export default function DetailProduit() {
+    const router = useRouter();
+    const params = useLocalSearchParams();
+
+    const id = params.id ?? "";
+    const titreCourt = params.titre ?? "Produit";
+    const titreComplet = params.titreComplet ?? `E-carte cadeau ${titreCourt} de 10€`;
+    const description =
+        params.descriptionLongue ?? params.description ?? "Aucune description disponible.";
+    const points = params.points ?? "0";
+    const imageCarte = params.imageCarte ?? params.image ?? "";
+    const imageBanniere = params.banniere ?? params.image ?? "";
+    const type = params.type ?? "cartes";
+
+    const { ajouterAuPanier, acheterOffre, toggleFavori, estFavori, pointsUtilisateur } =
+        usePanier();
+
+    const coutProduit = Number(points) || 0;
+    const peutAcheter = Number(pointsUtilisateur) >= coutProduit;
+    const favori = estFavori(id);
+
+    const articleCourant = useMemo(
+        () => ({
+            id: String(id),
+            titre: String(titreCourt),
+            titreComplet: String(titreComplet),
+            description: String(params.description ?? ""),
+            descriptionLongue: String(description),
+            points: Number(points),
+            imageCarte: String(imageCarte),
+            banniere: String(imageBanniere),
+            type: String(type),
+            quantity: 1,
+        }),
+        [
+            id,
+            titreCourt,
+            titreComplet,
+            params.description,
+            description,
+            points,
+            imageCarte,
+            imageBanniere,
+            type,
+        ]
+    );
+
+    const handlePartager = useCallback(async () => {
+        const texte = `Découvre cette offre : ${String(titreComplet)}\n${lienfictif}`;
+        try {
+            await copyToClipboard(texte);
+            notifyCopySuccess();
+        } catch (e) {
+            console.log("Erreur partage:", e);
+            notifyCopyError();
+        }
+    }, [titreComplet]);
+
+    const handleAddToCartWeb = useCallback(() => {
+        ajouterAuPanier(articleCourant);
+        router.push({
+            pathname: "boutique/panier",
+            params: { justAdded: "1" },
+        });
+    }, [ajouterAuPanier, articleCourant, router]);
+
+    const handleBuyMobile = useCallback(() => {
+        const ok = acheterOffre(articleCourant);
+        if (!ok) {
+            Alert.alert("Points insuffisants", "Tu n’as pas assez de points pour acheter cette offre");
+            return;
+        }
+        router.push({
+            pathname: "boutique/historique",
+            params: { justBought: "1" },
+        });
+    }, [acheterOffre, articleCourant, router]);
+
+    if (Platform.OS !== "web") {
+        return (
+            <DetailProduitMobile
+                router={router}
+                imageBanniere={imageBanniere}
+                imageCarte={imageCarte}
+                type={type}
+                titreCourt={titreCourt}
+                titreComplet={titreComplet}
+                points={points}
+                description={description}
+                peutAcheter={peutAcheter}
+                handlePartager={handlePartager}
+                toggleFavori={toggleFavori}
+                favori={favori}
+                articleCourant={articleCourant}
+                handleBuyMobile={handleBuyMobile}
+            />
+        );
+    }
+
+    return (
+        <DetailProduitWeb
+            router={router}
+            imageBanniere={imageBanniere}
+            imageCarte={imageCarte}
+            titreComplet={titreComplet}
+            points={points}
+            description={description}
+            handlePartager={handlePartager}
+            toggleFavori={toggleFavori}
+            favori={favori}
+            articleCourant={articleCourant}
+            handleAddToCartWeb={handleAddToCartWeb}
+            type={type}
+        />
+    );
+}

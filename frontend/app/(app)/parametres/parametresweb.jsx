@@ -103,6 +103,53 @@ const SECTION_DETAILS = {
     ],
 };
 
+function SettingItem({
+                         id,
+                         title,
+                         desc,
+                         danger,
+                         route,
+                         activeSetting,
+                         setActiveSetting,
+                         onLogout,
+                         onDisableAccount,
+                         onNavigate,
+                     }) {
+    const handlePress = () => {
+        setActiveSetting(id);
+
+        if (id === "account-disconnection") {
+            onLogout();
+            return;
+        }
+
+        if (id === "account-disable") {
+            onDisableAccount();
+            return;
+        }
+
+        if (route) {
+            onNavigate(route);
+        }
+    };
+
+    return (
+        <Pressable
+            onPress={handlePress}
+            style={({ hovered }) => [
+                danger ? styles.settingItemDanger : styles.settingItem,
+                hovered && styles.settingItemHover,
+                activeSetting === id && styles.settingItemActive,
+            ]}
+        >
+            <Text style={danger ? styles.settingDanger : styles.settingTitle}>
+                {title}
+            </Text>
+            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
+        </Pressable>
+    );
+}
+
 export default function ParametresWeb() {
     const router = useRouter();
     const [activeSection, setActiveSection] = useState("account");
@@ -132,42 +179,23 @@ export default function ParametresWeb() {
         }
     };
 
-    /* ===== ITEM DROIT CORRIGÉ ===== */
-    const SettingItem = ({ id, title, desc, danger, route }) => (
-        <Pressable
-            onPress={() => {
-                setActiveSetting(id);
-
-                if (id === "account-disconnection") {
-                    logout();
-                } else if (id === "account-disable") {
-                    confirmDisableAccount();
-                } else if (route) {
-                    // On ne push que si une route est définie
-                    router.push(route);
-                }
-            }}
-            style={({ hovered }) => [
-                danger ? styles.settingItemDanger : styles.settingItem,
-                hovered && styles.settingItemHover,
-                activeSetting === id && styles.settingItemActive,
-            ]}
-        >
-            <Text style={danger ? styles.settingDanger : styles.settingTitle}>
-                {title}
-            </Text>
-            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
-        </Pressable>
-    );
-
     const renderRightPanel = () => (
         <>
             <Text style={styles.rightTitle}>
                 {SETTINGS_MENU.find((s) => s.key === activeSection)?.label}
             </Text>
             {SECTION_DETAILS[activeSection]?.map((item) => (
-                <SettingItem key={item.id} {...item} />
+                <SettingItem
+                    key={item.id}
+                    {...item}
+                    activeSetting={activeSetting}
+                    setActiveSetting={setActiveSetting}
+                    onLogout={logout}
+                    onDisableAccount={confirmDisableAccount}
+                    onNavigate={(r) => router.push(r)}
+                />
             ))}
+
         </>
     );
 
@@ -188,11 +216,9 @@ export default function ParametresWeb() {
                                 key={item.key}
                                 id={item.id}
                                 onPress={() => {
-                                    if (item.key == "theme") {
-                                    } else {
+                                    if (item.key !== "theme") {
                                         setActiveSection(item.key);
                                         setActiveSetting(null);
-
                                     }
                                 }
                                 }

@@ -7,7 +7,7 @@ const ITEM_HEIGHT = 34;
 export default function Filtre ({filtres = [], value, onChange, placeholder = "Filtrer", style,}) {
 
     const [open, setOpen] = React.useState(false);
-    const [anchor, setAnchor] = React.useState(null); // {x,y,width,height}
+    const [anchor, setAnchor] = React.useState(null);
     const btnRef = React.useRef(null);
 
     const label = value ?? placeholder;

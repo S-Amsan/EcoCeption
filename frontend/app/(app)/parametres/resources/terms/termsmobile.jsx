@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import Header from "../../../../../components/Header"; // Ajuste le nombre de ../ selon la profondeur
 import styles from "../../styles/parametresStyle";

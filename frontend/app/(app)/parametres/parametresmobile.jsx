@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {View, Text, ScrollView, Pressable, Platform, Alert} from "react-native";
+import {View, Text, ScrollView, Pressable, Alert} from "react-native";
 import Header from "../../../components/Header";
 import styles from "./styles/parametresStyle";
 import { useRouter } from "expo-router";
@@ -60,6 +60,39 @@ const getTitle = (screen) => {
     }
 };
 
+function SettingItem({
+                         id,
+                         title,
+                         desc,
+                         danger,
+                         route,
+                         onLogout,
+                         onDisable,
+                         onNavigate,
+                     }) {
+    const handlePress = () => {
+        if (id === "account-disconnection") {
+            onLogout();
+        } else if (id === "account-disable") {
+            onDisable();
+        } else if (route) {
+            onNavigate(route);
+        }
+    };
+
+    return (
+        <Pressable
+            style={[styles.settingItem, danger && styles.settingItemDanger]}
+            onPress={handlePress}
+        >
+            <Text style={[styles.settingTitle, danger && styles.settingDanger]}>
+                {title}
+            </Text>
+            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
+        </Pressable>
+    );
+}
+
 export default function ParametresMobile() {
     const router = useRouter();
     const [screen, setScreen] = useState("main");
@@ -91,26 +124,6 @@ export default function ParametresMobile() {
         );
     };
 
-    const SettingItem = ({ id, title, desc, danger, route }) => (
-        <Pressable
-            style={[styles.settingItem, danger && styles.settingItemDanger]}
-            onPress={() => {
-                if (id === "account-disconnection") {
-                    logout();
-                } else if (id === "account-disable") {
-                    confirmDisableAccount();
-                } else if (route) {
-                    router.push(route); // ✅ CORRIGÉ ICI
-                }
-            }}
-        >
-            <Text style={[styles.settingTitle, danger && styles.settingDanger]}>
-                {title}
-            </Text>
-            {desc && <Text style={styles.settingDesc}>{desc}</Text>}
-        </Pressable>
-    );
-
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <Header
@@ -132,8 +145,7 @@ export default function ParametresMobile() {
                             key={section.key}
                             style={styles.menuItem}
                             onPress={() => {
-                                if (section.key == "theme") {
-                                } else {
+                                if (section.key !== "theme") {
                                     setScreen(section.key);
                                 }
                             }
@@ -151,8 +163,12 @@ export default function ParametresMobile() {
                             title={item.title}
                             desc={item.desc}
                             danger={item.danger}
-                            route={item.route} // ✅ OBLIGATOIRE POUR QUE LE CLIC MARCHE
+                            route={item.route}
+                            onLogout={logout}
+                            onDisable={confirmDisableAccount}
+                            onNavigate={(route) => router.push(route)}
                         />
+
                     ))
                 )}
             </ScrollView>

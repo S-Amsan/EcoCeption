@@ -19,7 +19,7 @@ export default function MissionsMobile() {
     const [page, setPage] = useState("listes");
     const [ongletActifId, setOngletActifId] = useState("listes");
     const [selectedObjet, setSelectedObjet] = useState(null);
-    const { page: pageFromScan, product, code } = useLocalSearchParams();
+    const { page: pageFromScan } = useLocalSearchParams();
 
     const { mode, id } = useLocalSearchParams();
 
@@ -109,7 +109,6 @@ export default function MissionsMobile() {
             if (page === "post") {
                 setPage("listes");
                 setOngletActifId("listes");
-                return;
             }
 
         };

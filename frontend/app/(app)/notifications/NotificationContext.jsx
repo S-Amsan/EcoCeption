@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {createContext, useContext, useState, useEffect, useMemo} from "react";
 import { fetchNotifications } from "../../../services/notifications.api.js";
 
 const NotificationContext = createContext();
@@ -6,22 +6,18 @@ const NotificationContext = createContext();
 export function NotificationProvider({ children }) {
     const [isOpen, setIsOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(false);
 
     const openNotifications = () => setIsOpen(true);
     const closeNotifications = () => setIsOpen(false);
 
     const loadNotifications = async () => {
         try {
-            setLoading(true);
             const data = await fetchNotifications();
             setNotifications(data);
         } catch (e) {
             console.error("Erreur notifications :", e);
             setNotifications([]); // <-- stocke les notifications
 
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -32,15 +28,17 @@ export function NotificationProvider({ children }) {
         }
     }, [isOpen]);
 
+    const value = useMemo(() => ({
+        isOpen,
+        openNotifications,
+        closeNotifications,
+        notifications,
+        setNotifications
+    }), [isOpen, openNotifications, closeNotifications, notifications]);
+
     return (
         <NotificationContext.Provider
-            value={{
-                isOpen,
-                openNotifications,
-                closeNotifications,
-                notifications,
-                setNotifications
-            }}
+            value={value}
         >
             {children}
         </NotificationContext.Provider>

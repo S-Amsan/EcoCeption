@@ -6,7 +6,7 @@ import {
     Dimensions,
     Pressable,
     Image,
-    ScrollView, useWindowDimensions, Platform,
+    ScrollView, Platform,
 } from "react-native";
 import { fetchNotifications } from "../../../services/notifications.api";
 import { useEffect, useRef, useState } from "react";
@@ -100,7 +100,7 @@ export default function NotificationDrawer() {
                     )}
                     {!loading && notifications.map((notif, index) => (
 
-                        <View key={index} style={styles.notification}>
+                        <View key={`${notif.receivedAt}-${notif.title}`} style={styles.notification}>
                             {notif.imageUrl && (
                                 <Image
                                     source={{ uri: notif.imageUrl }}
@@ -125,6 +125,19 @@ export default function NotificationDrawer() {
 
 const isSmall = width < 1100;
 const isMedium = width >= 1100 && width < 1600;
+
+let drawerLeft = 0;
+
+if (Platform.OS === "web") {
+    if (isSmall) {
+        drawerLeft = 80;
+    } else if (isMedium) {
+        drawerLeft = 200;
+    } else {
+        drawerLeft = 260;
+    }
+}
+
 const styles = StyleSheet.create({
 
     overlay: {
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
     },
     drawer: {
         position: "absolute",
-        left: Platform.OS === "web" ? isSmall ? 80 : isMedium ? 200 : 260 : 0,
+        left: drawerLeft,
         height: Platform.OS === "web" ? "100%" : (SCREEN_HEIGHT *0.75),
         top: Platform.OS === "web" ? 0 : "25%",
         bottom: 0,

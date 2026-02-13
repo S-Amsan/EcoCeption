@@ -28,6 +28,25 @@ import { fetchUserById } from "../../../services/user.api";
 
 const ONBOARDING_KEY = "@onboarding_seen";
 
+// ===== PUBLISHER INFO =====
+function PublisherInfo({ userId }) {
+    const [pseudo, setPseudo] = useState(null);
+
+    useEffect(() => {
+        if (!userId) return;
+
+        fetchUserById(userId)
+            .then(user => setPseudo(user.pseudo))
+            .catch(console.error);
+    }, [userId]);
+
+    return (
+        <Text style={{ fontSize: 18, marginTop: 6 }}>
+            Posté par : {pseudo ?? "…"}
+        </Text>
+    );
+}
+
 export default function AccueilWeb() {
     const [posts, setPosts] = useState([]);
     const [objects, setObjects] = useState([]);
@@ -95,25 +114,6 @@ export default function AccueilWeb() {
 
         loadFeed();
     }, []);
-
-    // ===== PUBLISHER INFO =====
-    function PublisherInfo({ userId }) {
-        const [pseudo, setPseudo] = useState(null);
-
-        useEffect(() => {
-            if (!userId) return;
-
-            fetchUserById(userId)
-                .then(user => setPseudo(user.pseudo))
-                .catch(console.error);
-        }, [userId]);
-
-        return (
-            <Text style={{ fontSize: 18, marginTop: 6 }}>
-                Posté par : {pseudo ?? "…"}
-            </Text>
-        );
-    }
 
     // ===== FEED UNIFIÉ =====
     const filteredFeed = useMemo(() => {

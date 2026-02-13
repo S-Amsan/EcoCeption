@@ -18,8 +18,7 @@ import Calendrier from "../_components/Calendrier";
 import PopUp from "../../../../components/PopUp";
 import {Ionicons} from "@expo/vector-icons";
 import {loadUser} from "../../../../services/RegisterStorage";
-import {fetchUserById, fetchUsers, fetchUserStats} from "../../../../services/user.api";
-import {getFriends} from "../../../../services/friends.api";
+import {fetchUsers, fetchUserStats} from "../../../../services/user.api";
 import DEFAULT_PICTURE from "../../../../assets/icones/default_picture.jpg";
 
 const RestaurerPopUp = ({setVisible, flammes = 0}) => {
@@ -161,7 +160,6 @@ export default function VotreSerie(){
         loadUser().then(setUserDATA)
         if (isWeb){
             fetchUsers().then(setUserAmisData);
-            //getFriends().then((friends) => setUserAmisData(friends));
         }
     }, []);
 

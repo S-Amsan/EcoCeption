@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+import {manipulate, SaveFormat} from "expo-image-manipulator";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 
@@ -18,7 +18,6 @@ import {
     loadRegisterData,
     clearRegisterData,
     updateRegisterData,
-    saveUser
 } from "../../../services/RegisterStorage";
 import { signupMultipart } from "../../../services/signup.api";
 
@@ -56,7 +55,7 @@ export default function Index() {
     // ===============================
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ["images"],
             allowsEditing: true,
             quality: 0.7
         });
@@ -66,11 +65,15 @@ export default function Index() {
         let uri = result.assets[0].uri;
 
         if (Platform.OS !== "web") {
-            const resized = await ImageManipulator.manipulateAsync(
-                uri,
-                [{ resize: { width: 1024 } }],
-                { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
-            );
+            const context = await manipulate(uri);
+
+            context.resize({ width: 1024 });
+
+            const resized = await context.renderAsync();
+            await resized.saveAsync({
+                compress: 0.8,
+                format: SaveFormat.JPEG,
+            });
             uri = resized.uri;
         }
 
@@ -150,7 +153,6 @@ export default function Index() {
             });
         } finally {
             setLoading(false);
-    }{
         }
     };
 

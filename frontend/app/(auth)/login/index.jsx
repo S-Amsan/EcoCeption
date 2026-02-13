@@ -9,10 +9,9 @@ import {
     Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import {useNavigation, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import style from "./styles/loginStyles";
-import {saveUser} from "../../../services/RegisterStorage";
 import { login } from "../../../services/login.api";
 import Toast from "react-native-toast-message";
 
@@ -20,7 +19,6 @@ import Toast from "react-native-toast-message";
 export default function Index(){
     const router = useRouter();
 
-    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);

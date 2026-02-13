@@ -38,9 +38,9 @@ export default function SignalementReasons({ postId, onSuccess }) {
                 </Text>
             </View>
 
-            {reasons.map((label, index) => (
+            {reasons.map((label) => (
                 <TouchableOpacity
-                    key={index}
+                    key={label}
                     style={styles.row}
                     onPress={() => handleSelect(label)}
                 >

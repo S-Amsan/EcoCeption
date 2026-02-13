@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { useRouter } from "expo-router";
 import { Platform, View, Text, Image, ScrollView, Pressable, Modal } from "react-native";
 
 import Header from "../../../../components/Header";
@@ -76,7 +75,6 @@ function CarteAchat({ item, onVoirCode }) {
 }
 
 export default function Index() {
-    const router = useRouter();
     const estMobile = Platform.OS !== "web";
 
     const onglets = [

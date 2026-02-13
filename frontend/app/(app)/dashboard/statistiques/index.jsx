@@ -22,7 +22,6 @@ import {loadUser} from "../../../../services/RegisterStorage";
 import AccesReserveAdmin from "../_component/AccesReserveAdmin";
 import {fetchAllReports} from "../../../../services/reports.api";
 import {fetchUsers} from "../../../../services/user.api";
-import {fetchAllCards} from "../../../../services/cards.api";
 import {fetchAllDocuments} from "../../../../services/documents.api";
 import {fetchDonations, getAllPartners} from "../../../../services/admin.api";
 import {fetchAllPosts} from "../../../../services/posts.api";
@@ -38,7 +37,6 @@ export default function Statistiques() {
 
     const [signalement_DATA, setSignalementData] = useState(null);
     const [utilisateurs_DATA, setUtilisateursData] = useState(null);
-    const [gestes_DATA, setGestesData] = useState(null);
     const [justificatifs_DATA, setJustificatifsData] = useState(null);
     const [partenaires_DATA, setPartenairesData] = useState(null);
     const [recompenses_DATA, setRecompensesData] = useState(null);
@@ -53,7 +51,6 @@ export default function Statistiques() {
     const fetchers = useMemo(() => ({
         signalements: fetchAllReports,
         utilisateurs: fetchUsers,
-        gestes: fetchAllCards,
         justificatifs: fetchAllDocuments,
         recompenses: fetchDonations,
         partenaires: getAllPartners,
@@ -63,7 +60,6 @@ export default function Statistiques() {
     const setters = useMemo(() => ({
         signalements: setSignalementData,
         utilisateurs: setUtilisateursData,
-        gestes: setGestesData,
         justificatifs: setJustificatifsData,
         recompenses: setRecompensesData,
         partenaires: setPartenairesData,
@@ -97,16 +93,30 @@ export default function Statistiques() {
         })();
     }, [user, loadData]);
 
+    const safeLen = (arr) => (Array.isArray(arr) ? arr.length : 0);
+
+    const count = (arr, predicate) => {
+        if (!Array.isArray(arr)) return 0;
+        let n = 0;
+        for (const item of arr) {
+            if (predicate(item)) n += 1;
+        }
+        return n;
+    };
+
     const statistiques_Data = {
-        compteCree : utilisateurs_DATA?.length ?? 0,
-        userBan : utilisateurs_DATA?.filter(u => u.banned)?.length ?? 0,
-        signalement : signalement_DATA?.filter(s => !s.checked)?.length ?? 0,
-        justificatifs : justificatifs_DATA?.filter(j => STATE_LABELS[j?.state ?? ""] === STATE_LABELS.WAITING)?.length ?? 0,
-        partenaires : partenaires_DATA?.length ?? 0,
-        recompenses : recompenses_DATA?.length ?? 0,
-        post : posts_DATA?.length ?? 0,
-        postValid : 3,
-    }
+        compteCree: safeLen(utilisateurs_DATA),
+        userBan: count(utilisateurs_DATA, (u) => !!u?.banned),
+        signalement: count(signalement_DATA, (s) => !s?.checked),
+        justificatifs: count(
+            justificatifs_DATA,
+            (j) => (j?.state ?? "") === "WAITING"
+        ),
+        partenaires: safeLen(partenaires_DATA),
+        recompenses: safeLen(recompenses_DATA),
+        post: safeLen(posts_DATA),
+        postValid: 3,
+    };
 
     const cartesTab = [
         {titre : "COMPTES CRÉES", icon : utilisateur,couleur : "#4293E5", data : statistiques_Data.compteCree},
@@ -193,9 +203,9 @@ export default function Statistiques() {
                 <ScrollView style={styles.contenuContainer} contentContainerStyle={{flexGrow : 1}}>
                     <View style={styles.cartesContainer}>
                         {
-                            cartesTab.map((tab, index) => {
+                            cartesTab.map((tab) => {
                                 return (
-                                    <View key={index} style={[styles.carte, {backgroundColor: tab.couleur}]} >
+                                    <View key={tab.titre} style={[styles.carte, {backgroundColor: tab.couleur}]} >
                                         <View style={styles.titreContainer}>
                                             <Image source={tab.icon} style={styles.carteImage} />
                                             <Text style={styles.carteTitre}>{tab.titre}</Text>
@@ -209,10 +219,10 @@ export default function Statistiques() {
 
                     <View style={styles.graphsContainer}>
                         {
-                            graphsTab.map((tab, index) => {
+                            graphsTab.map((tab) => {
                                 const GRAPH = tab.component;
                                 return (
-                                    <View key={index} style={styles.graphContainer}>
+                                    <View key={tab.titre} style={styles.graphContainer}>
                                         <Text style={styles.graphTitre}>{tab.titre}</Text>
                                         <View style={styles.graph}>
                                             <GRAPH data={tab.data}/>

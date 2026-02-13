@@ -64,7 +64,7 @@ export default function Gestes({carte, allData}) {
 
     const onChangePoints = (v) => {
         // garde uniquement les chiffres
-        const cleaned = (v ?? "").replace(/[^0-9]/g, "");
+        const cleaned = (v ?? "").replace(/\D/g, "");
         setPoints(cleaned);
     };
 

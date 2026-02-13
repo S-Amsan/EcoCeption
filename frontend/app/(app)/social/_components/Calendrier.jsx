@@ -105,8 +105,8 @@ export default function Calendrier({dernierAction, flammes, periodeEnCours}) {
 
             {/* Calendrier */}
             {semaines.map((semaine, i) => (
-                <View key={i} style={styles.semaine}>
-                    {semaine.map((jour, index) => {
+                <View key={semaine[0].format("YYYY-MM-DD")} style={styles.semaine}>
+                    {semaine.map((jour) => {
                         const horsMois = !jour.isSame(moisCourant, "month");
                         const seriePerdue = flammesPerdue(jour)
                         const dansPeriode = estDansPeriode(jour)
@@ -116,7 +116,7 @@ export default function Calendrier({dernierAction, flammes, periodeEnCours}) {
 
                         return (
                             <View
-                                key = {index}
+                                key = {jour.format("YYYY-MM-DD")}
                                 style={[
                                     styles.jour,
                                     seriePerdue && styles.jourFlammePerdu,

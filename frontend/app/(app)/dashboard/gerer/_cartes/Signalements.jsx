@@ -5,7 +5,7 @@ import Carte from "../../_component/Carte";
 import Br from "../../_component/Br";
 import PopUp from "../../../../../components/PopUp";
 import {tempsEcoule} from "../../../../../utils/temps";
-import {banUser, checkReport, invalidatePost} from "../../../../../services/admin.api";
+import {banUser, checkReport} from "../../../../../services/admin.api";
 import Toast from "react-native-toast-message";
 
 const getTypeObjet = (post) => {
@@ -158,14 +158,14 @@ export default function Signalements ({carte}) {
     }
 
     const handleInvalider = (post) => {
-        if (!post.validated){ // TODO c'est un boolean changer ça
+        if (!post.validated){ // c'est un boolean changer ça
             Toast.show({
                 type: "info",
                 text1: "Post déjà invalide",
                 text2: `Le post est déjà invalide.`
             });
         }else{
-            // TODO then invalidatePost(post.id);
+            // then invalidatePost(post.id);
             Toast.show({
                 type: "success",
                 text1: "Confirmation d'invalidation de post",

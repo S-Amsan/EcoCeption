@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useCallback, useState} from "react";
-import {View, Text, ScrollView, ActivityIndicator, TouchableOpacity} from "react-native";
+import {View, Text, ScrollView, ActivityIndicator} from "react-native";
 
 import Navbar from "../../../../components/Navbar";
 import Header from "../../../../components/Header";
@@ -18,14 +18,12 @@ import {fetchUsers} from "../../../../services/user.api";
 import {fetchAllReports} from "../../../../services/reports.api";
 import {fetchAllCards} from "../../../../services/cards.api";
 import {fetchAllDocuments} from "../../../../services/documents.api";
-import {fetchDonations, getAllPartners, publishDonation} from "../../../../services/admin.api";
+import {fetchDonations, getAllPartners} from "../../../../services/admin.api";
 import {fetchAllCompetitions} from "../../../../services/competitions.api";
 import {fetchAllEvents} from "../../../../services/events.api";
 
 import {loadUser} from "../../../../services/RegisterStorage";
 import styles from "./styles";
-import {DONS} from "../../../../utils/data/association";
-import {PRODUITS} from "../../../../utils/data/produit";
 
 export default function Gerer() {
     const [user, setUser] = React.useState(null);
@@ -104,11 +102,16 @@ export default function Gerer() {
     // reloadData("utilisateurs")
     // reloadData(["utilisateurs", "justificatifs"])
     const reloadData = useCallback(async (param) => {
-        const keys = !param
-            ? ALL_KEYS
-            : Array.isArray(param)
-                ? param
-                : [param];
+
+        let keys;
+
+        if (!param) {
+            keys = ALL_KEYS;
+        } else if (Array.isArray(param)) {
+            keys = param;
+        } else {
+            keys = [param];
+        }
 
         await loadData(keys);
     }, [ALL_KEYS, loadData]);
@@ -225,11 +228,11 @@ export default function Gerer() {
                 ) : (
                     <ScrollView style={styles.contenuContainer} contentContainerStyle={{flexGrow: 1}}>
                         <View style={styles.cartesContainer}>
-                            {carteTab.map((carte, index) => {
+                            {carteTab.map((carte) => {
                                 const Carte = carte.component;
                                 return (
                                     <Carte
-                                        key={index}
+                                        key={carteTab.titre}
                                         carte={carte}
                                         allData={allData}
                                     />

@@ -23,36 +23,29 @@ const getEtat = (c) => {
     return now > end ? "Terminé" : "En cours";
 };
 
+const compareNullableTime = (A, B, newestFirst) => {
+    if (A == null && B == null) return 0;
+    if (A == null) return 1;   // null à la fin
+    if (B == null) return -1;
+
+    return newestFirst ? (B - A) : (A - B);
+};
+
 const compareEvenements = (a, b, tri) => {
-    switch (tri) {
-        case "A à Z": {
-            const A = (a?.name ?? "").toLowerCase();
-            const B = (b?.name ?? "").toLowerCase();
-            return A.localeCompare(B, "fr", {sensitivity: "base"});
-        }
-        case "Z à A": {
-            const A = (a?.name ?? "").toLowerCase();
-            const B = (b?.name ?? "").toLowerCase();
-            return B.localeCompare(A, "fr", {sensitivity: "base"});
-        }
-        case "Ancien": {
-            const A = parseTime(a?.deadline);
-            const B = parseTime(b?.deadline);
-            if (A === null && B === null) return 0;
-            if (A === null) return 1;
-            if (B === null) return -1;
-            return A - B;
-        }
-        case "Récent":
-        default: {
-            const A = parseTime(a?.deadline);
-            const B = parseTime(b?.deadline);
-            if (A === null && B === null) return 0;
-            if (A === null) return 1;
-            if (B === null) return -1;
-            return B - A;
-        }
+    const aName = (a?.name ?? "").toLowerCase();
+    const bName = (b?.name ?? "").toLowerCase();
+
+    if (tri === "A à Z") {
+        return aName.localeCompare(bName, "fr", {sensitivity: "base"});
     }
+    if (tri === "Z à A") {
+        return bName.localeCompare(aName, "fr", {sensitivity: "base"});
+    }
+
+    const A = parseTime(a?.deadline);
+    const B = parseTime(b?.deadline);
+
+    return compareNullableTime(A, B, tri !== "Ancien");
 };
 
 const isConcours = (titre) => String(titre ?? "").toUpperCase().includes("CONCOURS");
@@ -104,7 +97,7 @@ export default function Challenges({carte}) {
     const [inscriptionCost, setInscriptionCost] = useState("");
 
     const onChangeInt = (setter) => (v) => {
-        const cleaned = (v ?? "").replace(/[^0-9]/g, "");
+        const cleaned = (v ?? "").replace(/\D/g, "");
         setter(cleaned);
     };
 

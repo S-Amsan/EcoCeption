@@ -38,7 +38,7 @@ const Leaderboard = ({leaderboard_DATA, user_DATA, router}) => {
                 <ScrollView contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}>
                     <View style={{flex : 1, gap : 10}}>
                         {
-                            users_hors_podium.map((user, index) => (<UserCarte key={index} user_DATA={user} router={router} userActuel={user_DATA.id === user.id}/>))
+                            users_hors_podium.map((user, index) => (<UserCarte key={user_DATA.id} user_DATA={user} router={router} userActuel={user_DATA.id === user.id}/>))
                         }
                     </View>
 
@@ -235,14 +235,20 @@ export default function Classement(){
         fetchUsers().then(setUsersDATA);
     }, []);
 
-    // Classement
+    const getUserUpdateFromRank = (userFromRank, userClassement) => {
+        if (userFromRank) {
+            return { stats: userFromRank.stats, classement: userFromRank.classement };
+        }
+        return { classement: userClassement };
+    };
+
     React.useEffect(() => {
         let cancelled = false;
 
         const loadAndRank = async () => {
-            if (!users_DATA?.length || !user_DATA?.id) return;
+            const userId = user_DATA?.id;
+            if (!Array.isArray(users_DATA) || users_DATA.length === 0 || !userId) return;
 
-            // 1) Récupérer les stats pour tous les users
             const usersWithStats = await Promise.all(
                 users_DATA.map(async (u) => {
                     const stats = await fetchUserStats(u.id);
@@ -252,30 +258,20 @@ export default function Classement(){
 
             if (cancelled) return;
 
-            // 2) Trier + ajouter classement
             const usersSortedByRank = [...usersWithStats]
                 .sort((a, b) => (b.stats?.trophies ?? 0) - (a.stats?.trophies ?? 0))
                 .map((u, i) => ({ ...u, classement: i + 1 }));
 
-            // 3) Leaderboard que les 100 premiers
-            setLeaderboardDATA(usersSortedByRank.slice(0,100))
+            setLeaderboardDATA(usersSortedByRank.slice(0, 100));
 
-            // 4) Classement + stats du user connecté
-            const userIndex = usersSortedByRank.findIndex((u) => u.id === user_DATA.id);
-
+            const userIndex = usersSortedByRank.findIndex((u) => u.id === userId);
             const userClassement = userIndex + 1;
             const userFromRank = userIndex >= 0 ? usersSortedByRank[userIndex] : null;
 
             setUserDATA((prev) => {
                 if (!prev) return prev;
-
-                return {
-                    ...prev,
-                    // on prend les infos à jour (stats + classement) si on l'a trouvé
-                    ...(userFromRank ? { stats: userFromRank.stats, classement: userFromRank.classement } : { classement: userClassement }),
-                };
+                return { ...prev, ...getUserUpdateFromRank(userFromRank, userClassement) };
             });
-
         };
 
         loadAndRank();

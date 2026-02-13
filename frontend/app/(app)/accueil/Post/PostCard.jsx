@@ -14,7 +14,6 @@ import {
 } from "../../../../services/posts.api";
 import { fetchObjectById } from "../../../../services/objects.api";
 import {loadUser} from "../../../../services/RegisterStorage";
-import PopUp from "../../../../components/PopUp";
 
 export default function PostCard({ post, onSignaler }) {
     const router = useRouter();

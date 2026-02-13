@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import {
     View,
     Text,
@@ -12,7 +12,6 @@ import Navbar from "../../../../../components/Navbar";
 import ScanActionButton from "../../../../../components/ScanActionButton";
 import {useRouter} from "expo-router";
 import { fetchAllDocuments } from "../../../../../services/documents.api";
-import { useEffect } from "react";
 import {fetchAllCards} from "../../../../../services/cards.api";
 import {loadUser} from "../../../../../services/RegisterStorage";
 

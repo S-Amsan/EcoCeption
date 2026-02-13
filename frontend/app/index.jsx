@@ -4,12 +4,12 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withTiming,
-    runOnJS,
+
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import {isTokenValid} from "../services/user.api";
+import {scheduleOnRN} from "react-native-worklets";
 
 export default function SplashScreen() {
     const logoTranslateY = useSharedValue(-200);
@@ -27,7 +27,7 @@ export default function SplashScreen() {
             logoTranslateY.value = withTiming(-200, { duration: 800 });
             textTranslateY.value = withTiming(200, { duration: 800 });
             opacity.value = withTiming(0, { duration: 800 }, () => {
-                runOnJS(redirectAfterSplash)();
+                scheduleOnRN(redirectAfterSplash);
             });
         }, 1800);
 

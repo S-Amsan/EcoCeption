@@ -391,13 +391,20 @@ export default function Social() {
        CLASSEMENT / PODIUM
     =============================== */
 
+    const buildUserPatchFromRank = (userFromRank, userClassement) => {
+        if (userFromRank) {
+            return { stats: userFromRank.stats, classement: userFromRank.classement };
+        }
+        return { classement: userClassement };
+    };
+
     React.useEffect(() => {
         let cancelled = false;
 
         const loadAndRank = async () => {
-            if (!users_DATA?.length || !user_DATA?.id) return;
+            const userId = user_DATA?.id;
+            if (!Array.isArray(users_DATA) || users_DATA.length === 0 || !userId) return;
 
-            // Récupérer les stats pour tous les users
             const usersWithStats = await Promise.all(
                 users_DATA.map(async (u) => {
                     const stats = await fetchUserStats(u.id);
@@ -407,28 +414,19 @@ export default function Social() {
 
             if (cancelled) return;
 
-            // Trier + ajouter classement
             const usersSortedByRank = [...usersWithStats]
                 .sort((a, b) => (b.stats?.trophies ?? 0) - (a.stats?.trophies ?? 0))
                 .map((u, i) => ({ ...u, classement: i + 1 }));
 
-            // PodiumD
-            setPodiumDATA(usersSortedByRank)
+            setPodiumDATA(usersSortedByRank);
 
-            // Classement + stats du user connecté
-            const userIndex = usersSortedByRank.findIndex((u) => u.id === user_DATA.id);
-
+            const userIndex = usersSortedByRank.findIndex((u) => u.id === userId);
             const userClassement = userIndex + 1;
             const userFromRank = userIndex >= 0 ? usersSortedByRank[userIndex] : null;
 
             setUserDATA((prev) => {
                 if (!prev) return prev;
-
-                return {
-                    ...prev,
-                    // on prend les infos à jour (stats + classement) si on l'a trouvé
-                    ...(userFromRank ? { stats: userFromRank.stats, classement: userFromRank.classement } : { classement: userClassement }),
-                };
+                return { ...prev, ...buildUserPatchFromRank(userFromRank, userClassement) };
             });
         };
 

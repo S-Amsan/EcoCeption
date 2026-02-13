@@ -19,7 +19,7 @@ export default function Filtres ({filtres = [], values, onChange, style,}) {
     return (
         <View style={[{ flexDirection: "row", gap: 10, flexWrap: "wrap", alignItems: "center" }, style]}>
             {filtres.map((options, i) => (
-                <View key={i} style={{ minWidth: 140 }}>
+                <View key={options} style={{ minWidth: 140 }}>
                     <Filtre
                         filtres={options}
                         value={safeValues[i]}

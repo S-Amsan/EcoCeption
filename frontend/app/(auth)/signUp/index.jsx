@@ -218,8 +218,6 @@ export default function Index(){
         const cleaned = text.replace(/\D/g, '');
         if (selectedCountry.code === 'FR' && cleaned.length <= 9) {
             setPhone(cleaned);
-        } else if (cleaned.length <= 15) {
-            setPhone(cleaned);
         }
     };
 

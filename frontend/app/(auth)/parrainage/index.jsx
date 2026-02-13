@@ -10,7 +10,6 @@ import {existsParrainageCode} from "../../../services/parrainage.api";
 export default function Index() {
     const router = useRouter();
     const [parrainCode, setParrainCode] = useState("");
-    const [res, SetRes] = useState("");
 
     useEffect(() => {
         async function load() {
@@ -24,6 +23,7 @@ export default function Index() {
 
     const handleNext = async () => {
         const response = await existsParrainageCode(parrainCode);
+        console.log(response)
 
         if (!response.exists) {
             Toast.show({
