@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,19 @@ public class ReportSummaryService {
 
     public ReportSummary generateSummary(Post post)
         throws IOException, URISyntaxException, InterruptedException {
+        // Fetch image bytes from URL and convert to base64
+        byte[] imageBytes;
+        try (
+            var inputStream = new URI(post.getImageUrl()).toURL().openStream()
+        ) {
+            imageBytes = inputStream.readAllBytes();
+        }
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
         VisionRequest requestBody = new VisionRequest(
             List.of(
                 new VisionRequest.AnnotateRequest(
-                    new VisionRequest.Image(post.getImageUrl()),
+                    new VisionRequest.Image(base64Image),
                     List.of(new VisionRequest.Feature("SAFE_SEARCH_DETECTION"))
                 )
             )
@@ -37,10 +47,10 @@ public class ReportSummaryService {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 
-        HttpRequest request = java.net.http.HttpRequest.newBuilder()
+        HttpRequest request = HttpRequest.newBuilder()
             .uri(new URI(ReportSummaryService.API_URI + "?key=" + apiKey))
             .header("Content-Type", "application/json")
-            .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody))
+            .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
             .build();
 
         HttpResponse<String> response = client.send(
@@ -62,7 +72,7 @@ public class ReportSummaryService {
 
     private record VisionRequest(List<AnnotateRequest> requests) {
         static record AnnotateRequest(Image image, List<Feature> features) {}
-        public record Image(String imageUri) {}
+        public record Image(String content) {}
         public record Feature(String type) {}
     }
 }
