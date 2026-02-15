@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Data
 @Entity
 @Table(name = "posts")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Post {
 
     @Id

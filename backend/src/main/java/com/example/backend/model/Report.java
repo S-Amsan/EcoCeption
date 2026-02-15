@@ -1,14 +1,18 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Entity
+@NoArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Table(
     name = "reports",
     uniqueConstraints = {
@@ -43,6 +47,4 @@ public class Report {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    public Report() {}
 }
