@@ -72,6 +72,13 @@ public class JwtFilter extends OncePerRequestFilter {
             // Resume request filtering
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            System.err.println(
+                "JwtFilter caught exception: " +
+                    e.getClass().getName() +
+                    " - " +
+                    e.getMessage()
+            );
+            e.printStackTrace();
             handlerExceptionResolver.resolveException(
                 request,
                 response,
