@@ -15,7 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Data
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties({ "passwordHash", "hibernateLazyInitializer", "handler" })
 public class User {
 
     @Id
