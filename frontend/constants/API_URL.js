@@ -2,5 +2,5 @@ import {Platform} from "react-native";
 
 export const API_URL =
     Platform.OS === "android" || Platform.OS === "ios"
-        ? "https://regine-umbonic-nonactionably.ngrok-free.dev"
-        : "http://localhost:8080";
+        ? "https://ecoception.fr.nf/api"
+        : "https://ecoception.fr.nf/api";

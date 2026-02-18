@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="90346dc6-a258-455a-af6d-471a636775c8" name="更改" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="35nXgZkwvHpvPdNIlKL9R3WigIR" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "disable.download.node.interpreter.editor.notification": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Volumes/P1/WorkSpace/SAE-S5.01",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "/Volumes/P1/WorkSpace/SAE-S5.01/frontend/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/assets/images" />
+      <recent name="$PROJECT_DIR$/frontend/app/appPrincipal/missions/_components" />
+      <recent name="$PROJECT_DIR$/frontend/pages/signUp" />
+      <recent name="$PROJECT_DIR$/frontend/pages/photo" />
+      <recent name="$PROJECT_DIR$/frontend/pages/parrainage" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/app/(app)" />
+      <recent name="$PROJECT_DIR$/frontend/app/(auth)" />
+      <recent name="$PROJECT_DIR$/frontend/app/appPrincipal/missions/_components" />
+      <recent name="$PROJECT_DIR$/frontend/app/appPrincipal/missions/_components/ObjecCard" />
+      <recent name="$PROJECT_DIR$/frontend/app/appPrincipal/accueil/Post/signalement/_components" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PS-252.27397.112" />
+        <option value="bundled-php-predefined-a98d8de5180a-b35feea871ed-com.jetbrains.php.sharedIndexes-PS-252.27397.112" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="90346dc6-a258-455a-af6d-471a636775c8" name="更改" comment="" />
+      <created>1763746921041</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763746921041</updated>
+      <workItem from="1763746922515" duration="8172000" />
+      <workItem from="1763766346998" duration="3202000" />
+      <workItem from="1763769915917" duration="89000" />
+      <workItem from="1763770020157" duration="1184000" />
+      <workItem from="1764367698501" duration="7669000" />
+      <workItem from="1764549108770" duration="14000" />
+      <workItem from="1764708284969" duration="64055000" />
+      <workItem from="1765918929656" duration="4999000" />
+      <workItem from="1766346106998" duration="33117000" />
+      <workItem from="1767092022316" duration="3221000" />
+      <workItem from="1767100476425" duration="23293000" />
+      <workItem from="1767179446376" duration="17066000" />
+      <workItem from="1767228440664" duration="1531000" />
+      <workItem from="1767649318294" duration="30137000" />
+      <workItem from="1767880911097" duration="99069000" />
+      <workItem from="1769443255628" duration="895000" />
+      <workItem from="1769449854661" duration="29000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
