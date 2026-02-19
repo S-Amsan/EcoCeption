@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 import Carte from "../../_component/Carte";
@@ -7,6 +7,7 @@ import PopUp from "../../../../../components/PopUp";
 import {tempsEcoule} from "../../../../../utils/temps";
 import {banUser, checkReport} from "../../../../../services/admin.api";
 import Toast from "react-native-toast-message";
+import {fetchUserById} from "../../../../../services/user.api";
 
 const getTypeObjet = (post) => {
     if (post.object_id !== null) {
@@ -23,7 +24,7 @@ const PostPreview = ({ report }) => {
     if (!report?.post) return null;
 
     const post = report.post;
-    const user = report.user;
+    const user = report.userSignale;
 
     return (
         <View style={styles.card}>
@@ -86,22 +87,47 @@ export default function Signalements ({carte}) {
     const [recherche, setRecherche] = useState("");
 
     const filtres = [
-        ["de A à Z", "de Z à A"],
+        ["récent", "ancien", "de A à Z", "de Z à A"],
         ["traité", "non traité", "tous"],
         ["Objet recyclé", "Objet trouvé", "Objet récupéré", "tous les types"],
-    ]
+    ];
 
-    const valeurDefaut = ["de A à Z", "non traité", "tous les types"]
+    const valeurDefaut = ["récent", "non traité", "tous les types"];
+
 
     const [selected, setSelected] = useState(valeurDefaut);
 
     const [tri, etat, typeFiltre] = selected;
 
+    const [signalementDATA, setSignalementData] = useState([]);
 
-    const dataFiltree = (carte?.data ?? [])
+    useEffect(() => {
+        async function loadUserSignale() {
+            if (!carte?.data) return;
+
+            const dataWithUserSignale = await Promise.all(
+                carte.data.map(async (item) => {
+                    const user = await fetchUserById(item.post.user_id);
+
+                    return {
+                        ...item,
+                        userSignale: user
+                    };
+                })
+            );
+            console.log(dataWithUserSignale)
+            setSignalementData(dataWithUserSignale);
+        }
+
+        loadUserSignale();
+    }, [carte]);
+
+
+
+    const dataFiltree = signalementDATA
         // Recherche user name
         .filter((c) =>
-            (c.user?.name ?? "").toLowerCase().includes(recherche.trim().toLowerCase())
+            (c.userSignale?.name ?? "").toLowerCase().includes(recherche.trim().toLowerCase())
         )
         // Filtre état
         .filter((c) => {
@@ -119,11 +145,25 @@ export default function Signalements ({carte}) {
 
         // Tri
         .sort((a, b) => {
-            const A = (a.user?.name ?? "").toLowerCase();
-            const B = (b.user?.name ?? "").toLowerCase();
+
+            // Tri par date
+            if (tri === "récent") {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            }
+
+            if (tri === "ancien") {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+            }
+
+            // Tri alphabétique
+            const A = (a.userSignale?.name ?? "").toLowerCase();
+            const B = (b.userSignale?.name ?? "").toLowerCase();
+
             if (tri === "de Z à A") return B.localeCompare(A);
-            return A.localeCompare(B); // défaut A-Z
+
+            return A.localeCompare(B);
         });
+
 
     const resetFiltres = () => {
         setRecherche("")
@@ -131,15 +171,15 @@ export default function Signalements ({carte}) {
     }
 
     const handleBannir = (signalement) => {
-        if (!signalement.user.banned){
-            banUser(signalement.user.id)
+        if (!signalement.userSignale.banned){
+            banUser(signalement.userSignale.id)
                 .then(() => checkReport(signalement.id))
                 .then(() => {
                     carte.reloadData(["utilisateurs", "signalements"]);
                     Toast.show({
                         type: "success",
                         text1: "Confirmation de ban",
-                        text2: `@${signalement.user.name} a été ban avec succès!`,
+                        text2: `@${signalement.userSignale.name} a été ban avec succès!`,
                     });
                 })
                 .catch((err) => {
@@ -156,7 +196,7 @@ export default function Signalements ({carte}) {
                     Toast.show({
                         type: "info",
                         text1: "Utilisateur déjà banni",
-                        text2: `@${signalement.user.name} est déjà banni(e).`
+                        text2: `@${signalement.userSignale.name} est déjà banni(e).`
                     });
                 })
                 .catch((err) => {
@@ -207,17 +247,13 @@ export default function Signalements ({carte}) {
             </PopUp>
             {dataFiltree.map(c => {
                 const type = getTypeObjet(c.post)
-                console.log(c)
-                if(c.summary){
-                    console.log("SUMMARY!!!!!!!!!!")
-                }
 
                 return (
                     <View key={c.id} style={styles.signalementItem}>
                         <View style={styles.signalementPartieHaute}>
-                            <Image source={c.user.photoProfileUrl} style={styles.userPhoto}/>
+                            <Image source={c.userSignale.photoProfileUrl} style={styles.userPhoto}/>
                             <View style={styles.signalementInfoEntete}>
-                                <Text style={styles.userNameText}>@{c.user.name}</Text>
+                                <Text style={styles.userNameText}>@{c.userSignale.name}</Text>
                                 <Text style={[styles.signalementRaisonEtiquette, styles.etiquette]}>{c.reason}</Text>
                                 {
                                     c.summary && (
