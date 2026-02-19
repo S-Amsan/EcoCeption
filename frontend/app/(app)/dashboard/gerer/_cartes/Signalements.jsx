@@ -68,6 +68,18 @@ const PostPreview = ({ report }) => {
     );
 }
 
+export function getCouleurAnalyse(level) {
+    const colors = {
+        VERY_UNLIKELY: "#16a34a",
+        UNLIKELY: "#84cc16",
+        POSSIBLE: "#eab308",
+        LIKELY: "#f97316",
+        VERY_LIKELY: "#dc2626",
+    };
+
+    return colors[level] ?? "#6b7280";
+}
+
 
 export default function Signalements ({carte}) {
     const [postToPreview, setPostToPreview] = useState(null);
@@ -195,6 +207,10 @@ export default function Signalements ({carte}) {
             </PopUp>
             {dataFiltree.map(c => {
                 const type = getTypeObjet(c.post)
+                console.log(c)
+                if(c.summary){
+                    console.log("SUMMARY!!!!!!!!!!")
+                }
 
                 return (
                     <View key={c.id} style={styles.signalementItem}>
@@ -202,7 +218,20 @@ export default function Signalements ({carte}) {
                             <Image source={c.user.photoProfileUrl} style={styles.userPhoto}/>
                             <View style={styles.signalementInfoEntete}>
                                 <Text style={styles.userNameText}>@{c.user.name}</Text>
-                                <Text style={styles.signalementRaisonEtiquette}>{c.reason}</Text>
+                                <Text style={[styles.signalementRaisonEtiquette, styles.etiquette]}>{c.reason}</Text>
+                                {
+                                    c.summary && (
+                                        <View style={styles.summary}>
+                                            <Text style={[styles.etiquette, {backgroundColor : getCouleurAnalyse(c.summary.adult)}]}>Contenu adulte</Text>
+                                            <Text style={[styles.etiquette, {backgroundColor : getCouleurAnalyse(c.summary.spoof)}]}>Faux contenu</Text>
+                                            <Text style={[styles.etiquette, {backgroundColor : getCouleurAnalyse(c.summary.medical)}]}>Contenu médical</Text>
+                                            <Text style={[styles.etiquette, {backgroundColor : getCouleurAnalyse(c.summary.violence)}]}>Violence</Text>
+                                            <Text style={[styles.etiquette, {backgroundColor : getCouleurAnalyse(c.summary.racy)}]}>Contenu suggestif</Text>
+                                        </View>
+                                    )
+
+
+                                }
                             </View>
                         </View>
                         <Br/>
@@ -272,13 +301,21 @@ const styles = StyleSheet.create({
     signalementInfoEntete : {
         gap : 2,
     },
-    signalementRaisonEtiquette : {
+    etiquette : {
         fontSize : 12,
-        color : "#FFFFFF",
-        backgroundColor : "#dc4b4b",
         borderRadius : 3,
         paddingHorizontal : 3,
-        alignSelf: "flex-start"
+        alignSelf: "flex-start",
+        color : "#ffffff",
+    },
+    signalementRaisonEtiquette : {
+        backgroundColor : "#3b82f6",
+    },
+    summary : {
+      margin : 0,
+      padding : 0,
+      gap : 3.5,
+      flexDirection : "row"
     },
     signalementPostContainer : {
         padding : 10,

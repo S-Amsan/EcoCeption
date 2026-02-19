@@ -232,7 +232,7 @@ export default function Partenaires({carte}) {
             {!ajouter ? (
                 <>
                     {dataFiltree.map((c) => {
-                        console.log(c)
+                        //console.log(c)
                         const typeLabel = normalizeTypeLabel(c?.type);
 
                         return (

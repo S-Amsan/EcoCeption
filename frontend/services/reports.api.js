@@ -57,5 +57,10 @@ export async function reportPost(postId, reason) {
         body: JSON.stringify({ reason }),
     });
 
-    return response.json();
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Erreur signalement");
+    }
+
+    return true;
 }

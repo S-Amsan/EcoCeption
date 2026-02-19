@@ -20,7 +20,7 @@ const CATEGORIES_TAB = {
 }
 
 const getCategorie = (c) => {
-    console.log(c)
+    //console.log(c)
 
     return CATEGORIES_TAB[c.type] ?? "Dons";
 };
