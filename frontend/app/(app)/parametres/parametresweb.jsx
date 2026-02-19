@@ -159,7 +159,7 @@ export default function ParametresWeb() {
         await AsyncStorage.removeItem("@auth_token");
         await AsyncStorage.removeItem("@auth_email");
         await AsyncStorage.removeItem("@auth_user");
-        router.replace("/Login");
+        router.replace("/home");
     };
 
     const handleDeleteAccount = async () => {
