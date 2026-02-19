@@ -165,8 +165,7 @@ export default StyleSheet.create({
 
         ...(Platform.OS === "web" && {
             boxShadow: "0px 4px 12px rgba(0,0,0,0.12)",
-            width:580,
-            height:250
+            height:200
         }),
     },
 
@@ -188,7 +187,7 @@ export default StyleSheet.create({
         bottom: 0,
         width:110,
         ...(Platform.OS === "web" && {
-            width: 220,
+            width: 150,
         }),
     },
 
