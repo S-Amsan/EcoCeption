@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from "expo-image-picker";
-import {manipulate, SaveFormat} from "expo-image-manipulator";
+import * as ImageManipulator from "expo-image-manipulator";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 
@@ -65,15 +65,11 @@ export default function Index() {
         let uri = result.assets[0].uri;
 
         if (Platform.OS !== "web") {
-            const context = await manipulate(uri);
-
-            context.resize({ width: 1024 });
-
-            const resized = await context.renderAsync();
-            await resized.saveAsync({
-                compress: 0.8,
-                format: SaveFormat.JPEG,
-            });
+            const resized = await ImageManipulator.manipulateAsync(
+                uri,
+                [{ resize: { width: 1024 } }],
+                { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
+            );
             uri = resized.uri;
         }
 
