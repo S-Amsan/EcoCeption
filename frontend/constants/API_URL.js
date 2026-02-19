@@ -2,5 +2,5 @@ import {Platform} from "react-native";
 
 export const API_URL =
     Platform.OS === "android" || Platform.OS === "ios"
-        ? "https://ecoception.fr.nf"
-        : "https://ecoception.fr.nf";
+        ? "http://ecoception.fr.nf"
+        : "http://ecoception.fr.nf";
