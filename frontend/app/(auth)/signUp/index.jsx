@@ -10,6 +10,7 @@ import {saveRegisterData, loadRegisterData, updateRegisterData} from "../../../s
 import {API_URL} from "../../../constants/API_URL";
 
 import style from "./styles/signUpStyles";
+import {isWeb} from "../../../utils/platform";
 
 const countries = [
     { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
@@ -250,7 +251,7 @@ export default function Index(){
             style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <TouchableWithoutFeedback onPress={isWeb ? null : Keyboard.dismiss} accessible={false}>
                 <LinearGradient
                     colors={['#00DB83', '#0CD8A9']}
                     style={style.gradient}
